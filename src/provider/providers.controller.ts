@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ProviderService } from './providers.service';
 import { CreateProviderDto } from './dto/create-providers.dto';
 import { UpdateProviderDto } from './dto/update-providers.dto';
-import { User } from 'src/decorator/customize';
+import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 
 @Controller('providers')
@@ -15,6 +15,7 @@ export class ProvidersController {
   }
 
   @Get()
+  @ResponseMessage("Fetch List Company with paginate")
   findAll(
     @Query("page") currentPage: string,
     @Query("limit") limit: string,
