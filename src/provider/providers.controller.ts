@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ProviderService } from './providers.service';
 import { CreateProviderDto } from './dto/create-providers.dto';
 import { UpdateProviderDto } from './dto/update-providers.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 
 @Controller('providers')
@@ -10,12 +10,13 @@ export class ProvidersController {
   constructor(private readonly providersService: ProviderService) { }
 
   @Post()
+  @ResponseMessage("Create a new provider")
   create(@Body() createProviderDto: CreateProviderDto, @User() user: IUser) {
     return this.providersService.create(createProviderDto, user);
   }
 
   @Get()
-  @ResponseMessage("Fetch List Company with paginate")
+  @ResponseMessage("Fetch List Provider with paginate")
   findAll(
     @Query("page") currentPage: string,
     @Query("limit") limit: string,
@@ -24,12 +25,16 @@ export class ProvidersController {
     return this.providersService.findAll(+currentPage, +limit, qs);
   }
 
+  @Public()
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.providersService.findOne(+id);
+  @ResponseMessage("Fetch Provider by id")
+  async findOne(@Param('id') id: string) {
+    const foundProvider = await this.providersService.findOne(id);
+    return foundProvider
   }
 
   @Patch(':id')
+  @ResponseMessage("Update a provider")
   update(
     @Param('id') id: string,
     @Body() updateProviderDto: UpdateProviderDto,
@@ -40,6 +45,7 @@ export class ProvidersController {
   }
 
   @Delete(':id')
+  @ResponseMessage("Delete a provider")
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.providersService.remove(id, user);
   }

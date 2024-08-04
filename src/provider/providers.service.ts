@@ -6,6 +6,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class ProviderService {
@@ -51,11 +52,17 @@ export class ProviderService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} provider`;
+  async findOne(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return `not found provider`;
+    return await this.providerModel.findOne({
+      _id: id
+    })
   }
 
   async update(id: string, updateProviderDto: UpdateProviderDto, user: IUser) {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return `not found provider`;
     return await this.providerModel.updateOne(
       { _id: id },
       {
@@ -68,6 +75,8 @@ export class ProviderService {
   }
 
   async remove(id: string, user: IUser) {
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return `not found provider`;
     await this.providerModel.updateOne(
       { _id: id },
       {
