@@ -18,8 +18,8 @@ export class ProvidersController {
   @Get()
   @ResponseMessage("Fetch List Provider with paginate")
   findAll(
-    @Query("page") currentPage: string,
-    @Query("limit") limit: string,
+    @Query("current") currentPage: string,
+    @Query("pageSize") limit: string,
     @Query() qs: string,
   ) {
     return this.providersService.findAll(+currentPage, +limit, qs);
