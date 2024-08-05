@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
+import { ChangePasswordDto, CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User as UserM, UserDocument } from './schemas/user.schema';
@@ -168,6 +168,25 @@ export class UsersService {
     return await this.userModel.findOne(
       { refreshToken }
     );
+  }
+
+  async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {
+    const { currentPassword, newPassword } = changePasswordDto;
+
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new BadRequestException('User not found.');
+    }
+
+    const isPasswordValid = this.isValidPassword(currentPassword, user.password);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Current password is incorrect.');
+    }
+
+    user.password = this.getHashPassword(newPassword);
+    await user.save();
+
+    return { message: 'Password updated successfully' };
   }
 
 }

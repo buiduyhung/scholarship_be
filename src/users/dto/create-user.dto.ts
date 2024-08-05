@@ -70,3 +70,11 @@ export class RegisterUserDto {
     gender: string;
 
 }
+
+export class ChangePasswordDto {
+    @IsNotEmpty()
+    currentPassword: string;
+
+    @IsNotEmpty()
+    newPassword: string;
+}
