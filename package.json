@@ -1,8 +1,8 @@
 {
-  "name": "nest-basic-hoidanit",
+  "name": "SCHOLARSHIP_BE",
   "version": "0.0.1",
-  "description": "https://hoidanit.com.vn/",
-  "author": "Hỏi Dân IT",
+  "description": "https:",
+  "author": "Le Cong Anh",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
