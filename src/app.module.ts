@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { ProviderModule } from './provider/providers.module';
 import { ScholarshipModule } from './scholarship/scholarship.module';
+import { FilesModule } from './files/files.module';
 
 
 @Module({
@@ -33,6 +34,7 @@ import { ScholarshipModule } from './scholarship/scholarship.module';
     AuthModule,
     ProviderModule,
     ScholarshipModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
