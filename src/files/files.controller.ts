@@ -3,12 +3,13 @@ import {
   UseInterceptors, UploadedFile,
   ParseFilePipeBuilder,
   HttpStatus,
-  UseFilters
+  UseFilters,
+  UploadedFiles
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Public, ResponseMessage } from 'src/decorator/customize';
 import { HttpExceptionFilter } from 'src/core/http-exception.filter';
 
@@ -24,6 +25,17 @@ export class FilesController {
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     return {
       fileName: file.filename
+    }
+  }
+
+  @Public()
+  @Post('upload-multiple')
+  @ResponseMessage("Uploaded Multiple files")
+  @UseInterceptors(FilesInterceptor('fileUpload', 10)) // 'fileUpload' is the key, and 10 is the max number of files.
+  @UseFilters(new HttpExceptionFilter())
+  uploadMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
+    return {
+      files: files.map(file => file.filename)
     }
   }
 
