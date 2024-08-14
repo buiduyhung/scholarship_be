@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ScholarshipService } from './scholarship.service';
 import { CreateScholarshipDto } from './dto/create-scholarship.dto';
 import { UpdateScholarshipDto } from './dto/update-scholarship.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 
 @Controller('scholarship')
@@ -14,6 +14,8 @@ export class ScholarshipController {
     return this.scholarshipService.create(createScholarshipDto, user);
   }
 
+
+  @Public()
   @Get()
   @ResponseMessage("Fetch List Scholarship with paginate")
   findAll(
@@ -24,6 +26,8 @@ export class ScholarshipController {
     return this.scholarshipService.findAll(+currentPage, +limit, qs);
   }
 
+
+  @Public()
   @Get(':id')
   @ResponseMessage("Fetch a Scholarship with id")
   findOne(@Param('id') id: string) {

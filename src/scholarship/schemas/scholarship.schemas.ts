@@ -42,6 +42,7 @@ export class Scholarship {
     provider: {
         _id: mongoose.Schema.Types.ObjectId;
         name: string;
+        logo: string;
     };
 
     @Prop({ type: Object })

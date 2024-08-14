@@ -6,11 +6,11 @@ import { MulterConfigService } from './multer.config';
 
 @Module({
   controllers: [FilesController],
-  providers: [FilesService],
+  providers: [FilesService, MulterConfigService],
   imports: [
     MulterModule.registerAsync({
       useClass: MulterConfigService,
-    })
-  ]
+    }),
+  ],
 })
 export class FilesModule { }

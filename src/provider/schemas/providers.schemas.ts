@@ -23,6 +23,15 @@ export class Provider {
     @Prop()
     topWorld: number;
 
+    @Prop()
+    logo: string;
+
+    @Prop()
+    background: string;
+
+    @Prop()
+    gallery: string[];
+
     @Prop({ type: Object })
     createdBy: {
         _id: mongoose.Schema.Types.ObjectId;

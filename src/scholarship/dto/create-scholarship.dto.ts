@@ -8,6 +8,9 @@ class Provider { //validate obj provider
 
     @IsNotEmpty()
     name: string;
+
+    @IsNotEmpty()
+    logo: string;
 }
 
 export class CreateScholarshipDto {

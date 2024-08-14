@@ -18,23 +18,17 @@ export class MulterConfigService implements MulterOptionsFactory {
             }
             switch (error.code) {
                 case 'EEXIST':
-                    // Error:
-                    // Requested location already exists, but it's not a directory.
                     break;
                 case 'ENOTDIR':
-                    // Error:
-                    // The parent hierarchy contains a file with the same name as the dir
-                    // you're trying to create.
                     break;
                 default:
-                    // Some other error like permission denied.
                     console.error(error);
                     break;
             }
         });
     }
 
-    createMulterOptions(): MulterModuleOptions {
+    createMulterOptions({ fileSize }: { fileSize: number } = { fileSize: 1024 * 1024 * 5 }): MulterModuleOptions {
         return {
             storage: diskStorage({
                 destination: (req, file, cb) => {
@@ -43,16 +37,11 @@ export class MulterConfigService implements MulterOptionsFactory {
                     cb(null, join(this.getRootPath(), `public/images/${folder}`))
                 },
                 filename: (req, file, cb) => {
-                    //get image extension
                     let extName = path.extname(file.originalname);
-
-                    //get image's name (without extension)
                     let baseName = path.basename(file.originalname, extName);
-
                     let finalName = `${baseName}-${Date.now()}${extName}`
                     cb(null, finalName)
                 },
-
             }),
             fileFilter: (req, file, cb) => {
                 const allowedFileTypes = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx'];
@@ -65,7 +54,7 @@ export class MulterConfigService implements MulterOptionsFactory {
                     cb(null, true);
             },
             limits: {
-                fileSize: 1024 * 1024 * 5 // 5MB
+                fileSize: fileSize // Allow custom file size limit
             }
         };
     }

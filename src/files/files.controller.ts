@@ -12,16 +12,19 @@ import { UpdateFileDto } from './dto/update-file.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Public, ResponseMessage } from 'src/decorator/customize';
 import { HttpExceptionFilter } from 'src/core/http-exception.filter';
+import { MulterConfigService } from './multer.config';
 
 @Controller('files')
 export class FilesController {
-  constructor(private readonly filesService: FilesService) { }
+  constructor(private readonly filesService: FilesService,
+    private readonly multerConfigService: MulterConfigService
+  ) { }
 
   @Public()
   @Post('upload')
   @ResponseMessage("Uploaded Single file")
   @UseInterceptors(FileInterceptor('fileUpload'))
-  @UseFilters(new HttpExceptionFilter())
+  // @UseFilters(new HttpExceptionFilter())
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     return {
       fileName: file.filename
@@ -31,8 +34,8 @@ export class FilesController {
   @Public()
   @Post('upload-multiple')
   @ResponseMessage("Uploaded Multiple files")
-  @UseInterceptors(FilesInterceptor('fileUpload', 10)) // 'fileUpload' is the key, and 10 is the max number of files.
-  @UseFilters(new HttpExceptionFilter())
+  @UseInterceptors(FilesInterceptor('fileUpload', 10, new MulterConfigService().createMulterOptions({ fileSize: 1024 * 1024 * 20 })))
+  // @UseFilters(new HttpExceptionFilter())
   uploadMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
     return {
       files: files.map(file => file.filename)

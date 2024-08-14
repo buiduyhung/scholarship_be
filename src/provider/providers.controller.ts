@@ -15,6 +15,7 @@ export class ProvidersController {
     return this.providersService.create(createProviderDto, user);
   }
 
+  @Public()
   @Get()
   @ResponseMessage("Fetch List Provider with paginate")
   findAll(

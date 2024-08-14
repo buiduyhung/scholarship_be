@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateProviderDto {
 
@@ -19,4 +19,14 @@ export class CreateProviderDto {
 
     @IsNotEmpty()
     topWorld: number;
+
+    @IsNotEmpty()
+    logo: string;
+
+    @IsNotEmpty()
+    background: string;
+
+    @IsArray()
+    @IsString({ each: true })
+    gallery: string[];
 }
