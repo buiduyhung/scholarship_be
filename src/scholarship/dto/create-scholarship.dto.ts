@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { IsDate, IsEmail, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsPhoneNumber, Max, Min, ValidateNested } from 'class-validator';
+import { IsArray, IsDate, IsEmail, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsPhoneNumber, IsString, Max, Min, ValidateNested } from 'class-validator';
 import mongoose from 'mongoose';
 
 class Provider { //validate obj provider
@@ -37,6 +37,10 @@ export class CreateScholarshipDto {
 
     @IsNotEmpty()
     type: string;
+
+    @IsArray()
+    @IsString({ each: true })
+    subject: string[];
 
     @IsNotEmpty()
     @Transform(({ value }) => new Date(value))

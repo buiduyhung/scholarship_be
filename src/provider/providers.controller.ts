@@ -30,8 +30,8 @@ export class ProvidersController {
   @Get(':id')
   @ResponseMessage("Fetch Provider by id")
   async findOne(@Param('id') id: string) {
-    const foundProvider = await this.providersService.findOne(id);
-    return foundProvider
+    return await this.providersService.findOne(id);
+
   }
 
   @Patch(':id')

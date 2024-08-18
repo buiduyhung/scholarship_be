@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateProviderDto } from './dto/create-providers.dto';
 import { UpdateProviderDto } from './dto/update-providers.dto';
 import { Provider, ProviderDocument } from './schemas/providers.schemas';
@@ -51,13 +51,11 @@ export class ProviderService {
       result //kết quả query
     }
   }
-
   async findOne(id: string) {
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return `not found provider`;
-    return await this.providerModel.findOne({
-      _id: id
-    })
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException(`not found provider with id ${id}`);
+    }
+    return await this.providerModel.findById(id);
   }
 
   async update(id: string, updateProviderDto: UpdateProviderDto, user: IUser) {

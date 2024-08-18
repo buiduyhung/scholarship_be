@@ -15,6 +15,9 @@ export class Scholarship {
     location: string;
 
     @Prop()
+    subject: string[];
+
+    @Prop()
     level: string;
 
     @Prop()
