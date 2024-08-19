@@ -30,7 +30,6 @@ export class ResumesController {
     return this.resumesService.findByUsers(user);
   }
 
-
   @Get(':id')
   @ResponseMessage("Fetch a resume by id")
   findOne(@Param('id') id: string) {

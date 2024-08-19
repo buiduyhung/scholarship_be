@@ -35,6 +35,7 @@ export class ScholarshipController {
   }
 
 
+
   @Patch(':id')
   @ResponseMessage("Update a Scholarship")
   update(
