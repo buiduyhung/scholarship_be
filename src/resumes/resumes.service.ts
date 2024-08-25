@@ -7,14 +7,35 @@ import { IUser } from 'src/users/users.interface';
 import mongoose from 'mongoose';
 import aqp from 'api-query-params';
 import { Resume, ResumeDocument } from './schemas/resume.schemas';
+import { Provider } from 'src/provider/schemas/providers.schemas';
 
 @Injectable()
 export class ResumesService {
 
   constructor(
     @InjectModel(Resume.name)
-    private resumeModel: SoftDeleteModel<ResumeDocument>
+    private resumeModel: SoftDeleteModel<ResumeDocument>,
+    @InjectModel(Provider.name)
+    private providerModel: mongoose.Model<Provider>
   ) { }
+
+  async searchByProviderName(providerName: string) {
+    // Step 1: Query the provider by name
+    const provider = await this.providerModel.findOne({ name: new RegExp(`^${providerName}$`, 'i') });
+
+
+    // Check if provider is found
+    if (!provider) {
+      throw new BadRequestException("Provider not found");
+    }
+
+    // Step 2: Query resumes based on the provider's ID
+    const resumes = await this.resumeModel.find({
+      provider: provider._id
+    }).exec();
+
+    return resumes;
+  }
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
     const { urlCV, urlLetter, provider, scholarship } = createUserCvDto;

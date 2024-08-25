@@ -14,8 +14,17 @@ export class ProviderService {
   private providerModel: SoftDeleteModel<ProviderDocument>
   ) { }
 
-  create(createProviderDto: CreateProviderDto, user: IUser) {
-    return this.providerModel.create({
+  async create(createProviderDto: CreateProviderDto, user: IUser) {
+
+    const { name } = createProviderDto;
+
+    const isExist = await this.providerModel.findOne({ name });
+
+    if (isExist) {
+      throw new BadRequestException(`Name provider: ${name} already exists. Please use a different name provider.`);
+    }
+
+    return await this.providerModel.create({
       ...createProviderDto,
       createdBy: {
         _id: user._id,
