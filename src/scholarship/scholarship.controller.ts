@@ -26,6 +26,13 @@ export class ScholarshipController {
     return this.scholarshipService.findAll(+currentPage, +limit, qs);
   }
 
+  @Public()
+  @Get('search-list-scholarship')
+  @ResponseMessage("get list scholarship of a provider")
+  searchByProvider(@Query('id') id: string) {
+    return this.scholarshipService.searchByProvider(id);
+  }
+
 
   @Public()
   @Get(':id')
@@ -33,7 +40,6 @@ export class ScholarshipController {
   findOne(@Param('id') id: string) {
     return this.scholarshipService.findOne(id);
   }
-
 
 
   @Patch(':id')

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import { Provider } from 'src/provider/schemas/providers.schemas';
 
 export type ScholarshipDocument = HydratedDocument<Scholarship>;
 
@@ -41,12 +42,15 @@ export class Scholarship {
     @Prop()
     isActive: boolean;
 
-    @Prop({ type: Object })
-    provider: {
-        _id: mongoose.Schema.Types.ObjectId;
-        name: string;
-        logo: string;
-    };
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Provider.name })
+    provider: mongoose.Schema.Types.ObjectId;
+
+    // @Prop({ type: Object })
+    // provider: {
+    //     _id: mongoose.Schema.Types.ObjectId;
+    //     name: string;
+    //     logo: string;
+    // };
 
     @Prop({ type: Object })
     createdBy: {

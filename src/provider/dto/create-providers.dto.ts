@@ -9,6 +9,12 @@ export class CreateProviderDto {
     address: string;
 
     @IsNotEmpty()
+    info: string;
+
+    @IsNotEmpty()
+    part: string;
+
+    @IsNotEmpty()
     description: string;
 
     @IsNotEmpty()

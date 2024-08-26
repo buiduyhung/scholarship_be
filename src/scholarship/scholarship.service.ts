@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateScholarshipDto } from './dto/create-scholarship.dto';
 import { UpdateScholarshipDto } from './dto/update-scholarship.dto';
 import { IUser } from 'src/users/users.interface';
@@ -7,12 +7,15 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { Scholarship, ScholarshipDocument } from './schemas/scholarship.schemas';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
+import { Provider } from 'src/provider/schemas/providers.schemas';
 
 @Injectable()
 export class ScholarshipService {
-  constructor(@InjectModel(Scholarship.name)
-  private scholarshipModel: SoftDeleteModel<ScholarshipDocument>
-
+  constructor(
+    @InjectModel(Scholarship.name)
+    private scholarshipModel: SoftDeleteModel<ScholarshipDocument>,
+    @InjectModel(Provider.name)
+    private providerModel: mongoose.Model<Provider>
   ) { }
   async create(createScholarshipDto: CreateScholarshipDto, user: IUser) {
     const {
@@ -36,7 +39,7 @@ export class ScholarshipService {
   }
 
   async findAll(currentPage: number, limit: number, qs: string) {
-    const { filter, sort, projection, population } = aqp(qs);
+    const { filter, sort, population, projection } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
     let offset = (+currentPage - 1) * (+limit);
@@ -50,6 +53,7 @@ export class ScholarshipService {
       .limit(defaultLimit)
       .sort(sort as any)
       .populate(population)
+      .select(projection as any)
       .exec();
 
     return {
@@ -62,6 +66,7 @@ export class ScholarshipService {
       result //kết quả query
     }
   }
+
 
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -98,5 +103,27 @@ export class ScholarshipService {
     return this.scholarshipModel.softDelete({
       _id: id
     })
+  }
+
+  async searchByProvider(id: string) {
+    // Ensure the id is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException("Invalid provider ID");
+    }
+
+    // Find the provider by its _id field
+    const provider = await this.providerModel.findById(id);
+
+    // Check if provider exists
+    if (!provider) {
+      throw new BadRequestException("Provider not found");
+    }
+
+    // Find all scholarships associated with the provider
+    const scholarships = await this.scholarshipModel.find({
+      provider: provider._id
+    }).exec();
+
+    return scholarships;
   }
 }

@@ -27,6 +27,12 @@ export class Provider {
     logo: string;
 
     @Prop()
+    info: string;
+
+    @Prop()
+    part: string;
+
+    @Prop()
     background: string;
 
     @Prop()

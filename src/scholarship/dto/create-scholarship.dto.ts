@@ -2,16 +2,16 @@ import { Transform, Type } from 'class-transformer';
 import { IsArray, IsDate, IsEmail, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsPhoneNumber, IsString, Max, Min, ValidateNested } from 'class-validator';
 import mongoose from 'mongoose';
 
-class Provider { //validate obj provider
-    @IsNotEmpty()
-    _id: mongoose.Schema.Types.ObjectId;
+// class Provider { //validate obj provider
+//     @IsNotEmpty()
+//     _id: mongoose.Schema.Types.ObjectId;
 
-    @IsNotEmpty()
-    name: string;
+//     @IsNotEmpty()
+//     name: string;
 
-    @IsNotEmpty()
-    logo: string;
-}
+//     @IsNotEmpty()
+//     logo: string;
+// }
 
 export class CreateScholarshipDto {
     @IsNotEmpty()
@@ -55,11 +55,14 @@ export class CreateScholarshipDto {
     @IsNotEmpty()
     isActive: boolean;
 
-    @IsNotEmptyObject()
-    @IsObject()
-    @ValidateNested()
-    @Type(() => Provider)
-    provider: Provider;  // validate provider
+    @IsNotEmpty()
+    provider: mongoose.Schema.Types.ObjectId;
+
+    // @IsNotEmptyObject()
+    // @IsObject()
+    // @ValidateNested()
+    // @Type(() => Provider)
+    // provider: Provider;  // validate provider
 
 }
 
