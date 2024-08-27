@@ -111,14 +111,15 @@ export class UsersService {
       return `not found user`;
     return await this.userModel.findOne({
       _id: id
-    }).select("-password");
+    }).select("-password")
+      .populate({ path: 'role', select: { name: 1 } })
   }
 
   findOneByUsername(username: string) {
 
     return this.userModel.findOne({
       email: username
-    });
+    }).populate({ path: 'role', select: { name: 1, permissions: 1 } })
   }
 
   isValidPassword(password: string, hash: string) {
@@ -143,6 +144,10 @@ export class UsersService {
     if (!mongoose.Types.ObjectId.isValid(id))
       return `not found user`;
 
+    const foundUser = await this.userModel.findById(id);
+    if (foundUser.email === "admin@gmail.com") {
+      throw new BadRequestException('Cannot delete admin user');
+    }
     await this.userModel.updateOne(
       { _id: id },
       {

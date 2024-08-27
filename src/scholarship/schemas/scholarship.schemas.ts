@@ -19,7 +19,7 @@ export class Scholarship {
     subject: string[];
 
     @Prop()
-    level: string;
+    level: string[];
 
     @Prop()
     value: number;
@@ -29,6 +29,9 @@ export class Scholarship {
 
     @Prop()
     description: string;
+
+    @Prop()
+    register: string;
 
     @Prop()
     type: string;

@@ -1,5 +1,5 @@
 import { Transform, Type } from 'class-transformer';
-import { IsArray, IsDate, IsEmail, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsPhoneNumber, IsString, Max, Min, ValidateNested } from 'class-validator';
+import { IsArray, IsDate, IsEmail, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsOptional, IsPhoneNumber, IsString, Max, Min, ValidateNested } from 'class-validator';
 import mongoose from 'mongoose';
 
 // class Provider { //validate obj provider
@@ -17,14 +17,15 @@ export class CreateScholarshipDto {
     @IsNotEmpty()
     name: string;
 
-    @IsNotEmpty()
+    @IsOptional()
     fundingMethod: string;
 
     @IsNotEmpty()
     location: string;
 
-    @IsNotEmpty()
-    level: string;
+    @IsArray()
+    @IsString({ each: true })
+    level: string[];
 
     @IsNotEmpty()
     value: number;
@@ -34,6 +35,9 @@ export class CreateScholarshipDto {
 
     @IsNotEmpty()
     description: string;
+
+    @IsNotEmpty()
+    register: string;
 
     @IsNotEmpty()
     type: string;

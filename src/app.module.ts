@@ -10,6 +10,9 @@ import { ProviderModule } from './provider/providers.module';
 import { ScholarshipModule } from './scholarship/scholarship.module';
 import { FilesModule } from './files/files.module';
 import { ResumesModule } from './resumes/resumes.module';
+import { PermissionsModule } from './permissions/permissions.module';
+import { RolesModule } from './roles/roles.module';
+import { DatabasesModule } from './databases/databases.module';
 
 
 @Module({
@@ -37,6 +40,9 @@ import { ResumesModule } from './resumes/resumes.module';
     ScholarshipModule,
     FilesModule,
     ResumesModule,
+    PermissionsModule,
+    RolesModule,
+    DatabasesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
