@@ -7,6 +7,7 @@ import { Role, RoleDocument } from './schemas/role.schemas';
 import mongoose from 'mongoose';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
+import { ADMIN_ROLE } from 'src/databases/sample';
 
 @Injectable()
 export class RolesService {
@@ -95,7 +96,7 @@ export class RolesService {
 
   async remove(_id: string, user: IUser) {
     const foundRole = await this.roleModel.findById(_id);
-    if (foundRole.name === "ADMIN") {
+    if (foundRole.name === ADMIN_ROLE) {
       throw new BadRequestException(`Can not delete role admin`);
     }
     await this.roleModel.updateOne(

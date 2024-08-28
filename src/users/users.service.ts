@@ -9,11 +9,17 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from './users.interface';
 import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
+import { Role, RoleDocument } from 'src/roles/schemas/role.schemas';
+import { USER_ROLE } from 'src/databases/sample';
 @Injectable()
 export class UsersService {
 
-  constructor(@InjectModel(UserM.name)
-  private userModel: SoftDeleteModel<UserDocument>
+  constructor(
+    @InjectModel(UserM.name)
+    private userModel: SoftDeleteModel<UserDocument>,
+
+    @InjectModel(Role.name)
+    private roleModel: SoftDeleteModel<RoleDocument>,
 
 
   ) { }
@@ -62,6 +68,9 @@ export class UsersService {
     if (isExist) {
       throw new BadRequestException(`Email: ${email} already exists. Please use a different email. `)
     }
+
+    const userRole = await this.roleModel.findOne({ name: USER_ROLE });
+
     const hashPassword = this.getHashPassword(password);
     let newRegister = await this.userModel.create({
       name,
@@ -71,7 +80,7 @@ export class UsersService {
       gender,
       phone,
       address,
-      role: 'USER'
+      role: userRole?._id
     })
     return newRegister;
   }
@@ -119,7 +128,7 @@ export class UsersService {
 
     return this.userModel.findOne({
       email: username
-    }).populate({ path: 'role', select: { name: 1, permissions: 1 } })
+    }).populate({ path: 'role', select: { name: 1 } })
   }
 
   isValidPassword(password: string, hash: string) {
@@ -145,7 +154,7 @@ export class UsersService {
       return `not found user`;
 
     const foundUser = await this.userModel.findById(id);
-    if (foundUser.email === "admin@gmail.com") {
+    if (foundUser && foundUser.email === "admin@gmail.com") {
       throw new BadRequestException('Cannot delete admin user');
     }
     await this.userModel.updateOne(
@@ -172,7 +181,7 @@ export class UsersService {
   findUserByToken = async (refreshToken: string) => {
     return await this.userModel.findOne(
       { refreshToken }
-    );
+    ).populate({ path: 'role', select: { name: 1 } })
   }
 
   async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {
