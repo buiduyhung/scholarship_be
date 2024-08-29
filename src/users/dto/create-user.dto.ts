@@ -2,13 +2,13 @@ import { Type } from 'class-transformer';
 import { IsEmail, IsMongoId, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsPhoneNumber, Max, Min, ValidateNested } from 'class-validator';
 import mongoose from 'mongoose';
 
-class Provider { //validate obj provider
-    @IsNotEmpty()
-    _id: mongoose.Schema.Types.ObjectId;
+// class Provider { //validate obj provider
+//     @IsNotEmpty()
+//     _id: mongoose.Schema.Types.ObjectId;
 
-    @IsNotEmpty()
-    name: string;
-}
+//     @IsNotEmpty()
+//     name: string;
+// }
 
 export class CreateUserDto { //admin
     @IsNotEmpty()
@@ -38,11 +38,8 @@ export class CreateUserDto { //admin
     @IsMongoId()
     role: mongoose.Schema.Types.ObjectId;
 
-    @IsNotEmptyObject()
-    @IsObject()
-    @ValidateNested()
-    @Type(() => Provider)
-    provider: Provider;  // validate provider
+    @IsNotEmpty()
+    provider: mongoose.Schema.Types.ObjectId;
 
 }
 

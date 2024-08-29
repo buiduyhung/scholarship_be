@@ -6,12 +6,15 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
+import { User, UserDocument } from 'src/users/schemas/user.schema';
 
 @Injectable()
 export class ProviderService {
   constructor(@InjectModel(Provider.name)
-  private providerModel: SoftDeleteModel<ProviderDocument>
+  private providerModel: SoftDeleteModel<ProviderDocument>,
+    @InjectModel(User.name)
+    private userModel: Model<UserDocument>
   ) { }
 
   async create(createProviderDto: CreateProviderDto, user: IUser) {
@@ -33,16 +36,48 @@ export class ProviderService {
     })
   }
 
-  async findAll(currentPage: number, limit: number, qs: string) {
+  async findAll(currentPage: number, limit: number, qs: string, userId?: string) {
+    // Bước 1: Kiểm tra xem userId có được cung cấp không
+    if (userId) {
+      // Lấy thông tin user từ userModel và chỉ chọn trường provider
+      const user = await this.userModel.findById(userId).select('provider');
+      if (!user) {
+        throw new BadRequestException(`User with ID ${userId} not found`);
+      }
+
+      // Tìm provider bằng ObjectId trong user.provider
+      const provider = await this.providerModel.findById(user.provider);
+      if (!provider) {
+        throw new BadRequestException(`Provider with ID ${user.provider} not found`);
+      }
+
+      // Loại bỏ `userId` khỏi `qs` nếu nó tồn tại
+      const queryParams = new URLSearchParams(qs);
+      queryParams.delete('userId');
+
+      // Gán providerId vào filter để chỉ lấy các providers liên quan đến user
+      queryParams.append('_id', provider._id.toString());
+      qs = queryParams.toString();
+    }
+
+    // Kiểm tra lại nội dung của query string sau khi thêm provider ID
+    console.log("Query String:", qs);
+
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-    let offset = (+currentPage - 1) * (+limit);
-    let defaultLimit = +limit ? +limit : 10;
 
-    const totalItems = (await this.providerModel.find(filter)).length;
+    console.log("Filter:", filter); // Log để kiểm tra filter
+
+    const offset = (currentPage - 1) * limit;
+    const defaultLimit = limit ? limit : 10;
+
+    // Đếm tổng số lượng bản ghi phù hợp với filter
+    const totalItems = await this.providerModel.countDocuments(filter);
+    console.log("Total Items:", totalItems); // Log số lượng bản ghi tìm thấy
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
+    // Lấy danh sách provider dựa trên filter và phân trang
     const result = await this.providerModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
@@ -50,16 +85,19 @@ export class ProviderService {
       .populate(population)
       .exec();
 
+    console.log("Result:", result); // Log kết quả để kiểm tra
+
     return {
       meta: {
-        current: currentPage, //trang hiện tại
-        pageSize: limit, //số lượng bản ghi đã lấy
-        pages: totalPages, //tổng số trang với điều kiện query
+        current: currentPage, // trang hiện tại
+        pageSize: limit, // số lượng bản ghi đã lấy
+        pages: totalPages, // tổng số trang với điều kiện query
         total: totalItems // tổng số phần tử (số bản ghi)
       },
-      result //kết quả query
-    }
+      result // kết quả query
+    };
   }
+
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException(`not found provider with id ${id}`);
