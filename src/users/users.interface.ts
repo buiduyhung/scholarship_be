@@ -12,4 +12,8 @@ export interface IUser {
         apiPath: string;
         module: string;
     }[]
+    provider?: {
+        _id: string;
+        name: string;
+    }
 }
