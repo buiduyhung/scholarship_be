@@ -46,8 +46,8 @@ export class ResumesController {
 
   @Patch(':id')
   @ResponseMessage("Update status resume")
-  updateStatus(@Param('id') id: string, @Body("status") status: string, @User() user: IUser) {
-    return this.resumesService.update(id, status, user);
+  updateStatus(@Param('id') id: string, @Body("status") status: string, @Body("invitation") invitation: string, @User() user: IUser) {
+    return this.resumesService.update(id, status, invitation, user);
   }
 
   @Delete(':id')

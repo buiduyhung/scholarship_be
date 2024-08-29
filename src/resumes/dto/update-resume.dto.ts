@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateResumeDto } from './create-resume.dto';
-import { IsArray, IsEmail, IsNotEmpty, ValidateNested } from 'class-validator';
+import { IsArray, IsEmail, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 import { Types } from 'mongoose';
 import { Type } from 'class-transformer';
 
@@ -17,6 +17,9 @@ class UpdateBy {
 class History {
     @IsNotEmpty()
     status: string;
+
+    @IsOptional()
+    invitation: string;
 
     @IsNotEmpty()
     updatedAt: Date;

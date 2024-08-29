@@ -22,6 +22,9 @@ export class Resume {
     @Prop()
     status: string;
 
+    @Prop()
+    invitation: string;
+
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Provider.name })
     provider: mongoose.Schema.Types.ObjectId;
 
@@ -61,6 +64,9 @@ export class Resume {
 
     @Prop()
     updateAt: Date;
+
+    @Prop()
+    isActive: boolean;
 }
 
 export const ResumeSchema = SchemaFactory.createForClass(Resume);

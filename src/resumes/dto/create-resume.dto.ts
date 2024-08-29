@@ -19,11 +19,17 @@ export class CreateResumeDto {
     @IsNotEmpty()
     status: string;
 
+    @IsOptional()
+    invitation: string;
+
     @IsNotEmpty()
     provider: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty()
     scholarship: mongoose.Schema.Types.ObjectId;
+
+    @IsNotEmpty()
+    isActive: boolean;
 }
 
 export class CreateUserCvDto {
