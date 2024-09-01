@@ -6,6 +6,7 @@ import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
 import { IUser } from 'src/users/users.interface';
 import { RolesService } from 'src/roles/roles.service';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 
 @Controller("auth")
@@ -18,6 +19,7 @@ export class AuthController {
     @Public()
     @ResponseMessage("Login user")
     @UseGuards(LocalAuthGuard)
+    @UseGuards(ThrottlerGuard)
     @Post('/login')
     handleLogin(
         @Req() req,
@@ -33,6 +35,8 @@ export class AuthController {
     }
 
     @ResponseMessage("Get user information")
+    @UseGuards(ThrottlerGuard)
+    @Throttle(6, 60)
     @Get('/account')
     async handleGetAccount(@User() user: IUser) {
         const temp = await this.rolesService.findOne(user.role._id) as any;

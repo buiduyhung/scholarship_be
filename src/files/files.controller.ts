@@ -4,7 +4,9 @@ import {
   ParseFilePipeBuilder,
   HttpStatus,
   UseFilters,
-  UploadedFiles
+  UploadedFiles,
+  UseGuards,
+  HttpException
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
@@ -13,6 +15,7 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { Public, ResponseMessage } from 'src/decorator/customize';
 import { HttpExceptionFilter } from 'src/core/http-exception.filter';
 import { MulterConfigService } from './multer.config';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('files')
 export class FilesController {
@@ -23,6 +26,8 @@ export class FilesController {
   @Public()
   @Post('upload')
   @ResponseMessage("Uploaded Single file")
+  @UseGuards(ThrottlerGuard)
+  @Throttle(5, 60)
   @UseInterceptors(FileInterceptor('fileUpload'))
   // @UseFilters(new HttpExceptionFilter())
   uploadFile(@UploadedFile() file: Express.Multer.File) {
@@ -33,10 +38,15 @@ export class FilesController {
 
   @Public()
   @Post('upload-multiple')
+  @UseGuards(ThrottlerGuard)
+  @Throttle(5, 60)
   @ResponseMessage("Uploaded Multiple files")
   @UseInterceptors(FilesInterceptor('fileUpload', 10, new MulterConfigService().createMulterOptions({ fileSize: 1024 * 1024 * 20 })))
   // @UseFilters(new HttpExceptionFilter())
   uploadMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
+    if (files.length > 10) {
+      throw new HttpException('Too many files uploaded. Maximum limit is 10.', HttpStatus.BAD_REQUEST);
+    }
     return {
       files: files.map(file => file.filename)
     }

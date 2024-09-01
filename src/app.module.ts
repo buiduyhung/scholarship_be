@@ -16,10 +16,15 @@ import { DatabasesModule } from './databases/databases.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { MailModule } from './mail/mail.module';
 import { ScheduleModule } from '@nestjs/schedule';
-
+import { ThrottlerModule } from '@nestjs/throttler';
+import { HealthModule } from './health/health.module';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 5,
+    }),
     // MongooseModule.forRoot('mongodb+srv://root:anhteo2002@cluster0.r3vvrwe.mongodb.net/'),
     MongooseModule.forRootAsync({  // load bat dong bo 
       imports: [ConfigModule],
@@ -48,6 +53,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     DatabasesModule,
     SubscribersModule,
     MailModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

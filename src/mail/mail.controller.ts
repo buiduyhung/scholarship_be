@@ -23,8 +23,9 @@ export class MailController {
 
   @Get()
   // @Cron(CronExpression.EVERY_30_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_7AM)
   @Public()
-  @ResponseMessage("Test email")
+  @ResponseMessage("Send email to subscriber")
   async handleTestEmail() {
     try {
       const subscribers = await this.subscriberModel.find({});
