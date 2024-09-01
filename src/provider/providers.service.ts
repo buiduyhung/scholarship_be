@@ -106,8 +106,9 @@ export class ProviderService {
   }
 
   async update(id: string, updateProviderDto: UpdateProviderDto, user: IUser) {
-    if (!mongoose.Types.ObjectId.isValid(id))
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return `not found provider`;
+    }
     return await this.providerModel.updateOne(
       { _id: id },
       {

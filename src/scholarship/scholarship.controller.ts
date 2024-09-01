@@ -10,6 +10,7 @@ export class ScholarshipController {
   constructor(private readonly scholarshipService: ScholarshipService) { }
 
   @Post()
+  @ResponseMessage("create a new scholarship")
   create(@Body() createScholarshipDto: CreateScholarshipDto, @User() user: IUser) {
     return this.scholarshipService.create(createScholarshipDto, user);
   }

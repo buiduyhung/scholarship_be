@@ -32,6 +32,7 @@ export class CreateProviderDto {
     @IsNotEmpty()
     background: string;
 
+    @IsNotEmpty()
     @IsArray()
     @IsString({ each: true })
     gallery: string[];

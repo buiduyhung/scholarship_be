@@ -17,7 +17,7 @@ export class PermissionsService {
 
   async create(createPermissionDto: CreatePermissionDto, user: IUser) {
     const { name, apiPath, method, module } = createPermissionDto;
-    const isExist = await this.permissionModel.findOne({ apiPath, method });
+    const isExist = await this.permissionModel.findOne({ apiPath, method }); //check ca 2 cai apiPath va method
     if (isExist) {
       throw new BadRequestException(`Permission with apiPath=${apiPath} , method=${method} already exists!`)
     }
