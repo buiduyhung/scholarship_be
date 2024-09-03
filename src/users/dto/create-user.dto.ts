@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsEmail, IsMongoId, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsPhoneNumber, Max, Min, ValidateNested } from 'class-validator';
+import { IsEmail, IsMongoId, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsOptional, IsPhoneNumber, Max, Min, ValidateNested } from 'class-validator';
 import mongoose from 'mongoose';
 
 // class Provider { //validate obj provider
@@ -20,6 +20,9 @@ export class CreateUserDto { //admin
 
     @IsNotEmpty()
     password: string;
+
+    @IsOptional()
+    avatar: string;
 
     @IsNotEmpty()
     age: number;

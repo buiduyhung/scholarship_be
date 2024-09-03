@@ -25,7 +25,7 @@ export class ProvidersController {
     @Query("current") currentPage: string,
     @Query("pageSize") limit: string,
     @Query() qs: string,
-    @Query('userId') userId: string // Nhận userId từ query params
+    @Query('userId') userId: string
   ) {
     return this.providersService.findAll(+currentPage, +limit, qs, userId);
   }

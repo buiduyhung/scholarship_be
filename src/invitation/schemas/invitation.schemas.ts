@@ -1,12 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Provider } from 'src/provider/schemas/providers.schemas';
-import { Scholarship } from 'src/scholarship/schemas/scholarship.schemas';
 
-export type ResumeDocument = HydratedDocument<Resume>;
+
+export type InvitationDocument = HydratedDocument<Invitation>;
 
 @Schema({ timestamps: true })
-export class Resume {
+export class Invitation {
     @Prop()
     email: string;
 
@@ -14,20 +13,16 @@ export class Resume {
     userId: mongoose.Schema.Types.ObjectId;
 
     @Prop()
-    urlCV: string;
+    urlInvite: string;
 
     @Prop()
-    urlLetter: string;
+    emailReceiver: string;
 
     @Prop()
     status: string;
 
-
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Provider.name })
-    provider: mongoose.Schema.Types.ObjectId;
-
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Scholarship.name })
-    scholarship: mongoose.Schema.Types.ObjectId;
+    @Prop()
+    description: string;
 
     @Prop({ type: mongoose.Schema.Types.Array })
     history: {
@@ -63,8 +58,6 @@ export class Resume {
     @Prop()
     updateAt: Date;
 
-    @Prop()
-    isActive: boolean;
 }
 
-export const ResumeSchema = SchemaFactory.createForClass(Resume);
+export const InvitationSchema = SchemaFactory.createForClass(Invitation);

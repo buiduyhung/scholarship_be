@@ -19,9 +19,6 @@ export class CreateResumeDto {
     @IsNotEmpty()
     status: string;
 
-    @IsOptional()
-    invitation: string;
-
     @IsNotEmpty()
     provider: mongoose.Schema.Types.ObjectId;
 

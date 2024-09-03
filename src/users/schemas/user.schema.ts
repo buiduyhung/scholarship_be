@@ -17,6 +17,9 @@ export class User {
     name: string;
 
     @Prop()
+    avatar: string;
+
+    @Prop()
     phone: number;
 
     @Prop()
