@@ -4,12 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IUser } from 'src/users/users.interface';
 import { RolesService } from 'src/roles/roles.service';
+import { ProviderService } from 'src/provider/providers.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
         private configService: ConfigService,
         private rolesService: RolesService,
+        private providerService: ProviderService,
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -22,6 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         const { _id, name, email, role, provider } = payload;
         const userRole = role as unknown as { _id: string; name: string };
         const temp = (await this.rolesService.findOne(userRole._id)).toObject();
+
 
         return {
             _id,

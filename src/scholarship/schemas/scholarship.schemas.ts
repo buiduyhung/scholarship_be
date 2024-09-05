@@ -24,13 +24,16 @@ export class Scholarship {
     level: string[];
 
     @Prop()
-    value: number;
+    value: number[];
 
     @Prop()
     quantity: number;
 
     @Prop()
     description: string;
+
+    @Prop()
+    requirement: string;
 
     @Prop()
     register: string;

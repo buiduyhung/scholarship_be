@@ -27,14 +27,18 @@ export class CreateScholarshipDto {
     @IsString({ each: true })
     level: string[];
 
-    @IsNotEmpty()
-    value: number;
+    @IsArray()
+    @IsNumber({}, { each: true })
+    value: number[];
 
     @IsNotEmpty()
     quantity: number;
 
     @IsNotEmpty()
     description: string;
+
+    @IsNotEmpty()
+    requirement: string;
 
     @IsNotEmpty()
     register: string;
