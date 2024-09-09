@@ -21,7 +21,7 @@ import { join } from 'path';
           },
         },
         template: {
-          dir: join(__dirname, '../invitation/templates'),
+          dir: join(__dirname, 'templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,

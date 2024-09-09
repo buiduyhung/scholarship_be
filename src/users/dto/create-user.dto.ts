@@ -64,10 +64,6 @@ export class RegisterUserDto {
     address: string;
 
     @IsNotEmpty()
-    @IsPhoneNumber('VN')
-    phone: number;
-
-    @IsNotEmpty()
     gender: string;
 
 }

@@ -11,6 +11,10 @@ import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
 import { Role, RoleDocument } from 'src/roles/schemas/role.schemas';
 import { USER_ROLE } from 'src/databases/sample';
+import { v4 as uuidv4 } from 'uuid';
+import dayjs from 'dayjs';
+import { MailerService } from '@nestjs-modules/mailer';
+
 @Injectable()
 export class UsersService {
 
@@ -21,6 +25,7 @@ export class UsersService {
     @InjectModel(Role.name)
     private roleModel: SoftDeleteModel<RoleDocument>,
 
+    private readonly mailerService: MailerService
 
   ) { }
 
@@ -63,7 +68,7 @@ export class UsersService {
 
 
   async register(user: RegisterUserDto) {
-    const { name, email, password, age, gender, phone, address } = user;
+    const { name, email, password, age, gender, address } = user;
     //add logic check email
     const isExist = await this.userModel.findOne({ email });
     if (isExist) {
@@ -73,15 +78,95 @@ export class UsersService {
     const userRole = await this.roleModel.findOne({ name: USER_ROLE });
 
     const hashPassword = this.getHashPassword(password);
+    const codeId = uuidv4();
     let newRegister = await this.userModel.create({
       name,
       email,
       password: hashPassword,
       age,
       gender,
-      phone,
       address,
-      role: userRole?._id
+      role: userRole?._id,
+      isActive: false,
+      codeId: codeId,
+      codeExpired: dayjs().add(5, 'minutes')
+    })
+
+    this.mailerService.sendMail({
+      to: newRegister.email, // list of receivers
+      subject: 'Activate your account', // Subject line
+      template: 'register',
+      html: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 20px;
+            }
+            .email-container {
+                background-color: #ffffff;
+                padding: 20px;
+                margin: 0 auto;
+                border-radius: 8px;
+                max-width: 600px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                color: #333333;
+            }
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+                font-size: 24px;
+            }
+            p {
+                font-size: 16px;
+                color: #555555;
+                line-height: 1.6;
+            }
+            .code {
+                font-size: 20px;
+                color: #2c3e50;
+                font-weight: bold;
+                text-align: center;
+                padding: 10px 0;
+                margin: 20px 0;
+                background-color: #f9f9f9;
+                border: 1px solid #dddddd;
+                border-radius: 5px;
+            }
+            .footer {
+                margin-top: 20px;
+                text-align: center;
+                font-size: 12px;
+                color: #aaaaaa;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <h1>Activate Your Account</h1>
+            <p>Hello ${newRegister?.name ?? newRegister.email},</p>
+            <p>Thank you for registering with us. To activate your account, please use the activation code below:</p>
+            <div class="code">${codeId}</div>
+            <p>Please enter this code on the activation page within the next 5 minutes.</p>
+            <p>If you did not sign up for this account, please ignore this email.</p>
+            <p>Best regards,<br/>The Support Team</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message, please do not reply.</p>
+        </div>
+    </body>
+    </html>
+  `,
+      // context: {
+      //   name: newRegister?.name ?? newRegister.email,
+      //   activationCode: codeId
+      // }
     })
     return newRegister;
   }

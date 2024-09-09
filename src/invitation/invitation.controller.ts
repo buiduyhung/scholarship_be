@@ -28,6 +28,7 @@ export class InvitationController {
   }
 
   @Post('by-user')
+  @SkipCheckPermission()
   @ResponseMessage("Get Invitation by User")
   getInvitationByUser(@User() user: IUser) {
     return this.invitationService.findByUsers(user);

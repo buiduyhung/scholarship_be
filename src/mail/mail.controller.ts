@@ -52,7 +52,7 @@ export class MailController {
             to: subs.email,
             from: '"Support Team" <support@example.com>',
             subject: 'Welcome to Nice App! Confirm your Email',
-            template: 'test',
+            template: 'scholarship',
             context: {
               receiver: subs.name,
               scholarship: scholarship

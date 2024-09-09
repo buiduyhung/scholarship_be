@@ -31,6 +31,15 @@ export class User {
     @Prop()
     address: string;
 
+    @Prop({ default: false })
+    isActive: boolean;
+
+    @Prop()
+    codeId: string;
+
+    @Prop()
+    codeExpired: Date;
+
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Role.name })
     role: mongoose.Schema.Types.ObjectId;
 

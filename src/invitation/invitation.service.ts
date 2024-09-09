@@ -42,10 +42,12 @@ export class InvitationService {
       to: emailReceiver,
       from: '"Support Team" <support@example.com>',
       subject: 'You have a new invitation',
-      html: `<p>You have a new invitation</p>
-             <p>Description: ${description}</p>
-             <p>URL: <a href="${urlInvite}">${urlInvite}</a></p>
-             <p>Sender: ${email}</p>`,
+      // html: '<p>Hello</p>',
+      template: 'invitation',
+      context: {
+        description: description,
+        senderEmail: email
+      }
     });
 
     return {
