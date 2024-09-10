@@ -68,6 +68,17 @@ export class RegisterUserDto {
 
 }
 
+export class CodeAuthDto {
+
+    @IsNotEmpty()
+    _id: string;
+
+    @IsNotEmpty()
+    code: string;
+
+}
+
+
 export class ChangePasswordDto {
     @IsNotEmpty()
     currentPassword: string;

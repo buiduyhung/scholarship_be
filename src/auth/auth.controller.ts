@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common
 import { AuthService } from './auth.service';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { LocalAuthGuard } from './local-auth.guard';
-import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { CodeAuthDto, RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
 import { IUser } from 'src/users/users.interface';
 import { RolesService } from 'src/roles/roles.service';
@@ -32,6 +32,13 @@ export class AuthController {
     @Post("/register")
     async register(@Body() registerUserDto: RegisterUserDto) {
         return this.authService.register(registerUserDto);
+    }
+
+    @Public()
+    @ResponseMessage("Check code")
+    @Post('check-code')
+    checkCode(@Body() registerUserDto: CodeAuthDto) {
+        return this.authService.checkCode(registerUserDto);
     }
 
     @ResponseMessage("Get user information")
