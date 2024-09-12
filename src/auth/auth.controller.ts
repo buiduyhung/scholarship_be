@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common
 import { AuthService } from './auth.service';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { LocalAuthGuard } from './local-auth.guard';
-import { CodeAuthDto, RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { ChangePasswordAuthDto, CodeAuthDto, RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
 import { IUser } from 'src/users/users.interface';
 import { RolesService } from 'src/roles/roles.service';
@@ -39,6 +39,27 @@ export class AuthController {
     @Post('check-code')
     checkCode(@Body() registerUserDto: CodeAuthDto) {
         return this.authService.checkCode(registerUserDto);
+    }
+
+    @Post('retry-active')
+    @ResponseMessage("Retry active code")
+    @Public()
+    retryActive(@Body("email") email: string) {
+        return this.authService.retryActive(email);
+    }
+
+    @Post('retry-password')
+    @ResponseMessage("Retry password code")
+    @Public()
+    retryPassword(@Body("email") email: string) {
+        return this.authService.retryPassword(email);
+    }
+
+    @Post('forgot-password')
+    @ResponseMessage("Forgot password")
+    @Public()
+    forgotPassword(@Body() data: ChangePasswordAuthDto) {
+        return this.authService.forgotPassword(data);
     }
 
     @ResponseMessage("Get user information")

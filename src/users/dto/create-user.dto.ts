@@ -38,10 +38,13 @@ export class CreateUserDto { //admin
     gender: string;
 
     @IsNotEmpty()
+    isActive: boolean;
+
+    @IsNotEmpty()
     @IsMongoId()
     role: mongoose.Schema.Types.ObjectId;
 
-    @IsNotEmpty()
+    @IsOptional()
     provider: mongoose.Schema.Types.ObjectId;
 
 }
@@ -85,4 +88,20 @@ export class ChangePasswordDto {
 
     @IsNotEmpty()
     newPassword: string;
+}
+
+
+export class ChangePasswordAuthDto {
+    @IsNotEmpty({ message: "code không được để trống" })
+    code: string;
+
+    @IsNotEmpty({ message: "password không được để trống" })
+    password: string;
+
+    @IsNotEmpty({ message: "confirmPassword không được để trống" })
+    confirmPassword: string;
+
+    @IsNotEmpty({ message: "email không được để trống" })
+    email: string;
+
 }

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from 'src/users/users.interface';
-import { RegisterUserDto } from 'src/users/dto/create-user.dto';
+import { ChangePasswordAuthDto, CodeAuthDto, RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
 import { Response } from 'express';
@@ -138,6 +138,22 @@ export class AuthService {
         } catch (error) {
             throw new BadRequestException(`The refresh token is invalid, please log in again.`);
         }
+    }
+
+    checkCode = async (data: CodeAuthDto) => {
+        return await this.usersService.handleActive(data);
+    }
+
+    retryActive = async (data: string) => {
+        return await this.usersService.retryActive(data);
+    }
+
+    retryPassword = async (data: string) => {
+        return await this.usersService.retryPassword(data);
+    }
+
+    forgotPassword = async (data: ChangePasswordAuthDto) => {
+        return await this.usersService.forgotPassword(data);
     }
 
     logout = async (response: Response, user: IUser) => {
