@@ -20,8 +20,10 @@ export class Resume {
     urlLetter: string;
 
     @Prop()
-    status: string;
+    message: string;
 
+    @Prop()
+    status: string;
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Provider.name })
     provider: mongoose.Schema.Types.ObjectId;

@@ -12,4 +12,7 @@ export class CreateInvitationDto {
 
     @IsNotEmpty()
     description: string;
+
+    @IsNotEmpty()
+    urlCV: string;
 }

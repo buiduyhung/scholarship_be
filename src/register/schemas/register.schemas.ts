@@ -2,10 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
 
-export type InvitationDocument = HydratedDocument<Invitation>;
+export type RegisterDocument = HydratedDocument<Register>;
 
 @Schema({ timestamps: true })
-export class Invitation {
+export class Register {
     @Prop()
     email: string;
 
@@ -13,19 +13,13 @@ export class Invitation {
     userId: mongoose.Schema.Types.ObjectId;
 
     @Prop()
-    urlInvite: string;
+    url: string[];
 
     @Prop()
-    emailReceiver: string;
-
-    @Prop()
-    urlCV: string;
+    message: string;
 
     @Prop()
     status: string;
-
-    @Prop()
-    description: string;
 
     @Prop({ type: mongoose.Schema.Types.Array })
     history: {
@@ -63,4 +57,4 @@ export class Invitation {
 
 }
 
-export const InvitationSchema = SchemaFactory.createForClass(Invitation);
+export const RegisterSchema = SchemaFactory.createForClass(Register);

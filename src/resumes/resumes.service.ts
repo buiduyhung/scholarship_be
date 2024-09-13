@@ -49,10 +49,12 @@ export class ResumesService {
       urlCV, urlLetter, email, provider, scholarship,
       userId: _id,
       status: "PENDING",
+      message: "",
       createdBy: { _id, email },
       history: [
         {
           status: "PENDING",
+          message: "",
           updatedAt: new Date,
           updatedBy: {
             _id: user._id,
@@ -145,7 +147,7 @@ export class ResumesService {
   }
 
 
-  async update(_id: string, status: string, user: IUser) {
+  async update(_id: string, status: string, message: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       throw new BadRequestException("not found resume")
     }
@@ -154,6 +156,7 @@ export class ResumesService {
       { _id },
       {
         status,
+        message,
         updatedBy: {
           _id: user._id,
           email: user.email
@@ -161,6 +164,7 @@ export class ResumesService {
         $push: {
           history: {
             status: status,
+            message: message,
             updatedAt: new Date,
             updatedBy: {
               _id: user._id,

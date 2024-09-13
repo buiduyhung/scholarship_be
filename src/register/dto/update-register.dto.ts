@@ -1,8 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateResumeDto } from './create-resume.dto';
 import { IsArray, IsEmail, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator';
 import { Types } from 'mongoose';
 import { Type } from 'class-transformer';
+import { CreateRegisterDto } from './create-register.dto';
 
 class UpdateBy {
     @IsNotEmpty()
@@ -30,7 +30,7 @@ class History {
     updatedBy: UpdateBy;
 }
 
-export class UpdateResumeDto extends PartialType(CreateResumeDto) {
+export class UpdateRegisterDto extends PartialType(CreateRegisterDto) {
     @IsNotEmpty()
     @IsArray()
     @ValidateNested()

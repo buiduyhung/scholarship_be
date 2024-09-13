@@ -36,21 +36,21 @@ export class InvitationController {
 
   @Get(':id')
   @SkipCheckPermission()
-  @ResponseMessage("Fetch a resume by id")
+  @ResponseMessage("Fetch a Invitation by id")
   findOne(@Param('id') id: string) {
     return this.invitationService.findOne(id);
   }
 
   @Patch(':id')
   @SkipCheckPermission()
-  @ResponseMessage("Update status resume")
+  @ResponseMessage("Update status Invitation")
   updateStatus(@Param('id') id: string, @Body("status") status: string, @User() user: IUser) {
     return this.invitationService.update(id, status, user);
   }
 
   @Delete(':id')
   @SkipCheckPermission()
-  @ResponseMessage("Delete a resume")
+  @ResponseMessage("Delete a Invitation")
   remove(
     @Param('id') id: string,
     @User() user: IUser

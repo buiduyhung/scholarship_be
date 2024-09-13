@@ -18,11 +18,11 @@ export class InvitationService {
   ) { }
 
   async create(createInvitationDto: CreateInvitationDto, user: IUser) {
-    const { urlInvite, emailReceiver, description } = createInvitationDto;
+    const { urlInvite, emailReceiver, description, urlCV } = createInvitationDto;
     const { email, _id } = user;
 
     const newInvite = await this.invitationModel.create({
-      urlInvite, emailReceiver, email, description,
+      urlInvite, emailReceiver, email, description, urlCV,
       userId: _id,
       status: "PENDING",
       createdBy: { _id, email },
