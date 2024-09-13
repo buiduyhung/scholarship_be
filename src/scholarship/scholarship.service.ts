@@ -114,7 +114,7 @@ export class ScholarshipService {
     }
     return (await this.scholarshipModel.findById(id))
       .populate({
-        path: "provider", select: { _id: 1, name: 1, logo: 1 } //-1 is off
+        path: "provider", select: { _id: 1, name: 1, logo: 1, background: 1 } //-1 is off
       });
   }
 
