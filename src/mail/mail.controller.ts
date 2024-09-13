@@ -34,8 +34,8 @@ export class MailController {
         const subsLevel = subs.level;
         // Build the query based on available data
         const query: any = {};
-        if (subsSubject?.length) query.subject = { $in: subsSubject };
-        if (subsLevel?.length) query.level = { $in: subsLevel };
+        if (subsSubject?.length) query.subject = { $regex: new RegExp(`^(${subsSubject.join('|')})$`, 'i') };
+        if (subsLevel?.length) query.level = { $regex: new RegExp(`^(${subsLevel.join('|')})$`, 'i') };
         const Matching = await this.scholarshipModel.find(query).populate('provider', 'name');
         if (Matching?.length) {
           const scholarship = Matching.map(item => {

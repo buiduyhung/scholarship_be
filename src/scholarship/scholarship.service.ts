@@ -109,10 +109,13 @@ export class ScholarshipService {
   }
 
   async findOne(id: string) {
-    if (!mongoose.Types.ObjectId.isValid(id))
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return `not found scholarship`;
-
-    return await this.scholarshipModel.findById(id);
+    }
+    return (await this.scholarshipModel.findById(id))
+      .populate({
+        path: "provider", select: { _id: 1, name: 1, logo: 1 } //-1 is off
+      });
   }
 
   async update(id: string, updateScholarshipDto: UpdateScholarshipDto, user: IUser) {
