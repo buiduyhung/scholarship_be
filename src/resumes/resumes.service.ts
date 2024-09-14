@@ -96,7 +96,7 @@ export class ResumesService {
     }
 
     // Check the content of the query string after adding provider ID
-    console.log("Query String:", qs);
+
 
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
@@ -107,14 +107,13 @@ export class ResumesService {
       filter.provider = new Types.ObjectId(filter.provider);
     }
 
-    console.log("Filter:", filter); // Log to check filter
 
     const offset = (currentPage - 1) * limit;
     const defaultLimit = limit ? limit : 10;
 
     // Count total number of records matching the filter
     const totalItems = await this.resumeModel.countDocuments(filter);
-    console.log("Total Items:", totalItems); // Log the number of records found
+
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     // Get the list of resumes based on the filter and pagination
@@ -125,7 +124,7 @@ export class ResumesService {
       .populate(population)
       .exec();
 
-    console.log("Result:", result); // Log the result to check
+
 
     return {
       meta: {

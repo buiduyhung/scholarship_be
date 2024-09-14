@@ -61,20 +61,20 @@ export class ProviderService {
     }
 
     // Kiểm tra lại nội dung của query string sau khi thêm provider ID
-    console.log("Query String:", qs);
+
 
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
 
-    console.log("Filter:", filter); // Log để kiểm tra filter
+
 
     const offset = (currentPage - 1) * limit;
     const defaultLimit = limit ? limit : 10;
 
     // Đếm tổng số lượng bản ghi phù hợp với filter
     const totalItems = await this.providerModel.countDocuments(filter);
-    console.log("Total Items:", totalItems); // Log số lượng bản ghi tìm thấy
+
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     // Lấy danh sách provider dựa trên filter và phân trang
@@ -85,7 +85,7 @@ export class ProviderService {
       .populate(population)
       .exec();
 
-    console.log("Result:", result); // Log kết quả để kiểm tra
+
 
     return {
       meta: {

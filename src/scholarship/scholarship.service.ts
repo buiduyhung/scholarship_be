@@ -44,15 +44,11 @@ export class ScholarshipService {
   async findAll(currentPage: number, limit: number, qs: string, userId?: string) {
     // Step 1: Check if userId is provided
     if (userId) {
-      console.log("User ID provided:", userId); // Log the userId
-
       // Get user information from userModel and select the provider field
       const user = await this.userModel.findById(userId).select('provider');
       if (!user) {
         throw new BadRequestException(`User with ID ${userId} not found`);
       }
-
-      console.log("User found:", user); // Log the user object
 
       // Get provider ID from user.provider
       const providerId = user.provider ? user.provider.toString() : null;
@@ -69,21 +65,15 @@ export class ScholarshipService {
       qs = queryParams.toString();
     }
 
-    // Check the content of the query string after adding provider ID
-    console.log("Query String:", qs);
-
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-
-    console.log("Filter:", filter); // Log to check filter
 
     const offset = (currentPage - 1) * limit;
     const defaultLimit = limit ? limit : 10;
 
     // Count total number of records matching the filter
     const totalItems = await this.scholarshipModel.countDocuments(filter);
-    console.log("Total Items:", totalItems); // Log the number of records found
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     // Get the list of scholarships based on the filter and pagination
@@ -94,8 +84,6 @@ export class ScholarshipService {
       .populate(population)
       .select(projection as any)
       .exec();
-
-    console.log("Result:", result); // Log the result to check
 
     return {
       meta: {
