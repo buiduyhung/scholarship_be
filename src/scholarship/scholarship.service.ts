@@ -153,7 +153,13 @@ export class ScholarshipService {
     // Find all scholarships associated with the provider
     const scholarships = await this.scholarshipModel.find({
       provider: provider._id
-    }).exec();
+    })
+      .select('name location level') // Select only the name, location, and level fields
+      .populate({
+        path: 'provider',
+        select: '_id logo' // Populate provider with only _id and logo
+      })
+      .exec();
 
     return scholarships;
   }
