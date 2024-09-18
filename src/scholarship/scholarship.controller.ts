@@ -15,6 +15,12 @@ export class ScholarshipController {
     return this.scholarshipService.create(createScholarshipDto, user);
   }
 
+  @Public()
+  @Get('get-all')
+  @ResponseMessage("Fetch all scholarship search")
+  getAll() {
+    return this.scholarshipService.getAll();
+  }
 
   @Public()
   @Get()

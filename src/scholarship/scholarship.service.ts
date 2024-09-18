@@ -41,6 +41,10 @@ export class ScholarshipService {
     }
   }
 
+  async getAll() {
+    return await this.scholarshipModel.find({}, { location: 1, subject: 1, level: 1, type: 1, _id: 0 }).exec();
+  }
+
   async findAll(currentPage: number, limit: number, qs: string, userId?: string) {
     // Step 1: Check if userId is provided
     if (userId) {
