@@ -36,6 +36,10 @@ export class ProviderService {
     })
   }
 
+  async getAllNames() {
+    return await this.providerModel.find({}, { name: 1, city: 1, _id: 0 }).exec();
+  }
+
   async findAll(currentPage: number, limit: number, qs: string, userId?: string) {
     // Bước 1: Kiểm tra xem userId có được cung cấp không
     if (userId) {

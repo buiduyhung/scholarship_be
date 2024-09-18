@@ -19,6 +19,14 @@ export class ProvidersController {
   }
 
   @Public()
+  @Get('all-names')
+  @ResponseMessage("Fetch all provider names")
+  getAllNames() {
+    return this.providersService.getAllNames();
+  }
+
+
+  @Public()
   @Get()
   @ResponseMessage("Fetch List Provider with paginate")
   findAll(

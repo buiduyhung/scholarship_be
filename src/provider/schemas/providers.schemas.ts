@@ -12,6 +12,9 @@ export class Provider {
     address: string;
 
     @Prop()
+    city: string;
+
+    @Prop()
     description: string;
 
     @Prop()

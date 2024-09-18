@@ -9,6 +9,9 @@ export class CreateProviderDto {
     address: string;
 
     @IsNotEmpty()
+    city: string;
+
+    @IsNotEmpty()
     info: string;
 
     @IsNotEmpty()
