@@ -32,7 +32,7 @@ import { Scholarship, ScholarshipSchema } from 'src/scholarship/schemas/scholars
       }),
       inject: [ConfigService],
     }),
-//add mail 01
+//add mail 01234
     MongooseModule.forFeature([
       { name: Subscriber.name, schema: SubscriberSchema },
       { name: Scholarship.name, schema: ScholarshipSchema }
