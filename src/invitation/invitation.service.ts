@@ -36,7 +36,7 @@ export class InvitationService {
           }
         }
       ]
-    })
+    })   // test case
 
     await this.mailerService.sendMail({
       to: emailReceiver,

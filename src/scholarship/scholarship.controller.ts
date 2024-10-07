@@ -29,9 +29,8 @@ export class ScholarshipController {
     @Query("current") currentPage: string,
     @Query("pageSize") limit: string,
     @Query() qs: string,
-    @Query('userId') userId: string // Add this line
   ) {
-    return this.scholarshipService.findAll(+currentPage, +limit, qs, userId); // Modify this line
+    return this.scholarshipService.findAll(+currentPage, +limit, qs); // Modify this line
   }
 
   @Public()

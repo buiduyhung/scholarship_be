@@ -33,9 +33,8 @@ export class ProvidersController {
     @Query("current") currentPage: string,
     @Query("pageSize") limit: string,
     @Query() qs: string,
-    @Query('userId') userId: string
   ) {
-    return this.providersService.findAll(+currentPage, +limit, qs, userId);
+    return this.providersService.findAll(+currentPage, +limit, qs);
   }
 
   @Public()

@@ -45,42 +45,16 @@ export class ScholarshipService {
     return await this.scholarshipModel.find({}, { location: 1, subject: 1, level: 1, type: 1, _id: 0 }).exec();
   }
 
-  async findAll(currentPage: number, limit: number, qs: string, userId?: string) {
-    // Step 1: Check if userId is provided
-    if (userId) {
-      // Get user information from userModel and select the provider field
-      const user = await this.userModel.findById(userId).select('provider');
-      if (!user) {
-        throw new BadRequestException(`User with ID ${userId} not found`);
-      }
-
-      // Get provider ID from user.provider
-      const providerId = user.provider ? user.provider.toString() : null;
-      if (!providerId) {
-        throw new BadRequestException(`Provider not found for user with ID ${userId}`);
-      }
-
-      // Remove `userId` from `qs` if it exists
-      const queryParams = new URLSearchParams(qs);
-      queryParams.delete('userId');
-
-      // Add providerId to filter to only get scholarships related to the user's provider
-      queryParams.append('provider', providerId);
-      qs = queryParams.toString();
-    }
-
-    const { filter, sort, projection, population } = aqp(qs);
+  async findAll(currentPage: number, limit: number, qs: string) {
+    const { filter, sort, population, projection } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
+    let offset = (+currentPage - 1) * (+limit);
+    let defaultLimit = +limit ? +limit : 10;
 
-    const offset = (currentPage - 1) * limit;
-    const defaultLimit = limit ? limit : 10;
-
-    // Count total number of records matching the filter
-    const totalItems = await this.scholarshipModel.countDocuments(filter);
+    const totalItems = (await this.scholarshipModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
-    // Get the list of scholarships based on the filter and pagination
     const result = await this.scholarshipModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
@@ -91,13 +65,13 @@ export class ScholarshipService {
 
     return {
       meta: {
-        current: currentPage, // current page
-        pageSize: limit, // number of records fetched
-        pages: totalPages, // total number of pages with the query condition
-        total: totalItems // total number of elements (records)
+        current: currentPage, //trang hiện tại
+        pageSize: limit, //số lượng bản ghi đã lấy
+        pages: totalPages, //tổng số trang với điều kiện query
+        total: totalItems // tổng số phần tử (số bản ghi)
       },
-      result // query result
-    };
+      result //kết quả query
+    }
   }
 
   async findOne(id: string) {

@@ -46,9 +46,6 @@ export class User {
     @Prop()
     refreshToken: string;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Provider.name })
-    provider: mongoose.Schema.Types.ObjectId;
-
     @Prop({ type: Object })
     createdBy: {
         _id: mongoose.Schema.Types.ObjectId;
