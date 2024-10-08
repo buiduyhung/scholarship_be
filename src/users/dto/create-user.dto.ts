@@ -21,7 +21,7 @@ export class CreateUserDto { //admin
     @IsNotEmpty()
     password: string;
 
-    @IsOptional()
+    @IsNotEmpty()
     avatar: string;
 
     @IsNotEmpty()
@@ -44,9 +44,6 @@ export class CreateUserDto { //admin
     @IsMongoId()
     role: mongoose.Schema.Types.ObjectId;
 
-    @IsOptional()
-    provider: mongoose.Schema.Types.ObjectId;
-
 }
 
 export class RegisterUserDto {
@@ -62,6 +59,10 @@ export class RegisterUserDto {
 
     @IsNotEmpty()
     age: number;
+
+    @IsNotEmpty()
+    @IsPhoneNumber('VN')
+    phone: number;
 
     @IsNotEmpty()
     address: string;

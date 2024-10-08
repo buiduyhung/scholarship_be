@@ -37,7 +37,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto, @User() user: IUser) {
     const {
-      name, email, password, age, gender, phone, address, role, isActive
+      name, email, password, avatar, age, gender, phone, address, role, isActive,
     } = createUserDto;
 
     const isExist = await this.userModel.findOne({ email });
@@ -51,6 +51,7 @@ export class UsersService {
       name,
       email,
       password: hashPassword,
+      avatar,
       age,
       gender,
       isActive,

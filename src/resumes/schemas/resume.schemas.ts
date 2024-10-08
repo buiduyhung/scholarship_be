@@ -17,9 +17,6 @@ export class Resume {
     urlCV: string;
 
     @Prop()
-    urlLetter: string;
-
-    @Prop()
     message: string;
 
     @Prop()

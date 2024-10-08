@@ -13,13 +13,7 @@ export class Invitation {
     userId: mongoose.Schema.Types.ObjectId;
 
     @Prop()
-    urlInvite: string;
-
-    @Prop()
     emailReceiver: string;
-
-    @Prop()
-    urlCV: string;
 
     @Prop()
     status: string;

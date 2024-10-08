@@ -10,6 +10,7 @@ import { Resume, ResumeDocument } from './schemas/resume.schemas';
 import { Provider } from 'src/provider/schemas/providers.schemas';
 import { User } from 'src/users/schemas/user.schema'; // Add this import
 import { Types } from 'mongoose'; // Add this import
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class ResumesService {
@@ -20,7 +21,8 @@ export class ResumesService {
     @InjectModel(Provider.name)
     private providerModel: mongoose.Model<Provider>,
     @InjectModel(User.name) // Add this line
-    private userModel: mongoose.Model<User> // Add this line
+    private userModel: mongoose.Model<User>, // Add this line
+    private readonly mailerService: MailerService,
   ) { }
 
   async searchByProviderName(providerName: string) {
@@ -42,19 +44,17 @@ export class ResumesService {
   }
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
-    const { urlCV, urlLetter, provider, scholarship } = createUserCvDto;
+    const { urlCV, provider, scholarship } = createUserCvDto;
     const { email, _id } = user;
 
     const newCV = await this.resumeModel.create({
-      urlCV, urlLetter, email, provider, scholarship,
+      urlCV, email, provider, scholarship,
       userId: _id,
       status: "PENDING",
-      message: "",
       createdBy: { _id, email },
       history: [
         {
           status: "PENDING",
-          message: "",
           updatedAt: new Date,
           updatedBy: {
             _id: user._id,
@@ -109,7 +109,7 @@ export class ResumesService {
   }
 
 
-  async update(_id: string, status: string, message: string, user: IUser) {
+  async update(_id: string, status: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       throw new BadRequestException("not found resume")
     }
@@ -118,7 +118,6 @@ export class ResumesService {
       { _id },
       {
         status,
-        message,
         updatedBy: {
           _id: user._id,
           email: user.email
@@ -126,7 +125,6 @@ export class ResumesService {
         $push: {
           history: {
             status: status,
-            message: message,
             updatedAt: new Date,
             updatedBy: {
               _id: user._id,
@@ -135,6 +133,7 @@ export class ResumesService {
           }
         }
       });
+
     return updated;
   }
 

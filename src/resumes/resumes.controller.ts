@@ -4,6 +4,7 @@ import { CreateResumeDto, CreateUserCvDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
+import { SrvRecord } from 'dns';
 
 @Controller('resumes')
 export class ResumesController {
@@ -46,8 +47,8 @@ export class ResumesController {
 
   @Patch(':id')
   @ResponseMessage("Update status resume")
-  updateStatus(@Param('id') id: string, @Body("status") status: string, @Body("message") message: string, @User() user: IUser) {
-    return this.resumesService.update(id, status, message, user);
+  updateStatus(@Param('id') id: string, @Body("status") status: string, @User() user: IUser) {
+    return this.resumesService.update(id, status, user);
   }
 
   @Delete(':id')

@@ -13,9 +13,6 @@ export class CreateResumeDto {
     @IsNotEmpty()
     urlCV: string;
 
-    @IsOptional()
-    urlLetter: string;
-
     @IsNotEmpty()
     status: string;
 
