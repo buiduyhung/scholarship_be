@@ -19,7 +19,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { HealthModule } from './health/health.module';
 import { InvitationModule } from './invitation/invitation.module';
-import { RegisterModule } from './register/register.module';
+import { AdvisoryModule } from './advisory/advisory.module';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -57,7 +57,7 @@ import { RegisterModule } from './register/register.module';
     MailModule,
     HealthModule,
     InvitationModule,
-    RegisterModule,
+    AdvisoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
