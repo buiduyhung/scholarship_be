@@ -20,6 +20,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { HealthModule } from './health/health.module';
 import { InvitationModule } from './invitation/invitation.module';
 import { AdvisoryModule } from './advisory/advisory.module';
+import { PayOSModule } from './payos/payos.module';
+
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -58,6 +60,7 @@ import { AdvisoryModule } from './advisory/advisory.module';
     HealthModule,
     InvitationModule,
     AdvisoryModule,
+    PayOSModule,
   ],
   controllers: [AppController],
   providers: [AppService],

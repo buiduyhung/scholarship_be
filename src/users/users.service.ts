@@ -11,7 +11,6 @@ import { User } from 'src/decorator/customize';
 import aqp from 'api-query-params';
 import { Role, RoleDocument } from 'src/roles/schemas/role.schemas';
 import { USER_ROLE } from 'src/databases/sample';
-import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { MailerService } from '@nestjs-modules/mailer';
 
@@ -34,6 +33,12 @@ export class UsersService {
     const hash = hashSync(password, salt);
     return hash;
   }
+
+  generateRandomCode(): number {
+    return Math.floor(100000 + Math.random() * 900000);
+  }
+
+  randomNumberCode = Math.floor(100000 + Math.random() * 900000);
 
   async create(createUserDto: CreateUserDto, @User() user: IUser) {
     const {
@@ -79,7 +84,7 @@ export class UsersService {
     const userRole = await this.roleModel.findOne({ name: USER_ROLE });
 
     const hashPassword = this.getHashPassword(password);
-    const codeId = uuidv4();
+    const codeId = this.generateRandomCode();
     let newRegister = await this.userModel.create({
       name,
       email,
@@ -202,7 +207,7 @@ export class UsersService {
     }
 
     //send Email
-    const codeId = uuidv4();
+    const codeId = this.generateRandomCode();
 
     //update user
     await user.updateOne({
@@ -295,7 +300,7 @@ export class UsersService {
     }
 
     //send Email
-    const codeId = uuidv4();
+    const codeId = this.generateRandomCode();
 
     //update user
     await user.updateOne({

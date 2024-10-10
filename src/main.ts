@@ -8,6 +8,7 @@ import { TransformInterceptor } from './core/transform.interceptor';
 import cookieParser from 'cookie-parser'
 import { join } from 'path';
 import helmet from 'helmet';
+const PayOS = require("@payos/node");
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -22,6 +23,13 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true
   }));
+
+  //config payOS
+  const payOS = new PayOS(
+    process.env.PAYOS_CLIENT_ID,
+    process.env.PAYOS_API_KEY,
+    process.env.PAYOS_CHECKSUM_KEY
+  );
 
   //config cookies
   app.use(cookieParser());

@@ -6,6 +6,7 @@ import { User, UserSchema } from 'src/users/schemas/user.schema';
 import { Permission, PermissionSchema } from 'src/permissions/schemas/permission.schemas';
 import { Role, RoleSchema } from 'src/roles/schemas/role.schemas';
 import { UsersService } from 'src/users/users.service';
+import { PayOSModule } from 'src/payos/payos.module';
 
 @Module({
   controllers: [DatabasesController],
@@ -15,6 +16,8 @@ import { UsersService } from 'src/users/users.service';
       { name: User.name, schema: UserSchema },
       { name: Permission.name, schema: PermissionSchema },
       { name: Role.name, schema: RoleSchema },
-    ])],
+    ]),
+    PayOSModule,
+  ],
 })
 export class DatabasesModule { }
