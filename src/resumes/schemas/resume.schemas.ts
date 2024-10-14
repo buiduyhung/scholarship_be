@@ -17,9 +17,6 @@ export class Resume {
     urlCV: string;
 
     @Prop()
-    message: string;
-
-    @Prop()
     status: string;
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Provider.name })
@@ -61,9 +58,6 @@ export class Resume {
 
     @Prop()
     updateAt: Date;
-
-    @Prop()
-    isActive: boolean;
 }
 
 export const ResumeSchema = SchemaFactory.createForClass(Resume);

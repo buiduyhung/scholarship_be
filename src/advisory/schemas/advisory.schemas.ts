@@ -1,12 +1,18 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-export type ProviderDocument = HydratedDocument<Provider>;
+export type AdvisoryDocument = HydratedDocument<Advisory>;
 
 @Schema({ timestamps: true })
-export class Provider {
+export class Advisory {
+    @Prop()
+    emailAdvisory: string;
+
     @Prop()
     email: string;
+
+    @Prop()
+    userId: mongoose.Schema.Types.ObjectId;;
 
     @Prop()
     fullName: string;
@@ -18,28 +24,26 @@ export class Provider {
     address: string;
 
     @Prop()
-    time: number;
+    time: Date;
 
     @Prop()
-    level: number;
+    level: string;
 
     @Prop()
-    pay: number;
+    pay: string;
 
     @Prop()
     status: string;
 
-    @Prop()
-    his: string;
-
-    @Prop()
-    part: string;
-
-    @Prop()
-    background: string;
-
-    @Prop()
-    gallery: string[];
+    @Prop({ type: mongoose.Schema.Types.Array })
+    history: {
+        status: string;
+        updatedAt: Date;
+        updatedBy: {
+            _id: mongoose.Schema.Types.ObjectId;
+            email: string;
+        };
+    }[]
 
     @Prop({ type: Object })
     createdBy: {
@@ -66,4 +70,4 @@ export class Provider {
     updateAt: Date;
 }
 
-export const ProviderSchema = SchemaFactory.createForClass(Provider);
+export const AdvisorySchema = SchemaFactory.createForClass(Advisory);
