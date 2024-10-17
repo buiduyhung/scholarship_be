@@ -43,8 +43,6 @@ export class MailController {
               name: item.name,
               provider: item.provider.name,
               subject: item.subject,
-              location: item.location,
-              type: item.type,
               level: item.level,
             }
           });

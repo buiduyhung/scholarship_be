@@ -44,11 +44,11 @@ export class ResumesService {
   }
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
-    const { urlCV, provider, scholarship } = createUserCvDto;
+    const { urlCV, scholarship } = createUserCvDto;
     const { email, _id } = user;
 
     const newCV = await this.resumeModel.create({
-      urlCV, email, provider, scholarship,
+      urlCV, email, scholarship,
       userId: _id,
       status: "PENDING",
       createdBy: { _id, email },
@@ -143,10 +143,6 @@ export class ResumesService {
     })
       .sort("-createdAt")
       .populate([
-        {
-          path: "provider",
-          select: { name: 1 }
-        },
         {
           path: "scholarship",
           select: { name: 1 }

@@ -19,9 +19,6 @@ export class Resume {
     @Prop()
     status: string;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Provider.name })
-    provider: mongoose.Schema.Types.ObjectId;
-
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Scholarship.name })
     scholarship: mongoose.Schema.Types.ObjectId;
 

@@ -22,13 +22,13 @@ export class ScholarshipService {
   ) { }
   async create(createScholarshipDto: CreateScholarshipDto, user: IUser) {
     const {
-      name, fundingMethod, provider, location, level, value, quantity, subject,
-      description, requirement, register, type, startDate, endDate, isActive
+      name, type, level, quantity, subject,
+      description, isActive
     } = createScholarshipDto;
 
     let newScholarship = await this.scholarshipModel.create({
-      name, fundingMethod, provider, location, level, value, quantity, subject,
-      description, requirement, register, type, startDate, endDate, isActive,
+      name, type, level, quantity, subject,
+      description, isActive,
       createdBy: {
         _id: user._id,
         email: user.email

@@ -12,19 +12,19 @@ export class Scholarship {
     name: string;
 
     @Prop()
-    fundingMethod: string;
+    avatar: string;
 
     @Prop()
-    location: string;
+    image: string[];
 
     @Prop()
-    subject: string[];
+    type: string;
 
     @Prop()
     level: string[];
 
     @Prop()
-    value: number[];
+    subject: string[];
 
     @Prop()
     quantity: number;
@@ -32,33 +32,8 @@ export class Scholarship {
     @Prop()
     description: string;
 
-    @Prop()
-    requirement: string;
-
-    @Prop()
-    register: string;
-
-    @Prop()
-    type: string;
-
-    @Prop()
-    startDate: Date;
-
-    @Prop()
-    endDate: Date;
-
-    @Prop()
+    @Prop({ default: true })
     isActive: boolean;
-
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Provider.name })
-    provider: mongoose.Schema.Types.ObjectId;
-
-    // @Prop({ type: Object })
-    // provider: {
-    //     _id: mongoose.Schema.Types.ObjectId;
-    //     name: string;
-    //     logo: string;
-    // };
 
     @Prop({ type: Object })
     createdBy: {

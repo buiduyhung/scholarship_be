@@ -17,9 +17,6 @@ export class CreateResumeDto {
     status: string;
 
     @IsNotEmpty()
-    provider: mongoose.Schema.Types.ObjectId;
-
-    @IsNotEmpty()
     scholarship: mongoose.Schema.Types.ObjectId;
 
 }
@@ -29,9 +26,6 @@ export class CreateUserCvDto {
     @IsNotEmpty()
     urlCV: string;
 
-    @IsNotEmpty()
-    @IsMongoId()
-    provider: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty()
     @IsMongoId()
