@@ -33,7 +33,7 @@ export class CreateUserDto { //admin
 
     @IsNotEmpty()
     @IsPhoneNumber('VN')
-    phone: number;
+    phone: string;
 
     @IsNotEmpty()
     gender: string;

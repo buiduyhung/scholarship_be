@@ -20,7 +20,7 @@ export class User {
     avatar: string;
 
     @Prop()
-    phone: number;
+    phone: string;
 
     @Prop()
     gender: string;
