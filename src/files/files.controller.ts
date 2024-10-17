@@ -16,7 +16,9 @@ import { Public, ResponseMessage } from 'src/decorator/customize';
 import { HttpExceptionFilter } from 'src/core/http-exception.filter';
 import { MulterConfigService } from './multer.config';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('files')
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService,

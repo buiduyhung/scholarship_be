@@ -7,7 +7,10 @@ import { Subscriber, SubscriberDocument } from 'src/subscribers/schemas/subscrib
 import { Scholarship, ScholarshipDocument } from 'src/scholarship/schemas/scholarship.schemas';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('mail')
 @Controller('mail')
 export class MailController {
   constructor(private readonly mailService: MailService,

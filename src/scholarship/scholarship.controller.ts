@@ -4,7 +4,10 @@ import { CreateScholarshipDto } from './dto/create-scholarship.dto';
 import { UpdateScholarshipDto } from './dto/update-scholarship.dto';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('scholarship')
 @Controller('scholarship')
 export class ScholarshipController {
   constructor(private readonly scholarshipService: ScholarshipService) { }

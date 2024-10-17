@@ -3,7 +3,10 @@ import { AdvisoryService } from './advisory.service';
 import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { CreateUserAdvisoryDto } from './dto/create-advisory.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('advisory')
 @Controller('advisory')
 export class AdvisoryController {
   constructor(private readonly advisoryService: AdvisoryService) { }

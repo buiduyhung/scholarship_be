@@ -4,7 +4,10 @@ import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { UpdateInvitationDto } from './dto/update-invitation.dto';
 import { ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('invitation')
 @Controller('invitation')
 export class InvitationController {
   constructor(private readonly invitationService: InvitationService) { }

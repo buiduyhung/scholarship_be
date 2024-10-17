@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser'
 import { join } from 'path';
 import helmet from 'helmet';
 const PayOS = require("@payos/node");
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -48,13 +49,36 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.URI,
-    defaultVersion: ['1', '2'] //v1,v2
+    defaultVersion: ['1'] //v1,v2
   });
 
 
   //config helmet
   app.use(helmet());
 
+  //config swagger
+  const config = new DocumentBuilder()
+    .setTitle('Scholarship Project APIs Document')
+    .setDescription('All Modules APIs')
+    .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'Bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      },
+      'token',
+    )
+    .addSecurityRequirements('token')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    }
+  }
+  );
   await app.listen(configService.get<string>('PORT'));
 }
 bootstrap();
