@@ -18,7 +18,7 @@ export class CreateAdvisoryDto {
 
     @IsNotEmpty()
     @IsPhoneNumber('VN')
-    phone: number;
+    phone: string;
 
     @IsNotEmpty()
     address: string;
