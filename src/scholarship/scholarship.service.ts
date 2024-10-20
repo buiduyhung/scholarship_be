@@ -22,12 +22,12 @@ export class ScholarshipService {
   ) { }
   async create(createScholarshipDto: CreateScholarshipDto, user: IUser) {
     const {
-      name, type, level, quantity, subject,
+      name, type, level, quantity, subject, location,
       description, isActive
     } = createScholarshipDto;
 
     let newScholarship = await this.scholarshipModel.create({
-      name, type, level, quantity, subject,
+      name, type, level, quantity, subject, location,
       description, isActive,
       createdBy: {
         _id: user._id,
@@ -41,9 +41,9 @@ export class ScholarshipService {
     }
   }
 
-  async getAll() {
-    return await this.scholarshipModel.find({}, { location: 1, subject: 1, level: 1, type: 1, _id: 0 }).exec();
-  }
+  // async getAll() {
+  //   return await this.scholarshipModel.find({}, { location: 1, subject: 1, level: 1, type: 1, _id: 0 }).exec();
+  // }
 
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
@@ -114,31 +114,31 @@ export class ScholarshipService {
     })
   }
 
-  async searchByProvider(id: string) {
-    // Ensure the id is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new BadRequestException("Invalid provider ID");
-    }
+  // async searchByProvider(id: string) {
+  //   // Ensure the id is a valid ObjectId
+  //   if (!mongoose.Types.ObjectId.isValid(id)) {
+  //     throw new BadRequestException("Invalid provider ID");
+  //   }
 
-    // Find the provider by its _id field
-    const provider = await this.providerModel.findById(id);
+  //   // Find the provider by its _id field
+  //   const provider = await this.providerModel.findById(id);
 
-    // Check if provider exists
-    if (!provider) {
-      throw new BadRequestException("Provider not found");
-    }
+  //   // Check if provider exists
+  //   if (!provider) {
+  //     throw new BadRequestException("Provider not found");
+  //   }
 
-    // Find all scholarships associated with the provider
-    const scholarships = await this.scholarshipModel.find({
-      provider: provider._id
-    })
-      .select('name location level') // Select only the name, location, and level fields
-      .populate({
-        path: 'provider',
-        select: '_id logo' // Populate provider with only _id and logo
-      })
-      .exec();
+  //   // Find all scholarships associated with the provider
+  //   const scholarships = await this.scholarshipModel.find({
+  //     provider: provider._id
+  //   })
+  //     .select('name location level') // Select only the name, location, and level fields
+  //     .populate({
+  //       path: 'provider',
+  //       select: '_id logo' // Populate provider with only _id and logo
+  //     })
+  //     .exec();
 
-    return scholarships;
-  }
+  //   return scholarships;
+  // }
 }

@@ -6,7 +6,7 @@ import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('providers')
+
 @Controller('providers')
 export class ProvidersController {
   constructor(private readonly providersService: ProviderService,

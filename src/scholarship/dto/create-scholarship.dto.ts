@@ -9,12 +9,12 @@ export class CreateScholarshipDto {
     name: string;
 
     @IsNotEmpty()
+    location: string;
+
+    @IsNotEmpty()
     type: string;
 
     @IsNotEmpty()
-    avatar: string;
-
-    @IsOptional()
     @IsArray()
     @IsString({ each: true })
     image: string[];

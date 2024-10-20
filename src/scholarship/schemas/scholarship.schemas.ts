@@ -12,10 +12,10 @@ export class Scholarship {
     name: string;
 
     @Prop()
-    avatar: string;
+    image: string[];
 
     @Prop()
-    image: string[];
+    location: string;
 
     @Prop()
     type: string;

@@ -18,12 +18,12 @@ export class ScholarshipController {
     return this.scholarshipService.create(createScholarshipDto, user);
   }
 
-  @Public()
-  @Get('get-all')
-  @ResponseMessage("Fetch all scholarship search")
-  getAll() {
-    return this.scholarshipService.getAll();
-  }
+  // @Public()
+  // @Get('get-all')
+  // @ResponseMessage("Fetch all scholarship search")
+  // getAll() {
+  //   return this.scholarshipService.getAll();
+  // }
 
   @Public()
   @Get()
@@ -36,13 +36,12 @@ export class ScholarshipController {
     return this.scholarshipService.findAll(+currentPage, +limit, qs); // Modify this line
   }
 
-  @Public()
-  @Get('search-list-scholarship')
-  @ResponseMessage("get list scholarship of a provider")
-  searchByProvider(@Query('id') id: string) {
-    return this.scholarshipService.searchByProvider(id);
-  }
-
+  // @Public()
+  // @Get('search-list-scholarship')
+  // @ResponseMessage("get list scholarship of a provider")
+  // searchByProvider(@Query('id') id: string) {
+  //   return this.scholarshipService.searchByProvider(id);
+  // }
 
   @Public()
   @Get(':id')
