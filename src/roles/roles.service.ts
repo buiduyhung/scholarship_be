@@ -95,10 +95,15 @@ export class RolesService {
   }
 
   async remove(_id: string, user: IUser) {
+    // Tìm role (vai trò) dựa vào ID được cung cấp
     const foundRole = await this.roleModel.findById(_id);
+
+
     if (foundRole.name === ADMIN_ROLE) {
       throw new BadRequestException(`Can not delete role admin`);
     }
+
+
     await this.roleModel.updateOne(
       { _id },
       {
@@ -106,7 +111,9 @@ export class RolesService {
           _id: user._id,
           email: user.email
         },
-      })
+      });
+
+
     return this.roleModel.softDelete({
       _id
     });
