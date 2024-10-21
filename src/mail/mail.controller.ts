@@ -44,8 +44,6 @@ export class MailController {
           const scholarship = Matching.map(item => {
             return {
               name: item.name,
-              provider: item.provider.name,
-              subject: item.subject,
               level: item.level,
             }
           });

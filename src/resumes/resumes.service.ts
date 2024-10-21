@@ -25,23 +25,23 @@ export class ResumesService {
     private readonly mailerService: MailerService,
   ) { }
 
-  async searchByProviderName(providerName: string) {
-    // Step 1: Query the provider by name
-    const provider = await this.providerModel.findOne({ name: new RegExp(`^${providerName}$`, 'i') });
+  // async searchByProviderName(providerName: string) {
+  //   // Step 1: Query the provider by name
+  //   const provider = await this.providerModel.findOne({ name: new RegExp(`^${providerName}$`, 'i') });
 
 
-    // Check if provider is found
-    if (!provider) {
-      throw new BadRequestException("Provider not found");
-    }
+  //   // Check if provider is found
+  //   if (!provider) {
+  //     throw new BadRequestException("Provider not found");
+  //   }
 
-    // Step 2: Query resumes based on the provider's ID
-    const resumes = await this.resumeModel.find({
-      provider: provider._id
-    }).exec();
+  //   // Step 2: Query resumes based on the provider's ID
+  //   const resumes = await this.resumeModel.find({
+  //     provider: provider._id
+  //   }).exec();
 
-    return resumes;
-  }
+  //   return resumes;
+  // }
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
     const { urlCV, scholarship } = createUserCvDto;

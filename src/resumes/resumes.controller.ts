@@ -29,11 +29,11 @@ export class ResumesController {
     return this.resumesService.findAll(+currentPage, +limit, qs); // Modify this line
   }
 
-  @Get('search-by-provider')
-  @ResponseMessage("Search resumes by provider name")
-  searchByProviderName(@Query('providerName') providerName: string) {
-    return this.resumesService.searchByProviderName(providerName);
-  }
+  // @Get('search-by-provider')
+  // @ResponseMessage("Search resumes by provider name")
+  // searchByProviderName(@Query('providerName') providerName: string) {
+  //   return this.resumesService.searchByProviderName(providerName);
+  // }
 
   @Post('by-user')
   @ResponseMessage("Get Resumes by User")

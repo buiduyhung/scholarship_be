@@ -18,13 +18,13 @@ export class Scholarship {
     location: string;
 
     @Prop()
-    type: string;
+    continent: string;
 
     @Prop()
     level: string[];
 
     @Prop()
-    subject: string[];
+    major: string[];
 
     @Prop()
     quantity: number;

@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { ScholarshipService } from './scholarship.service';
 import { CreateScholarshipDto } from './dto/create-scholarship.dto';
 import { UpdateScholarshipDto } from './dto/update-scholarship.dto';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -23,6 +23,14 @@ export class ScholarshipController {
   // @ResponseMessage("Fetch all scholarship search")
   // getAll() {
   //   return this.scholarshipService.getAll();
+  // }
+
+
+  // @Get('list-location')
+  // @SkipCheckPermission()
+  // @ResponseMessage("List location by continent")
+  // searchByProviderName(@Query('continentName') continentName: string) {
+  //   return this.scholarshipService.getlocation(continentName);
   // }
 
   @Public()

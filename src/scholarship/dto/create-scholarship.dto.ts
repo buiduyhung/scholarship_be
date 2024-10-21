@@ -9,10 +9,10 @@ export class CreateScholarshipDto {
     name: string;
 
     @IsNotEmpty()
-    location: string;
+    continent: string;
 
     @IsNotEmpty()
-    type: string;
+    location: string;
 
     @IsNotEmpty()
     @IsArray()
@@ -34,7 +34,7 @@ export class CreateScholarshipDto {
     @IsOptional()
     @IsArray()
     @IsString({ each: true })
-    subject: string[];
+    major: string[];
 
     @IsOptional()
     isActive: boolean;
