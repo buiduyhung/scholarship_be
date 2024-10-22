@@ -29,7 +29,7 @@ export class FilesController {
     private readonly filesService: FilesService,
     private readonly multerConfigService: MulterConfigService,
     private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   @Public()
   @Post('upload')
@@ -73,10 +73,11 @@ export class FilesController {
 
   @Public()
   @Post('image')
+  @ResponseMessage('Uploaded only file')
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
-        fileSize: 1024 * 1024 * 20, // 20MB,
+        fileSize: 1024 * 1024 * 5, // 5MB,
         files: 1, //  1 file only
       },
     }),
@@ -84,6 +85,24 @@ export class FilesController {
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
     console.log({ file });
     return this.cloudinaryService.uploadFile(file);
+  }
+
+  @Public()
+  @Post('images')
+  @ResponseMessage('Uploaded Multiple files')
+  @UseInterceptors(
+    FilesInterceptor('files', 10, { // Allow up to 10 files
+      limits: {
+        fileSize: 1024 * 1024 * 20, // 20MB total size limit,
+      },
+    }),
+  )
+  async uploadImages(@UploadedFiles() files: Array<Express.Multer.File>) {
+    console.log({ files });
+    const uploadResults = await Promise.all(
+      files.map(file => this.cloudinaryService.uploadFile(file))
+    );
+    return uploadResults;
   }
 
   @Get()
