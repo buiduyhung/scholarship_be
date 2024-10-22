@@ -17,12 +17,14 @@ import { HttpExceptionFilter } from 'src/core/http-exception.filter';
 import { MulterConfigService } from './multer.config';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ApiTags } from '@nestjs/swagger';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @ApiTags('files')
 @Controller('files')
 export class FilesController {
   constructor(private readonly filesService: FilesService,
-    private readonly multerConfigService: MulterConfigService
+    private readonly multerConfigService: MulterConfigService,
+    private readonly cloudinaryService: CloudinaryService,
   ) { }
 
   @Public()
@@ -52,6 +54,21 @@ export class FilesController {
     return {
       files: files.map(file => file.filename)
     }
+  }
+
+  @Public()
+  @Post('image')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+    // Debug log to check file object
+    if (!file || !file.buffer) {
+      console.error('File upload failed: No file or buffer present');
+      throw new HttpException('File buffer is empty or undefined.', HttpStatus.BAD_REQUEST);
+    }
+    console.log('File uploaded:', file);
+
+    // Proceed with uploading the file to Cloudinary
+    return this.cloudinaryService.uploadFile(file);
   }
 
   @Get()
