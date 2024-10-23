@@ -12,11 +12,16 @@ import { ApiTags } from '@nestjs/swagger';
 export class ScholarshipController {
   constructor(private readonly scholarshipService: ScholarshipService) { }
 
-  @Post()
-  @ResponseMessage("create a new scholarship")
-  create(@Body() createScholarshipDto: CreateScholarshipDto, @User() user: IUser) {
+  @Post()  // This decorator defines that this method will handle POST requests.
+  @ResponseMessage("create a new scholarship")  
+  create(
+    @Body() createScholarshipDto: CreateScholarshipDto,  
+    @User() user: IUser  
+  ) {
+   
     return this.scholarshipService.create(createScholarshipDto, user);
   }
+  
 
   // @Public()
   // @Get('get-all')
