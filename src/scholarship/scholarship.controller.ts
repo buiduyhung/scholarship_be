@@ -15,7 +15,7 @@ export class ScholarshipController {
   @Post()  // This decorator defines that this method will handle POST requests.
   @ResponseMessage("create a new scholarship")  
   create(
-    @Body() createScholarshipDto: CreateScholarshipDto,  
+    @Body() createScholarshipDto: CreateScholarshipDto,  // @Body decorator extracts the body of the incoming request, expected to be of type CreateScholarshipDto.
     @User() user: IUser  
   ) {
    
