@@ -8,11 +8,17 @@ import { User, UserSchema } from 'src/users/schemas/user.schema';
 
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Scholarship.name, schema: ScholarshipSchema },
-  { name: Provider.name, schema: ProviderSchema },
-  { name: User.name, schema: UserSchema }
+  
+  imports: [MongooseModule.forFeature([
+    { name: Scholarship.name, schema: ScholarshipSchema }, // Đăng ký schema cho học bổng (Scholarship)
+    { name: Provider.name, schema: ProviderSchema }, // Đăng ký schema cho nhà cung cấp (Provider)
+    { name: User.name, schema: UserSchema } // Đăng ký schema cho người dùng (User)
   ])],
+  
+  // Đăng ký controller cho module, nơi xử lý các yêu cầu HTTP liên quan đến học bổng (Scholarship).
   controllers: [ScholarshipController],
+
+  // Đăng ký provider cho module, chứa các logic nghiệp vụ liên quan đến học bổng.
   providers: [ScholarshipService]
 })
 export class ScholarshipModule { }
