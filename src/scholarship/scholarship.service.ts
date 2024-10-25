@@ -58,7 +58,7 @@ export class ScholarshipService {
     const result = await this.scholarshipModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .sort(sort as any)
+      .sort({ createdAt: -1 })
       .populate(population)
       .select(projection as any)
       .exec();
@@ -78,10 +78,7 @@ export class ScholarshipService {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return `not found scholarship`;
     }
-    return (await this.scholarshipModel.findById(id))
-      .populate({
-        path: "provider", select: { _id: 1, name: 1, logo: 1, background: 1 } //-1 is off
-      });
+    return await this.scholarshipModel.findById(id)
   }
 
   async update(id: string, updateScholarshipDto: UpdateScholarshipDto, user: IUser) {

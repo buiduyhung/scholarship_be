@@ -13,15 +13,15 @@ export class ScholarshipController {
   constructor(private readonly scholarshipService: ScholarshipService) { }
 
   @Post()  // This decorator defines that this method will handle POST requests.
-  @ResponseMessage("create a new scholarship")  
+  @ResponseMessage("create a new scholarship")
   create(
     @Body() createScholarshipDto: CreateScholarshipDto,  // @Body decorator extracts the body of the incoming request, expected to be of type CreateScholarshipDto.
-    @User() user: IUser  
+    @User() user: IUser
   ) {
-   
+
     return this.scholarshipService.create(createScholarshipDto, user);
   }
-  
+
 
   // @Public()
   // @Get('get-all')
@@ -30,9 +30,8 @@ export class ScholarshipController {
   //   return this.scholarshipService.getAll();
   // }
 
-
+  // @Public()
   // @Get('list-location')
-  // @SkipCheckPermission()
   // @ResponseMessage("List location by continent")
   // searchByProviderName(@Query('continentName') continentName: string) {
   //   return this.scholarshipService.getlocation(continentName);
