@@ -83,7 +83,7 @@ export class ResumesService {
     const result = await this.resumeModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .sort(sort as any)
+      .sort({ createdAt: -1 })
       .populate(population)
       .select(projection as any)
       .exec();

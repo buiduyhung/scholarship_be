@@ -24,15 +24,6 @@ export class Advisory {
     address: string;
 
     @Prop()
-    time: Date;
-
-    @Prop()
-    level: string;
-
-    @Prop()
-    pay: string;
-
-    @Prop()
     status: string;
 
     @Prop({ type: mongoose.Schema.Types.Array })

@@ -21,10 +21,10 @@ export class AdvisoryService {
   ) { }
 
   async create(createUserAdvisoryDto: CreateUserAdvisoryDto) {
-    const { emailAdvisory, fullName, phone, address, time, level, pay } = createUserAdvisoryDto;
+    const { emailAdvisory, fullName, phone, address } = createUserAdvisoryDto;
 
     const newAd = await this.advisoryModel.create({
-      emailAdvisory, fullName, phone, address, time, level, pay,
+      emailAdvisory, fullName, phone, address,
       status: "PENDING",
       createdBy: emailAdvisory,
       history: [
@@ -58,7 +58,7 @@ export class AdvisoryService {
     const result = await this.advisoryModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .sort(sort as any)
+      .sort({ createdAt: -1 })
       .populate(population)
       .select(projection as any)
       .exec();

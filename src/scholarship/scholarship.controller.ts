@@ -22,20 +22,19 @@ export class ScholarshipController {
     return this.scholarshipService.create(createScholarshipDto, user);
   }
 
-
-  // @Public()
-  // @Get('get-all')
-  // @ResponseMessage("Fetch all scholarship search")
-  // getAll() {
-  //   return this.scholarshipService.getAll();
-  // }
-
   // @Public()
   // @Get('list-location')
   // @ResponseMessage("List location by continent")
-  // searchByProviderName(@Query('continentName') continentName: string) {
+  // searchByProviderName(@Query('continent') continentName: string) {
   //   return this.scholarshipService.getlocation(continentName);
   // }
+
+  @Public()
+  @Get('list-location')
+  @ResponseMessage("Fetch all scholarship search")
+  getListLocation() {
+    return this.scholarshipService.getListLocation();
+  }
 
   @Public()
   @Get()
