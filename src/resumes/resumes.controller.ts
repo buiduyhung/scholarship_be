@@ -1,32 +1,91 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFile, HttpCode, BadRequestException } from '@nestjs/common';
 import { ResumesService } from './resumes.service';
 import { CreateResumeDto, CreateUserCvDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { PayOSService } from 'src/payos/payos.service';
 
 
 @ApiTags('resumes')
 @Controller('resumes')
 export class ResumesController {
-  constructor(private readonly resumesService: ResumesService) { }
+  constructor(
+    private readonly resumesService: ResumesService,
+    private readonly paymentService: PayOSService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) { }
+
 
   @Post()
   @ResponseMessage("Create a new resume")
-  create(@Body() createUserCvDto: CreateUserCvDto, @User() user: IUser) {
-    return this.resumesService.create(createUserCvDto, user);
+  @UseInterceptors(
+    FileInterceptor('urlCV', {
+      limits: {
+        fileSize: 1024 * 1024 * 5,
+      },
+    }),
+  )
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() createUserCvDto: CreateUserCvDto,
+    @User() user: IUser,
+  ) {
+    const uploadedFileResponse = await this.cloudinaryService.uploadFile(file);
+    const uploadedFileUrl = uploadedFileResponse.url;
+
+    const { _id, orderCode, createdAt } = await this.resumesService.create({
+      ...createUserCvDto,
+      urlCV: uploadedFileUrl,
+    }, user);
+
+    const payment = await this.paymentService.createPaymentLink({
+      amount: 2000,
+      cancelUrl: 'https://sfms.pages.dev/payment/cancel',
+      description: `SMFS`,
+      orderCode,
+      returnUrl: 'https://sfms.pages.dev/payment/success',
+      items: [
+        {
+          name: _id.toString(),
+          price: 1000,
+          quantity: 1,
+        },
+      ],
+    });
+
+    return { _id, createdAt, payment };
   }
 
   @Get()
-  @ResponseMessage("Fetch all resumes with pagination")
+  @ResponseMessage('Fetch all resumes with pagination')
   findAll(
-    @Query("current") currentPage: string,
-    @Query("pageSize") limit: string,
+    @Query('current') currentPage: string,
+    @Query('pageSize') limit: string,
     @Query() qs: string,
-
   ) {
     return this.resumesService.findAll(+currentPage, +limit, qs); // Modify this line
+  }
+
+  @Post('webhook')
+  @ApiOperation({
+    summary: 'Webhook from PayOS',
+    description: 'This endpoint is used to receive payment status from PayOS',
+  })
+  @ResponseMessage('Webhook from PayOS')
+  @Public()
+  @HttpCode(200)
+  webhook(@Body() body: any) {
+    const webhookData = this.paymentService.verifyPaymentWebhookData(body);
+    if (!webhookData) {
+      throw new BadRequestException('Invalid signature');
+    }
+
+    const { orderCode } = webhookData;
+    return this.resumesService.updateStatusByOrderCode(orderCode, 'PAID');
   }
 
   // @Get('search-by-provider')

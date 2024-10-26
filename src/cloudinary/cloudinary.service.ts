@@ -13,7 +13,9 @@ export class CloudinaryService {
   constructor() {}
   uploadFile(file: Express.Multer.File): Promise<CloudinaryResponse> {
     return new Promise<CloudinaryResponse>((resolve, reject) => {
-      this.logger.log('Uploading file to cloudinary'.concat(file.originalname));
+      this.logger.log(
+        'Uploading file to cloudinary'.concat(file?.originalname),
+      );
       const uploadStream = cloudinary.uploader.upload_stream(
         {},
         (error, result) => {
@@ -22,7 +24,7 @@ export class CloudinaryService {
             reject(error);
           }
           this.logger.log(
-            'File uploaded to cloudinary'.concat(file.originalname),
+            'File uploaded to cloudinary'.concat(file?.originalname),
           );
           this.logger.debug({
             url: result.url,
