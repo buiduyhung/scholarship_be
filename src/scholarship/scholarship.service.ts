@@ -41,8 +41,13 @@ export class ScholarshipService {
     }
   }
 
-  // async getAll() {
-  //   return await this.scholarshipModel.find({}, { location: 1, subject: 1, level: 1, type: 1, _id: 0 }).exec();
+  // async getlocation(continentName: string): Promise<string[]> {
+  //   // Truy vấn tất cả các location duy nhất theo continentName
+  //   const uniqueLocations = await this.scholarshipModel
+  //     .find({ continent: continentName }) // Lọc theo continentName
+  //     .distinct('location'); // Lấy các location duy nhất
+
+  //   return uniqueLocations;
   // }
 
   async findAll(currentPage: number, limit: number, qs: string) {
@@ -58,7 +63,7 @@ export class ScholarshipService {
     const result = await this.scholarshipModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .sort(sort as any)
+      .sort({ createdAt: -1 })
       .populate(population)
       .select(projection as any)
       .exec();
@@ -78,10 +83,7 @@ export class ScholarshipService {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return `not found scholarship`;
     }
-    return (await this.scholarshipModel.findById(id))
-      .populate({
-        path: "provider", select: { _id: 1, name: 1, logo: 1, background: 1 } //-1 is off
-      });
+    return await this.scholarshipModel.findById(id)
   }
 
   async update(id: string, updateScholarshipDto: UpdateScholarshipDto, user: IUser) {
@@ -112,6 +114,31 @@ export class ScholarshipService {
     return this.scholarshipModel.softDelete({
       _id: id
     })
+  }
+
+  async getListLocation(): Promise<Record<string, string[]>> {
+    // Truy vấn tất cả các học bổng và chỉ lấy các trường continent và location
+    const scholarships = await this.scholarshipModel.find().select('continent location -_id').exec();
+
+    // Sử dụng reduce để nhóm location theo continent và loại bỏ các location trùng lặp
+    const continentLocations = scholarships.reduce((acc, scholarship) => {
+      const continent = scholarship.continent;
+      const location = scholarship.location;
+
+      // Nếu continent chưa tồn tại trong acc, khởi tạo mảng rỗng
+      if (!acc[continent]) {
+        acc[continent] = [];
+      }
+
+      // Thêm location vào mảng nếu chưa tồn tại
+      if (!acc[continent].includes(location)) {
+        acc[continent].push(location);
+      }
+
+      return acc;
+    }, {} as Record<string, string[]>);
+
+    return continentLocations;
   }
 
   // async searchByProvider(id: string) {

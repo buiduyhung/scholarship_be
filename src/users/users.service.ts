@@ -424,7 +424,7 @@ export class UsersService {
     const result = await this.userModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .sort(sort as any)
+      .sort({ createdAt: -1 })
       .select('-password')
       .populate(population)
       .exec();

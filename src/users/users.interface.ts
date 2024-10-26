@@ -12,4 +12,5 @@ export interface IUser {
         apiPath: string;
         module: string;
     }[]
+    avatar: string;
 }

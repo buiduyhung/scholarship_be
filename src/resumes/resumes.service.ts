@@ -95,7 +95,7 @@ export class ResumesService {
       .find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .sort(sort as any)
+      .sort({ createdAt: -1 })
       .populate(population)
       .select(projection as any)
       .exec();

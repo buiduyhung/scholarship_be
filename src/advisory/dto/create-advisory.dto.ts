@@ -24,15 +24,6 @@ export class CreateAdvisoryDto {
     address: string;
 
     @IsNotEmpty()
-    time: string;
-
-    @IsNotEmpty()
-    level: string;
-
-    @IsNotEmpty()
-    pay: string;
-
-    @IsNotEmpty()
     status: string;
 }
 
@@ -52,14 +43,5 @@ export class CreateUserAdvisoryDto {
     @IsNotEmpty()
     address: string;
 
-    @Transform(({ value }) => new Date(value))
-    @IsDate()
-    time: Date;
-
-    @IsNotEmpty()
-    level: string;
-
-    @IsNotEmpty()
-    pay: string;
 
 }
