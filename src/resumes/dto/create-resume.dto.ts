@@ -1,28 +1,36 @@
-import { IsMongoId, IsNotEmpty } from 'class-validator';
-import mongoose from 'mongoose';
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import mongoose from "mongoose";
+
 
 export class CreateResumeDto {
-  @IsNotEmpty()
-  email: string;
 
-  @IsNotEmpty()
-  userId: mongoose.Schema.Types.ObjectId;
+    @IsNotEmpty()
+    email: string;
 
-  @IsNotEmpty()
-  urlCV: string;
+    @IsNotEmpty()
+    userId: mongoose.Schema.Types.ObjectId;
 
-  @IsNotEmpty()
-  status: string;
+    @IsOptional()
+    @IsString()
+    urlCV: string;
 
-  @IsNotEmpty()
-  scholarship: mongoose.Schema.Types.ObjectId;
+    @IsNotEmpty()
+    status: string;
+
+    @IsNotEmpty()
+    scholarship: mongoose.Schema.Types.ObjectId;
+
 }
 
 export class CreateUserCvDto {
-  @IsNotEmpty()
-  urlCV: string;
 
-  @IsNotEmpty()
-  @IsMongoId()
-  scholarship: mongoose.Schema.Types.ObjectId;
+    @IsOptional()
+    @IsString()
+    urlCV: string;
+
+
+    @IsNotEmpty()
+    @IsMongoId()
+    scholarship: mongoose.Schema.Types.ObjectId;
+
 }

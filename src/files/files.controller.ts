@@ -31,45 +31,45 @@ export class FilesController {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  @Public()
-  @Post('upload')
-  @ResponseMessage('Uploaded Single file')
-  @UseGuards(ThrottlerGuard)
-  @Throttle(5, 60)
-  @UseInterceptors(FileInterceptor('fileUpload'))
-  // @UseFilters(new HttpExceptionFilter())
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return {
-      fileName: file.filename,
-    };
-  }
+  // @Public()
+  // @Post('upload')
+  // @ResponseMessage('Uploaded Single file')
+  // @UseGuards(ThrottlerGuard)
+  // @Throttle(5, 60)
+  // @UseInterceptors(FileInterceptor('fileUpload'))
+  // // @UseFilters(new HttpExceptionFilter())
+  // uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //   return {
+  //     fileName: file.filename,
+  //   };
+  // }
 
-  @Public()
-  @Post('upload-multiple')
-  @UseGuards(ThrottlerGuard)
-  @Throttle(5, 60)
-  @ResponseMessage('Uploaded Multiple files')
-  @UseInterceptors(
-    FilesInterceptor(
-      'fileUpload',
-      10,
-      new MulterConfigService().createMulterOptions({
-        fileSize: 1024 * 1024 * 20,
-      }),
-    ),
-  )
-  // @UseFilters(new HttpExceptionFilter())
-  uploadMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
-    if (files.length > 10) {
-      throw new HttpException(
-        'Too many files uploaded. Maximum limit is 10.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return {
-      files: files.map((file) => file.filename),
-    };
-  }
+  // @Public()
+  // @Post('upload-multiple')
+  // @UseGuards(ThrottlerGuard)
+  // @Throttle(5, 60)
+  // @ResponseMessage('Uploaded Multiple files')
+  // @UseInterceptors(
+  //   FilesInterceptor(
+  //     'fileUpload',
+  //     10,
+  //     new MulterConfigService().createMulterOptions({
+  //       fileSize: 1024 * 1024 * 20,
+  //     }),
+  //   ),
+  // )
+  // // @UseFilters(new HttpExceptionFilter())
+  // uploadMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
+  //   if (files.length > 10) {
+  //     throw new HttpException(
+  //       'Too many files uploaded. Maximum limit is 10.',
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+  //   return {
+  //     files: files.map((file) => file.filename),
+  //   };
+  // }
 
   @Public()
   @Post('image')
