@@ -1,20 +1,17 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateResumeDto, CreateUserCvDto } from './dto/create-resume.dto';
-import { UpdateResumeDto } from './dto/update-resume.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import { IUser } from 'src/users/users.interface';
-import mongoose from 'mongoose';
 import aqp from 'api-query-params';
-import { Resume, ResumeDocument } from './schemas/resume.schemas';
+import mongoose from 'mongoose';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { Provider } from 'src/provider/schemas/providers.schemas';
 import { User } from 'src/users/schemas/user.schema'; // Add this import
-import { Types } from 'mongoose'; // Add this import
-import { MailerService } from '@nestjs-modules/mailer';
+import { IUser } from 'src/users/users.interface';
+import { CreateUserCvDto } from './dto/create-resume.dto';
+import { Resume, ResumeDocument, ResumeStatus } from './schemas/resume.schemas';
 
 @Injectable()
 export class ResumesService {
-
   constructor(
     @InjectModel(Resume.name)
     private resumeModel: SoftDeleteModel<ResumeDocument>,
@@ -23,12 +20,11 @@ export class ResumesService {
     @InjectModel(User.name) // Add this line
     private userModel: mongoose.Model<User>, // Add this line
     private readonly mailerService: MailerService,
-  ) { }
+  ) {}
 
   // async searchByProviderName(providerName: string) {
   //   // Step 1: Query the provider by name
   //   const provider = await this.providerModel.findOne({ name: new RegExp(`^${providerName}$`, 'i') });
-
 
   //   // Check if provider is found
   //   if (!provider) {
@@ -48,39 +44,55 @@ export class ResumesService {
     const { email, _id } = user;
 
     const newCV = await this.resumeModel.create({
-      urlCV, email, scholarship,
+      urlCV,
+      email,
+      scholarship,
       userId: _id,
-      status: "PENDING",
+      status: ResumeStatus.PENDING,
+      orderCode: this.generateOrderCode(),
       createdBy: { _id, email },
       history: [
         {
-          status: "PENDING",
-          updatedAt: new Date,
+          status: ResumeStatus.PENDING,
+          updatedAt: new Date(),
           updatedBy: {
             _id: user._id,
-            email: user.email
-          }
-        }
-      ]
-    })
+            email: user.email,
+          },
+        },
+      ],
+    });
 
     return {
       _id: newCV?._id,
-      createdAt: newCV?.createdAt
-    }
+      createdAt: newCV?.createdAt,
+      orderCode: newCV?.orderCode,
+    };
+  }
+
+  generateOrderCode(): number {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const second = date.getSeconds();
+    return parseInt(`${year}${month}${day}${hour}${minute}${second}`);
   }
 
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population, projection } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-    let offset = (+currentPage - 1) * (+limit);
+    let offset = (+currentPage - 1) * +limit;
     let defaultLimit = +limit ? +limit : 10;
 
     const totalItems = (await this.resumeModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
-    const result = await this.resumeModel.find(filter)
+    const result = await this.resumeModel
+      .find(filter)
       .skip(offset)
       .limit(defaultLimit)
       .sort(sort as any)
@@ -93,25 +105,22 @@ export class ResumesService {
         current: currentPage, //trang hiện tại
         pageSize: limit, //số lượng bản ghi đã lấy
         pages: totalPages, //tổng số trang với điều kiện query
-        total: totalItems // tổng số phần tử (số bản ghi)
+        total: totalItems, // tổng số phần tử (số bản ghi)
       },
-      result //kết quả query
-    }
+      result, //kết quả query
+    };
   }
-
-
 
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw new BadRequestException("not found resume")
+      throw new BadRequestException('not found resume');
     }
     return await this.resumeModel.findById(id);
   }
 
-
   async update(_id: string, status: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
-      throw new BadRequestException("not found resume")
+      throw new BadRequestException('not found resume');
     }
 
     const updated = await this.resumeModel.updateOne(
@@ -120,53 +129,76 @@ export class ResumesService {
         status,
         updatedBy: {
           _id: user._id,
-          email: user.email
+          email: user.email,
         },
         $push: {
           history: {
             status: status,
-            updatedAt: new Date,
+            updatedAt: new Date(),
             updatedBy: {
               _id: user._id,
-              email: user.email
-            }
-          }
-        }
-      });
+              email: user.email,
+            },
+          },
+        },
+      },
+    );
 
     return updated;
   }
 
   async findByUsers(user: IUser) {
-    return await this.resumeModel.find({
-      userId: user._id,
-    })
-      .sort("-createdAt")
+    return await this.resumeModel
+      .find({
+        userId: user._id,
+      })
+      .sort('-createdAt')
       .populate([
         {
-          path: "scholarship",
-          select: { name: 1 }
-        }
-      ])
+          path: 'scholarship',
+          select: { name: 1 },
+        },
+      ]);
   }
-
 
   async remove(_id: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(_id))
-      throw new BadRequestException("not found resume")
+      throw new BadRequestException('not found resume');
 
     await this.resumeModel.updateOne(
       { _id },
       {
         deletedBy: {
           _id: user._id,
-          email: user.email
+          email: user.email,
         },
-      })
+      },
+    );
     return this.resumeModel.softDelete({
-      _id
+      _id,
     });
   }
+
+  async updateStatusByOrderCode(
+    orderCode: number,
+    status: keyof typeof ResumeStatus,
+    user?: IUser,
+  ) {
+    return await this.resumeModel.updateOne(
+      { orderCode },
+      {
+        $set: { status: status },
+        $push: {
+          history: {
+            status: status,
+            updatedAt: new Date(),
+            updatedBy: {
+              _id: user?._id ?? 'system',
+              email: user?.email ?? 'system@SFMS.com',
+            },
+          },
+        },
+      },
+    );
+  }
 }
-
-
