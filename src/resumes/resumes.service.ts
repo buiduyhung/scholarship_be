@@ -184,6 +184,14 @@ export class ResumesService {
     status: keyof typeof ResumeStatus,
     user?: IUser,
   ) {
+    const currentResume = await this.resumeModel.findOne({ orderCode }).exec();
+    if (!currentResume) {
+      throw new BadRequestException('Resume not found');
+    }
+    if (currentResume.status === status) {
+      throw new BadRequestException('Status is the same');
+    }
+
     return await this.resumeModel.updateOne(
       { orderCode },
       {
