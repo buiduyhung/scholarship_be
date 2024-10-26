@@ -34,11 +34,11 @@ export class ResumesController {
     );
 
     const payment = await this.paymentService.createPaymentLink({
-      amount: 1000,
-      cancelUrl: 'http://localhost:3000/cancel',
+      amount: 2000,
+      cancelUrl: 'https://sfms.pages.dev/payment/cancel',
       description: `SMFS`,
       orderCode,
-      returnUrl: 'http://localhost:3000/success',
+      returnUrl: 'https://sfms.pages.dev/payment/success',
       items: [
         {
           name: _id.toString(),
