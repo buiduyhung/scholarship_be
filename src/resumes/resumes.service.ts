@@ -20,7 +20,7 @@ export class ResumesService {
     @InjectModel(User.name) // Add this line
     private userModel: mongoose.Model<User>, // Add this line
     private readonly mailerService: MailerService,
-  ) {}
+  ) { }
 
   // async searchByProviderName(providerName: string) {
   //   // Step 1: Query the provider by name
@@ -175,8 +175,12 @@ export class ResumesService {
       throw new BadRequestException('not found resume');
     }
     return (await this.resumeModel.findById(id))
-      .populated('scholarship')
-      .select('scholarship.name');
+      .populate([
+        {
+          path: 'scholarship',
+          select: { name: 1 },
+        },
+      ]);
   }
 
   async update(_id: string, status: string, user: IUser) {
