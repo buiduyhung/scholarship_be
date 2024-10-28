@@ -3,13 +3,13 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import { Scholarship } from 'src/scholarship/schemas/scholarship.schemas';
 
 export type ResumeDocument = HydratedDocument<Resume>;
-export const ResumeStatus = {
-  PENDING: 'PENDING', // Waiting for payment
-  PAID: 'PAID', // Payment received, waiting for approval
-  APPROVED: 'APPROVED', // Approved
-  REJECTED: 'REJECTED', // Rejected
-  DELETED: 'DELETED', // Rejected by admin or deleted by user
-};
+export enum ResumeStatus {
+  PENDING = 'PENDING', // Waiting for payment
+  PAID = 'PAID', // Payment received, waiting for approval
+  REJECTED = 'REJECTED', // Rejected
+  REVIEWING = 'REVIEWING', // In reviewing
+  DONE = 'DONE', // Approved
+}
 @Schema({ timestamps: true })
 export class Resume {
   @Prop()
@@ -23,7 +23,7 @@ export class Resume {
 
   @Prop({
     type: String,
-    enum: Object.values(ResumeStatus),
+    enum: ResumeStatus,
   })
   status: string;
 
