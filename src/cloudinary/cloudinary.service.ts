@@ -22,6 +22,7 @@ export class CloudinaryService {
           if (error) {
             this.logger.error(error);
             reject(error);
+            return;
           }
           this.logger.log(
             'File uploaded to cloudinary'.concat(file?.originalname),

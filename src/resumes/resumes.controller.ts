@@ -1,14 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors, UploadedFile, HttpCode, BadRequestException } from '@nestjs/common';
-import { ResumesService } from './resumes.service';
-import { CreateResumeDto, CreateUserCvDto } from './dto/create-resume.dto';
-import { UpdateResumeDto } from './dto/update-resume.dto';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
-import { IUser } from 'src/users/users.interface';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { PayOSService } from 'src/payos/payos.service';
-
+import { IUser } from 'src/users/users.interface';
+import { CreateUserCvDto } from './dto/create-resume.dto';
+import { ResumesService } from './resumes.service';
 
 @ApiTags('resumes')
 @Controller('resumes')
@@ -17,11 +28,10 @@ export class ResumesController {
     private readonly resumesService: ResumesService,
     private readonly paymentService: PayOSService,
     private readonly cloudinaryService: CloudinaryService,
-  ) { }
-
+  ) {}
 
   @Post()
-  @ResponseMessage("Create a new resume")
+  @ResponseMessage('Create a new resume')
   @UseInterceptors(
     FileInterceptor('urlCV', {
       limits: {
@@ -34,30 +44,39 @@ export class ResumesController {
     @Body() createUserCvDto: CreateUserCvDto,
     @User() user: IUser,
   ) {
-    const uploadedFileResponse = await this.cloudinaryService.uploadFile(file);
-    const uploadedFileUrl = uploadedFileResponse.url;
+    try {
+      const uploadedFileResponse =
+        await this.cloudinaryService.uploadFile(file);
+      const uploadedFileUrl = uploadedFileResponse.url;
 
-    const { _id, orderCode, createdAt } = await this.resumesService.create({
-      ...createUserCvDto,
-      urlCV: uploadedFileUrl,
-    }, user);
-
-    const payment = await this.paymentService.createPaymentLink({
-      amount: 2000,
-      cancelUrl: 'https://sfms.pages.dev/payment/cancel',
-      description: `SMFS`,
-      orderCode,
-      returnUrl: 'https://sfms.pages.dev/payment/success',
-      items: [
+      const { _id, orderCode, createdAt } = await this.resumesService.create(
         {
-          name: _id.toString(),
-          price: 1000,
-          quantity: 1,
+          ...createUserCvDto,
+          urlCV: uploadedFileUrl,
         },
-      ],
-    });
+        user,
+      );
 
-    return { _id, createdAt, payment };
+      const payment = await this.paymentService.createPaymentLink({
+        amount: 2000,
+        cancelUrl: 'https://sfms.pages.dev/payment/cancel',
+        description: `SMFS`,
+        orderCode,
+        returnUrl: 'https://sfms.pages.dev/payment/success',
+        items: [
+          {
+            name: _id.toString(),
+            price: 1000,
+            quantity: 1,
+          },
+        ],
+      });
+
+      return { _id, createdAt, payment };
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Get()
@@ -95,29 +114,30 @@ export class ResumesController {
   // }
 
   @Post('by-user')
-  @ResponseMessage("Get Resumes by User")
+  @ResponseMessage('Get Resumes by User')
   getResumesByUser(@User() user: IUser) {
     return this.resumesService.findByUsers(user);
   }
 
   @Get(':id')
-  @ResponseMessage("Fetch a resume by id")
+  @ResponseMessage('Fetch a resume by id')
   findOne(@Param('id') id: string) {
     return this.resumesService.findOne(id);
   }
 
   @Patch(':id')
-  @ResponseMessage("Update status resume")
-  updateStatus(@Param('id') id: string, @Body("status") status: string, @User() user: IUser) {
+  @ResponseMessage('Update status resume')
+  updateStatus(
+    @Param('id') id: string,
+    @Body('status') status: string,
+    @User() user: IUser,
+  ) {
     return this.resumesService.update(id, status, user);
   }
 
   @Delete(':id')
-  @ResponseMessage("Delete a resume")
-  remove(
-    @Param('id') id: string,
-    @User() user: IUser
-  ) {
+  @ResponseMessage('Delete a resume')
+  remove(@Param('id') id: string, @User() user: IUser) {
     return this.resumesService.remove(id, user);
   }
 }
