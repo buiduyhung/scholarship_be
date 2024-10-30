@@ -22,6 +22,7 @@ import { InvitationModule } from './invitation/invitation.module';
 import { AdvisoryModule } from './advisory/advisory.module';
 import { PayOSModule } from './payos/payos.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { StudyModule } from './study/study.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     AdvisoryModule,
     PayOSModule,
     CloudinaryModule,
+    StudyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
