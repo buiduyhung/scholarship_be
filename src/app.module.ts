@@ -21,6 +21,7 @@ import { ProviderModule } from './provider/providers.module';
 import { ResumesModule } from './resumes/resumes.module';
 import { RolesModule } from './roles/roles.module';
 import { ScholarshipModule } from './scholarship/scholarship.module';
+import { StudyModule } from './study/study.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UsersModule } from './users/users.module';
 
@@ -65,6 +66,7 @@ import { UsersModule } from './users/users.module';
     AdvisoryModule,
     PayOSModule,
     CloudinaryModule,
+    StudyModule,
     ChatModule,
   ],
   controllers: [AppController],
