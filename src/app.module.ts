@@ -1,27 +1,28 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
-import { ProviderModule } from './provider/providers.module';
-import { ScholarshipModule } from './scholarship/scholarship.module';
-import { FilesModule } from './files/files.module';
-import { ResumesModule } from './resumes/resumes.module';
-import { PermissionsModule } from './permissions/permissions.module';
-import { RolesModule } from './roles/roles.module';
-import { DatabasesModule } from './databases/databases.module';
-import { SubscribersModule } from './subscribers/subscribers.module';
-import { MailModule } from './mail/mail.module';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
+import { ChatModule } from 'src/chat/chat.module';
+import { AdvisoryModule } from './advisory/advisory.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { DatabasesModule } from './databases/databases.module';
+import { FilesModule } from './files/files.module';
 import { HealthModule } from './health/health.module';
 import { InvitationModule } from './invitation/invitation.module';
-import { AdvisoryModule } from './advisory/advisory.module';
+import { MailModule } from './mail/mail.module';
 import { PayOSModule } from './payos/payos.module';
-import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { PermissionsModule } from './permissions/permissions.module';
+import { ProviderModule } from './provider/providers.module';
+import { ResumesModule } from './resumes/resumes.module';
+import { RolesModule } from './roles/roles.module';
+import { ScholarshipModule } from './scholarship/scholarship.module';
+import { SubscribersModule } from './subscribers/subscribers.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -31,20 +32,21 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
       limit: 5,
     }),
     // MongooseModule.forRoot('mongodb+srv://root:anhteo2002@cluster0.r3vvrwe.mongodb.net/'),
-    MongooseModule.forRootAsync({  // load bat dong bo 
+    MongooseModule.forRootAsync({
+      // load bat dong bo
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URL'),
         connectionFactory: (connection) => {
           connection.plugin(softDeletePlugin);
           return connection;
-        }
+        },
       }),
       inject: [ConfigService],
     }),
 
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
     }),
 
     UsersModule,
@@ -63,8 +65,9 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     AdvisoryModule,
     PayOSModule,
     CloudinaryModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
