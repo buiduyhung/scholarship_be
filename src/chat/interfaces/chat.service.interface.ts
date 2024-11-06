@@ -2,6 +2,7 @@ import { CreateMessageDto } from 'src/chat/dto/create-message.dto';
 import { ConversationDocument } from 'src/chat/schema/conversation.schema';
 import { MessageDocument } from 'src/chat/schema/message.schema';
 import { UserDocument } from 'src/users/schemas/user.schema';
+import { IUser } from 'src/users/users.interface';
 
 export interface IChatService {
   createConversation(
@@ -13,9 +14,7 @@ export interface IChatService {
     user: Pick<UserDocument, '_id'>,
   ): Promise<ConversationDocument>;
 
-  getConversations(
-    user: Pick<UserDocument, '_id'>,
-  ): Promise<Record<string, any>>;
+  getConversations(user: IUser): Promise<Record<string, any>>;
 
   getConversationById(
     conversationId: string,

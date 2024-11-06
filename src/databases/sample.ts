@@ -600,10 +600,10 @@ export const INIT_PERMISSIONS = [
     __v: 0,
   },
   {
-    _id: '648ad6b2dafdb9754f40b8ba',
-    name: 'Get Chat by id',
+    _id: '671655660ab9f0be2b7762cb',
+    name: 'Update chat by id',
     apiPath: '/api/v1/chat/:id',
-    method: 'GET',
+    method: 'PUT',
     module: 'CHAT',
     createdBy: {
       _id: '647b5108a8a243e8191855b5',
@@ -615,11 +615,14 @@ export const INIT_PERMISSIONS = [
     updatedAt: '2024-06-15T09:13:52.798Z',
     __v: 0,
   },
+];
+
+export const CHAT_PERMISSIONS = [
   {
-    _id: '671655660ab9f0be2b7762cb',
-    name: 'Update chat by id',
+    _id: '648ad6b2dafdb9754f40b8ba',
+    name: 'Get Chat by id',
     apiPath: '/api/v1/chat/:id',
-    method: 'PUT',
+    method: 'GET',
     module: 'CHAT',
     createdBy: {
       _id: '647b5108a8a243e8191855b5',

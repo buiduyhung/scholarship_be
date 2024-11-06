@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import aqp from 'api-query-params';
-import mongoose from 'mongoose';
-import { find } from 'rxjs';
+import mongoose, { Types } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { CreateMessageDto } from 'src/chat/dto/create-message.dto';
 import { IChatService } from 'src/chat/interfaces/chat.service.interface';
@@ -12,6 +11,7 @@ import {
 } from 'src/chat/schema/conversation.schema';
 import { Message, MessageDocument } from 'src/chat/schema/message.schema';
 import { UserDocument } from 'src/users/schemas/user.schema';
+import { IUser } from 'src/users/users.interface';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -46,7 +46,6 @@ export class ChatService implements IChatService {
     return this.conversationModel.create({
       user: user._id,
       staff: staff._id,
-      messages: [],
       status: true,
       createdAt: new Date(),
     });
@@ -73,7 +72,7 @@ export class ChatService implements IChatService {
     );
   }
   async getConversations(
-    user: Pick<UserDocument, '_id'>,
+    user: IUser,
     options?: {
       currentPage: number;
       limit: number;
@@ -90,28 +89,99 @@ export class ChatService implements IChatService {
       await this.conversationModel.find({ ...filter, user: user._id })
     ).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
+    const query =
+      user.role.name.toUpperCase() === 'SUPER_ADMIN'
+        ? {}
+        : { user: new Types.ObjectId(user._id) };
+    // const result = await this.conversationModel
+    //   .find({
+    //     ...find,
+    //     ...query,
+    //   })
+    //   .sort({ ...sort } as any)
+    //   .populate(population)
+    //   .populate('staff', 'id email avatar')
+    //   .populate('user', 'id email avatar')
+    //   .select('id status createdAt messages')
+    //   .select(projection)
+    //   .skip(offset)
+    //   .limit(defaultLimit);
+    const result = await this.conversationModel.aggregate([
+      {
+        $match: {
+          ...query,
+          ...filter,
+        },
+      },
+      {
+        $sort: {
+          ...sort,
+          createdAt: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'staff',
+          foreignField: '_id',
+          as: 'staff',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: '$user',
+      },
+      {
+        $unwind: '$staff',
+      },
+      {
+        $lookup: {
+          from: 'messages',
+          localField: '_id',
+          foreignField: 'conversation',
+          as: 'messages',
+          pipeline: [
+            {
+              $sort: {
+                createdAt: -1,
+              },
+            },
+            {
+              $limit: 1,
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          ...projection,
+          id: 1,
+          status: 1,
+          createdAt: 1,
+          messages: 1,
+          staff: { _id: 1, email: 1, avatar: 1 },
+          user: { _id: 1, email: 1, avatar: 1 },
+        },
+      },
+      {
+        $skip: offset,
+      },
+      {
+        $limit: defaultLimit,
+      },
+    ]);
 
-    const result = await this.conversationModel
-      .find(
-        {
-          ...find,
-          user: user._id,
-        },
-        {
-          sort: { createdAt: -1 },
-        },
-      )
-      .populate(population)
-      .populate('staff', 'id email')
-      .populate('user', 'id email')
-      .select('id status createdAt messages')
-      .select(projection)
-      .skip(offset)
-      .limit(defaultLimit);
     return {
       meta: {
-        current: options.currentPage, //trang hiện tại
-        pageSize: options.limit, //số lượng bản ghi đã lấy
+        current: +options.currentPage, //trang hiện tại
+        pageSize: +options.limit, //số lượng bản ghi đã lấy
         pages: totalPages, //tổng số trang với điều kiện query
         total: totalItems, // tổng số phần tử (số bản ghi)
       },
@@ -121,23 +191,23 @@ export class ChatService implements IChatService {
   getConversationById(conversationId: string): Promise<any> {
     return this.conversationModel
       .findById(new mongoose.Types.ObjectId(conversationId))
-      .populate('staff', 'id email')
-      .populate('user', 'id email');
+      .populate('staff', 'id email avatar')
+      .populate('user', 'id email avatar');
   }
 
   async getMessages(
     conversationId: string,
     options?: {
       currentPage: number;
-      limit: number;
+      pageSize: number;
       qs: string;
     },
   ) {
-    const { filter, sort, population, projection } = aqp(options?.qs);
+    const { filter, population, projection } = aqp(options?.qs);
     delete filter.current;
     delete filter.pageSize;
-    let offset = (+options?.currentPage - 1) * +options?.limit;
-    let defaultLimit = +options?.limit ? +options?.limit : 10;
+    let offset = (+options?.currentPage - 1) * +options?.pageSize;
+    let defaultLimit = +options?.pageSize ? +options?.pageSize : 10;
 
     const totalItems = await this.messageModel
       .find({
@@ -149,27 +219,23 @@ export class ChatService implements IChatService {
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     const result = await this.messageModel
-      .find(
-        {
-          ...filter,
-          conversation: conversationId,
-        },
-        {
-          sort: { sentAt: -1 },
-        },
-      )
+      .find({
+        ...filter,
+        conversation: conversationId,
+      })
       .populate(population)
-      .populate('sender', 'id email')
+      .populate('sender', 'id email avatar')
       .select('id text files sentAt')
       .select(projection)
       .skip(offset)
+      .sort({ sentAt: -1 })
       .limit(defaultLimit)
       .exec();
 
     return {
       meta: {
-        current: options?.currentPage, //trang hiện tại
-        pageSize: options?.limit, //số lượng bản ghi đã lấy
+        current: +options?.currentPage, //trang hiện tại
+        pageSize: +options?.pageSize, //số lượng bản ghi đã lấy
         pages: totalPages, //tổng số trang với điều kiện query
         total: totalItems, // tổng số phần tử (số bản ghi)
       },
@@ -206,7 +272,7 @@ export class ChatService implements IChatService {
       path: 'sender',
       localField: 'sender',
       foreignField: '_id',
-      select: 'id email',
+      select: 'id email avatar',
     });
   }
 }

@@ -11,13 +11,6 @@ export class Conversation {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name })
   staff: string;
 
-  // @Prop({
-  //   type: [{ type: mongoose.Schema.Types.ObjectId, ref: Message.name }],
-  //   default: [],
-  //   name: Message.name,
-  // })
-  // messages: Message[];
-
   @Prop()
   status: boolean;
 

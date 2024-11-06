@@ -11,6 +11,7 @@ import {
   ConversationSchema,
 } from 'src/chat/schema/conversation.schema';
 import { Message, MessageSchema } from 'src/chat/schema/message.schema';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
@@ -30,6 +31,7 @@ import { UsersModule } from 'src/users/users.module';
       }),
       inject: [ConfigService],
     }),
+    CloudinaryModule,
   ],
   controllers: [ChatController],
   providers: [ChatGateway, ChatService],

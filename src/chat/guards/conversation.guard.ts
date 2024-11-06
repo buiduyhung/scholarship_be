@@ -21,6 +21,9 @@ export class ConversationGuard implements CanActivate {
     const conversation = this.extractRoom(context);
     try {
       return new Promise((resolve, reject) => {
+        if (!conversation) {
+          return reject(false);
+        }
         this.conversationService
           .getConversationById(conversation)
           .then((conversation) => {

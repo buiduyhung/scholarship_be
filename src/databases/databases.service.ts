@@ -9,7 +9,12 @@ import {
 import { Role, RoleDocument } from 'src/roles/schemas/role.schemas';
 import { User, UserDocument } from 'src/users/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
-import { ADMIN_ROLE, INIT_PERMISSIONS, USER_ROLE } from './sample';
+import {
+  ADMIN_ROLE,
+  CHAT_PERMISSIONS,
+  INIT_PERMISSIONS,
+  USER_ROLE,
+} from './sample';
 
 @Injectable()
 export class DatabasesService implements OnModuleInit {
@@ -38,11 +43,17 @@ export class DatabasesService implements OnModuleInit {
 
       // create permission
       if (countPermission === 0) {
-        await this.permissionModel.insertMany(INIT_PERMISSIONS);
+        await this.permissionModel.insertMany([
+          ...INIT_PERMISSIONS,
+          ...CHAT_PERMISSIONS,
+        ]);
       }
 
       if (countRole === 0) {
         const permissions = await this.permissionModel.find({}).select('_id');
+        const chatPermissions = await this.permissionModel
+          .find({ name: { $in: CHAT_PERMISSIONS.map((p) => p.name) } })
+          .select('_id');
         await this.roleModel.insertMany([
           {
             name: ADMIN_ROLE,
@@ -54,7 +65,7 @@ export class DatabasesService implements OnModuleInit {
             name: USER_ROLE,
             description: 'Người dùng/Ứng viên sử dụng hệ thống',
             isActive: true,
-            permissions: [], // không set quyền, chỉ cần add ROLE
+            permissions: chatPermissions, // không set quyền, chỉ cần add ROLE
           },
         ]);
       }

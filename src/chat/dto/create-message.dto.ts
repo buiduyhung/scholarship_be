@@ -5,5 +5,8 @@ export class CreateMessageDto {
   text: string;
 
   @IsArray()
-  files: string[];
+  files: {
+    name: string; // include extension
+    buffer: Buffer;
+  }[];
 }
