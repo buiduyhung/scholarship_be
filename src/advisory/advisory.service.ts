@@ -21,15 +21,15 @@ export class AdvisoryService {
   ) { }
 
   async create(createUserAdvisoryDto: CreateUserAdvisoryDto) {
-    const { emailAdvisory, fullName, phone, address } = createUserAdvisoryDto;
+    const { emailAdvisory, fullName, phone, address, continent, time, value, level } = createUserAdvisoryDto;
 
     const newAd = await this.advisoryModel.create({
-      emailAdvisory, fullName, phone, address,
-      status: "PENDING",
+      emailAdvisory, fullName, phone, address, continent, time, value, level,
+      status: "Đang Chờ Tư Vấn",
       createdBy: emailAdvisory,
       history: [
         {
-          status: "PENDING",
+          status: "Đang Chờ Tư Vấn",
           updatedAt: new Date,
           updatedBy: {
             _id: null,

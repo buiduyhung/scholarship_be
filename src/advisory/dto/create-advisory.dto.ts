@@ -24,6 +24,18 @@ export class CreateAdvisoryDto {
     address: string;
 
     @IsNotEmpty()
+    continent: string; //tu dien
+
+    @IsNotEmpty()
+    time: string;
+
+    @IsNotEmpty()
+    value: string;
+
+    @IsNotEmpty()
+    level: string;  //tu dien
+
+    @IsNotEmpty()
     status: string;
 }
 
@@ -43,5 +55,16 @@ export class CreateUserAdvisoryDto {
     @IsNotEmpty()
     address: string;
 
+    @IsNotEmpty()
+    continent: string;
+
+    @IsNotEmpty()
+    time: string;
+
+    @IsNotEmpty()
+    value: string;
+
+    @IsNotEmpty()
+    level: string;  //tu dien
 
 }

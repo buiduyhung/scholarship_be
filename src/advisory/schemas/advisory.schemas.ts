@@ -24,6 +24,18 @@ export class Advisory {
     address: string;
 
     @Prop()
+    continent: string;
+
+    @Prop()
+    time: string;
+
+    @Prop()
+    value: string;
+
+    @Prop()
+    level: string;  //tu dien
+
+    @Prop()
     status: string;
 
     @Prop({ type: mongoose.Schema.Types.Array })
