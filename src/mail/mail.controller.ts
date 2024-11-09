@@ -13,40 +13,47 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('mail')
 @Controller('mail')
 export class MailController {
-  constructor(private readonly mailService: MailService,
+  constructor(
+    private readonly mailService: MailService,
     private readonly mailerService: MailerService,
-
     @InjectModel(Scholarship.name)
     private readonly scholarshipModel: SoftDeleteModel<ScholarshipDocument>,
-
     @InjectModel(Subscriber.name)
     private readonly subscriberModel: SoftDeleteModel<SubscriberDocument>
   ) { }
 
-
   @Get()
-  // @Cron(CronExpression.EVERY_30_SECONDS)
   @Cron(CronExpression.EVERY_DAY_AT_7AM)
   @Public()
   @ResponseMessage("Send email to subscriber")
   async handleTestEmail() {
     try {
       const subscribers = await this.subscriberModel.find({});
+      console.log('Subscribers:', subscribers);
+
       for (const subs of subscribers) {
-        const subsSubject = subs.subject;
+        console.log(`Processing subscriber: ${subs.email}`);
+
+        const subsMajor = subs.major;
         const subsLevel = subs.level;
-        // Build the query based on available data
+
         const query: any = {};
-        if (subsSubject?.length) query.subject = { $regex: new RegExp(`^(${subsSubject.join('|')})$`, 'i') };
-        if (subsLevel?.length) query.level = { $regex: new RegExp(`^(${subsLevel.join('|')})$`, 'i') };
-        const Matching = await this.scholarshipModel.find(query).populate('provider', 'name');
+        if (subsMajor?.length) query.major = { $in: subsMajor };
+        if (subsLevel?.length) query.level = { $in: subsLevel };
+
+        const Matching = await this.scholarshipModel.find(query);
+        console.log(`Matching scholarships for ${subs.email}:`, Matching);
+
         if (Matching?.length) {
-          const scholarship = Matching.map(item => {
-            return {
-              name: item.name,
-              level: item.level,
-            }
-          });
+          const scholarship = Matching.map(item => ({
+            name: item.name,
+            level: item.level,
+            major: item.major,
+            location: item.location
+          }));
+
+          console.log(`Sending email to ${subs.email} with scholarships:`, scholarship);
+
           await this.mailerService.sendMail({
             to: subs.email,
             from: '"Support Team" <support@example.com>',
@@ -57,13 +64,15 @@ export class MailController {
               scholarship: scholarship
             }
           });
-          // Use the scholarship variable if needed
+          console.log(`Email sent successfully to ${subs.email}`);
+        } else {
+          console.log(`No matching scholarships found for ${subs.email}`);
         }
       }
-
     } catch (error) {
       console.error('Error sending email:', error);
       throw new Error('Failed to send email');
     }
   }
 }
+

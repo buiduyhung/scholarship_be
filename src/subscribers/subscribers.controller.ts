@@ -13,19 +13,21 @@ export class SubscribersController {
   constructor(private readonly subscribersService: SubscribersService) { }
 
   @Post()
+  @SkipCheckPermission()
   @ResponseMessage("create a subscriber")
   create(@Body() createSubscriberDto: CreateSubscriberDto, @User() user: IUser) {
     return this.subscribersService.create(createSubscriberDto, user);
   }
 
   @Post("subject")
-  @ResponseMessage("Get subscriber's subject")
+  @ResponseMessage("Get subscriber's major")
   @SkipCheckPermission()
   getUserSubject(@Query("id") id: string) {
     return this.subscribersService.getSubject(id);
   }
 
   @Get()
+  @SkipCheckPermission()
   @ResponseMessage("fetch list subscriber with paginate")
   findAll(
     @Query("current") currentPage: string, //const currentPage: string = req.query.page;
@@ -36,6 +38,7 @@ export class SubscribersController {
   }
 
   @Get(':id')
+  @SkipCheckPermission()
   @ResponseMessage("fetch a subscriber by id")
   findOne(@Param('id') id: string) {
     return this.subscribersService.findOne(id);
@@ -53,6 +56,7 @@ export class SubscribersController {
   }
 
   @Delete(':id')
+  @SkipCheckPermission()
   @ResponseMessage("Delete a subscriber")
   remove(
     @Param('id') id: string,

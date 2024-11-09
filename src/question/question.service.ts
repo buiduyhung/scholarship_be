@@ -4,7 +4,6 @@ import { UpdateQuestionDto } from './dto/update-question.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Question, QuestionDocument } from './schemas/question.schemas';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import { User } from 'src/users/schemas/user.schema';
 import { IUser } from 'src/users/users.interface';
 import mongoose from 'mongoose';
 import aqp from 'api-query-params';

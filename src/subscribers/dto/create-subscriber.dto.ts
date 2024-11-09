@@ -13,7 +13,7 @@ export class CreateSubscriberDto {
     @IsOptional()
     @IsString({ each: true })
     @IsArray()
-    subject: string[];
+    major: string[];
 
     @IsOptional()
     @IsString({ each: true })
