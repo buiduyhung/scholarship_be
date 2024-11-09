@@ -24,6 +24,8 @@ import { ScholarshipModule } from './scholarship/scholarship.module';
 import { StudyModule } from './study/study.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UsersModule } from './users/users.module';
+import { QuestionModule } from './question/question.module';
+import { QuizModule } from './quiz/quiz.module';
 
 @Module({
   imports: [
@@ -68,6 +70,8 @@ import { UsersModule } from './users/users.module';
     CloudinaryModule,
     StudyModule,
     ChatModule,
+    QuestionModule,
+    QuizModule,
   ],
   controllers: [AppController],
   providers: [AppService],

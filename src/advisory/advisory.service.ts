@@ -15,9 +15,6 @@ export class AdvisoryService {
   constructor(
     @InjectModel(Advisory.name)
     private advisoryModel: SoftDeleteModel<AdvisoryDocument>,
-    @InjectModel(User.name)
-    private userModel: mongoose.Model<User>,
-
   ) { }
 
   async create(createUserAdvisoryDto: CreateUserAdvisoryDto) {

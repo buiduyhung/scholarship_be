@@ -39,7 +39,6 @@ export class StudyController {
     return this.studyService.findAll(+currentPage, +limit, qs); // Modify this line
   }
 
-  @Public()
   @SkipCheckPermission()
   @Get(':id')
   @ResponseMessage("Fetch a studyAboard with id")
