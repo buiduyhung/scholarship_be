@@ -89,7 +89,7 @@ export class QuestionService {
 
   async remove(id: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(id))
-      return `not found studyAboard`;
+      return `not found question`;
     await this.questionModel.updateOne(
       { _id: id },
       {
