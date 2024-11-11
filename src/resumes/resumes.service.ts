@@ -24,11 +24,12 @@ export class ResumesService {
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
     const { urlCV, scholarship } = createUserCvDto;
-    const { email, _id } = user;
+    const { name, email, _id } = user;
 
     const newCV = await this.resumeModel.create({
       urlCV,
       email,
+      name,
       scholarship,
       userId: _id,
       status: ResumeStatus.PENDING,

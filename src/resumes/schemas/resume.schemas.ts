@@ -16,6 +16,9 @@ export class Resume {
   email: string;
 
   @Prop()
+  name: string;
+
+  @Prop()
   userId: mongoose.Schema.Types.ObjectId;
 
   @Prop()

@@ -8,6 +8,9 @@ export class CreateResumeDto {
     email: string;
 
     @IsNotEmpty()
+    name: string;
+
+    @IsNotEmpty()
     userId: mongoose.Schema.Types.ObjectId;
 
     @IsOptional()
