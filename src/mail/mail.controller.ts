@@ -38,8 +38,12 @@ export class MailController {
         const subsLevel = subs.level;
 
         const query: any = {};
-        if (subsMajor?.length) query.major = { $in: subsMajor };
-        if (subsLevel?.length) query.level = { $in: subsLevel };
+        if (subsMajor?.length) {
+          query.major = { $in: subsMajor.map(major => new RegExp(`^${major}$`, 'i')) };
+        }
+        if (subsLevel?.length) {
+          query.level = { $in: subsLevel.map(level => new RegExp(`^${level}$`, 'i')) };
+        }
 
         const Matching = await this.scholarshipModel.find(query);
         console.log(`Matching scholarships for ${subs.email}:`, Matching);
@@ -75,4 +79,5 @@ export class MailController {
     }
   }
 }
+
 

@@ -22,8 +22,8 @@ export class SubscribersController {
   @Post("subject")
   @ResponseMessage("Get subscriber's major")
   @SkipCheckPermission()
-  getUserSubject(@Query("id") id: string) {
-    return this.subscribersService.getSubject(id);
+  getUserSubject(@User() user: IUser) {
+    return this.subscribersService.getSubject(user);
   }
 
   @Get()
@@ -44,15 +44,14 @@ export class SubscribersController {
     return this.subscribersService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch()
   @ResponseMessage("Update a subscriber")
   @SkipCheckPermission()
   update(
-    @Param("id") id: string,
     @Body() updateSubscriberDto: UpdateSubscriberDto,
     @User() user: IUser
   ) {
-    return this.subscribersService.update(id, updateSubscriberDto, user);
+    return this.subscribersService.update(updateSubscriberDto, user);
   }
 
   @Delete(':id')
