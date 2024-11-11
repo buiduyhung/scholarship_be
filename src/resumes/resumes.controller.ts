@@ -28,7 +28,7 @@ export class ResumesController {
     private readonly resumesService: ResumesService,
     private readonly paymentService: PayOSService,
     private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   @Post()
   @ResponseMessage('Create a new resume')
@@ -130,9 +130,10 @@ export class ResumesController {
   updateStatus(
     @Param('id') id: string,
     @Body('status') status: string,
+    @Body('urlCV') urlCV: string,
     @User() user: IUser,
   ) {
-    return this.resumesService.update(id, status, user);
+    return this.resumesService.update(id, status, urlCV, user);
   }
 
   @Delete(':id')

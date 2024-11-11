@@ -19,7 +19,7 @@ class History {
     status: string;
 
     @IsOptional()
-    message: string;
+    urlCV: string;
 
     @IsNotEmpty()
     updatedAt: Date;

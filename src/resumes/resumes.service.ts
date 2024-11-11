@@ -22,23 +22,6 @@ export class ResumesService {
     private readonly mailerService: MailerService,
   ) { }
 
-  // async searchByProviderName(providerName: string) {
-  //   // Step 1: Query the provider by name
-  //   const provider = await this.providerModel.findOne({ name: new RegExp(`^${providerName}$`, 'i') });
-
-  //   // Check if provider is found
-  //   if (!provider) {
-  //     throw new BadRequestException("Provider not found");
-  //   }
-
-  //   // Step 2: Query resumes based on the provider's ID
-  //   const resumes = await this.resumeModel.find({
-  //     provider: provider._id
-  //   }).exec();
-
-  //   return resumes;
-  // }
-
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
     const { urlCV, scholarship } = createUserCvDto;
     const { email, _id } = user;
@@ -183,7 +166,7 @@ export class ResumesService {
       ]);
   }
 
-  async update(_id: string, status: string, user: IUser) {
+  async update(_id: string, status: string, urlCV: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       throw new BadRequestException('not found resume');
     }
@@ -192,6 +175,7 @@ export class ResumesService {
       { _id },
       {
         status,
+        urlCV,
         updatedBy: {
           _id: user._id,
           email: user.email,
@@ -199,6 +183,7 @@ export class ResumesService {
         $push: {
           history: {
             status: status,
+            urlCV: urlCV,
             updatedAt: new Date(),
             updatedBy: {
               _id: user._id,
