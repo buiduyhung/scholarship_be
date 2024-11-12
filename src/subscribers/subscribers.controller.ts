@@ -14,21 +14,34 @@ export class SubscribersController {
 
   // Endpoint to create a new subscriber
   @Post()
+<<<<<<< HEAD
   @ResponseMessage("create a subscriber") 
+=======
+  @SkipCheckPermission()
+  @ResponseMessage("create a subscriber")
+>>>>>>> ed4d070b49f6c10efa1623603a33b01a5a1481f1
   create(@Body() createSubscriberDto: CreateSubscriberDto, @User() user: IUser) {
     return this.subscribersService.create(createSubscriberDto, user); 
   }
 
   // Endpoint to retrieve a subscriber's subject without checking permissions
   @Post("subject")
+<<<<<<< HEAD
   @ResponseMessage("Get subscriber's subject")
   @SkipCheckPermission() 
   getUserSubject(@Query("id") id: string) {
     return this.subscribersService.getSubject(id); 
+=======
+  @ResponseMessage("Get subscriber's major")
+  @SkipCheckPermission()
+  getUserSubject(@User() user: IUser) {
+    return this.subscribersService.getSubject(user);
+>>>>>>> ed4d070b49f6c10efa1623603a33b01a5a1481f1
   }
 
   // Endpoint to fetch a paginated list of subscribers
   @Get()
+  @SkipCheckPermission()
   @ResponseMessage("fetch list subscriber with paginate")
   findAll(
     @Query("current") currentPage: string, 
@@ -40,25 +53,38 @@ export class SubscribersController {
 
   // Endpoint to fetch a single subscriber by their ID
   @Get(':id')
+  @SkipCheckPermission()
   @ResponseMessage("fetch a subscriber by id")
   findOne(@Param('id') id: string) {
     return this.subscribersService.findOne(id); 
   }
 
+<<<<<<< HEAD
   // Endpoint to update an existing subscriber, skips permission check
   @Patch(':id')
+=======
+  @Patch()
+>>>>>>> ed4d070b49f6c10efa1623603a33b01a5a1481f1
   @ResponseMessage("Update a subscriber")
   @SkipCheckPermission() 
   update(
+<<<<<<< HEAD
     @Param("id") id: string, 
     @Body() updateSubscriberDto: UpdateSubscriberDto, 
     @User() user: IUser 
   ) {
     return this.subscribersService.update(id, updateSubscriberDto, user); 
+=======
+    @Body() updateSubscriberDto: UpdateSubscriberDto,
+    @User() user: IUser
+  ) {
+    return this.subscribersService.update(updateSubscriberDto, user);
+>>>>>>> ed4d070b49f6c10efa1623603a33b01a5a1481f1
   }
 
   // Endpoint to delete a subscriber
   @Delete(':id')
+  @SkipCheckPermission()
   @ResponseMessage("Delete a subscriber")
   remove(
     @Param('id') id: string, 

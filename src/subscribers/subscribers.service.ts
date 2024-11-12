@@ -16,7 +16,8 @@ export class SubscribersService {
   ) { }
 
   async create(createSubscriberDto: CreateSubscriberDto, user: IUser) {
-    const { name, email, subject, level } = createSubscriberDto;
+    const { major, level } = createSubscriberDto;
+    const { email, name } = user
 
     const isExist = await this.subscriberModel.findOne({ email });
     if (isExist) {
@@ -24,7 +25,7 @@ export class SubscribersService {
     }
 
     let newSubs = await this.subscriberModel.create({
-      name, email, subject, level,
+      name, email, major, level,
       createdBy: {
         _id: user._id,
         email: user.email
@@ -72,9 +73,9 @@ export class SubscribersService {
     return await this.subscriberModel.findOne({ _id: id })
   }
 
-  async update(id: string, updateSubscriberDto: UpdateSubscriberDto, user: IUser) {
+  async update(updateSubscriberDto: UpdateSubscriberDto, user: IUser) {
     const updated = await this.subscriberModel.updateOne(
-      { _id: id },
+      { email: user.email },
       {
         ...updateSubscriberDto,
         updatedBy: {
@@ -82,7 +83,7 @@ export class SubscribersService {
           email: user.email
         }
       },
-      // { upsert: true } // neu khong co thi tao moi
+      { upsert: true } // neu khong co thi tao moi
     );
     return updated;
   }
@@ -105,7 +106,8 @@ export class SubscribersService {
     });
   }
 
-  async getSubject(id: string) {
-    return await this.subscriberModel.findOne({ _id: id }, { subject: 1, level: 1 });
+  async getSubject(user: IUser) {
+    const { email } = user;
+    return await this.subscriberModel.findOne({ email }, { name: 1, major: 1, level: 1 });
   }
 }

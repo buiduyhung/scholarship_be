@@ -24,13 +24,16 @@ export class Advisory {
     address: string;
 
     @Prop()
-    time: Date;
+    continent: string;
 
     @Prop()
-    level: string;
+    time: string;
 
     @Prop()
-    pay: string;
+    value: string;
+
+    @Prop()
+    level: string;  //tu dien
 
     @Prop()
     status: string;

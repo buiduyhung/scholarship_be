@@ -12,7 +12,7 @@ export class Subscriber {
     name: string;
 
     @Prop()
-    subject: string[];
+    major: string[];
 
     @Prop()
     level: string[];

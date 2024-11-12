@@ -3,17 +3,10 @@ import { IsArray, IsBoolean, IsEmail, IsMongoId, IsNotEmpty, IsOptional, IsStrin
 
 export class CreateSubscriberDto {
 
-    @IsNotEmpty()
-    name: string;
-
-    @IsEmail()
-    @IsNotEmpty()
-    email: string;
-
     @IsOptional()
     @IsString({ each: true })
     @IsArray()
-    subject: string[];
+    major: string[];
 
     @IsOptional()
     @IsString({ each: true })

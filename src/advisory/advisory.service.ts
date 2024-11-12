@@ -15,21 +15,18 @@ export class AdvisoryService {
   constructor(
     @InjectModel(Advisory.name)
     private advisoryModel: SoftDeleteModel<AdvisoryDocument>,
-    @InjectModel(User.name)
-    private userModel: mongoose.Model<User>,
-
   ) { }
 
   async create(createUserAdvisoryDto: CreateUserAdvisoryDto) {
-    const { emailAdvisory, fullName, phone, address, time, level, pay } = createUserAdvisoryDto;
+    const { emailAdvisory, fullName, phone, address, continent, time, value, level } = createUserAdvisoryDto;
 
     const newAd = await this.advisoryModel.create({
-      emailAdvisory, fullName, phone, address, time, level, pay,
-      status: "PENDING",
+      emailAdvisory, fullName, phone, address, continent, time, value, level,
+      status: "Đang Chờ Tư Vấn",
       createdBy: emailAdvisory,
       history: [
         {
-          status: "PENDING",
+          status: "Đang Chờ Tư Vấn",
           updatedAt: new Date,
           updatedBy: {
             _id: null,
@@ -58,7 +55,7 @@ export class AdvisoryService {
     const result = await this.advisoryModel.find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .sort(sort as any)
+      .sort({ createdAt: -1 })
       .populate(population)
       .select(projection as any)
       .exec();

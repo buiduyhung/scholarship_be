@@ -29,47 +29,47 @@ export class FilesController {
     private readonly filesService: FilesService,
     private readonly multerConfigService: MulterConfigService,
     private readonly cloudinaryService: CloudinaryService,
-  ) { }
+  ) {}
 
-  @Public()
-  @Post('upload')
-  @ResponseMessage('Uploaded Single file')
-  @UseGuards(ThrottlerGuard)
-  @Throttle(5, 60)
-  @UseInterceptors(FileInterceptor('fileUpload'))
-  // @UseFilters(new HttpExceptionFilter())
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    return {
-      fileName: file.filename,
-    };
-  }
+  // @Public()
+  // @Post('upload')
+  // @ResponseMessage('Uploaded Single file')
+  // @UseGuards(ThrottlerGuard)
+  // @Throttle(5, 60)
+  // @UseInterceptors(FileInterceptor('fileUpload'))
+  // // @UseFilters(new HttpExceptionFilter())
+  // uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //   return {
+  //     fileName: file.filename,
+  //   };
+  // }
 
-  @Public()
-  @Post('upload-multiple')
-  @UseGuards(ThrottlerGuard)
-  @Throttle(5, 60)
-  @ResponseMessage('Uploaded Multiple files')
-  @UseInterceptors(
-    FilesInterceptor(
-      'fileUpload',
-      10,
-      new MulterConfigService().createMulterOptions({
-        fileSize: 1024 * 1024 * 20,
-      }),
-    ),
-  )
-  // @UseFilters(new HttpExceptionFilter())
-  uploadMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
-    if (files.length > 10) {
-      throw new HttpException(
-        'Too many files uploaded. Maximum limit is 10.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    return {
-      files: files.map((file) => file.filename),
-    };
-  }
+  // @Public()
+  // @Post('upload-multiple')
+  // @UseGuards(ThrottlerGuard)
+  // @Throttle(5, 60)
+  // @ResponseMessage('Uploaded Multiple files')
+  // @UseInterceptors(
+  //   FilesInterceptor(
+  //     'fileUpload',
+  //     10,
+  //     new MulterConfigService().createMulterOptions({
+  //       fileSize: 1024 * 1024 * 20,
+  //     }),
+  //   ),
+  // )
+  // // @UseFilters(new HttpExceptionFilter())
+  // uploadMultipleFiles(@UploadedFiles() files: Express.Multer.File[]) {
+  //   if (files.length > 10) {
+  //     throw new HttpException(
+  //       'Too many files uploaded. Maximum limit is 10.',
+  //       HttpStatus.BAD_REQUEST,
+  //     );
+  //   }
+  //   return {
+  //     files: files.map((file) => file.filename),
+  //   };
+  // }
 
   @Public()
   @Post('image')
@@ -91,16 +91,19 @@ export class FilesController {
   @Post('images')
   @ResponseMessage('Uploaded Multiple files')
   @UseInterceptors(
-    FilesInterceptor('files', 10, { // Allow up to 10 files
+    FilesInterceptor('files', 10, {
+      // Allow up to 10 files
       limits: {
         fileSize: 1024 * 1024 * 20, // 20MB total size limit,
       },
     }),
   )
   async uploadImages(@UploadedFiles() files: Array<Express.Multer.File>) {
-    console.log({ files });
+    if (!files || files.length === 0) {
+      throw new HttpException('No files uploaded', HttpStatus.BAD_REQUEST);
+    }
     const uploadResults = await Promise.all(
-      files.map(file => this.cloudinaryService.uploadFile(file))
+      files.map((file) => this.cloudinaryService.uploadFile(file)),
     );
     return uploadResults;
   }

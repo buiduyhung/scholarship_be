@@ -1,22 +1,27 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { ChangePasswordAuthDto, ChangePasswordDto, CodeAuthDto, CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { User as UserM, UserDocument } from './schemas/user.schema';
-import mongoose, { Model } from 'mongoose';
-import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import { IUser } from './users.interface';
-import { User } from 'src/decorator/customize';
-import aqp from 'api-query-params';
-import { Role, RoleDocument } from 'src/roles/schemas/role.schemas';
-import { USER_ROLE } from 'src/databases/sample';
-import dayjs from 'dayjs';
 import { MailerService } from '@nestjs-modules/mailer';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import aqp from 'api-query-params';
+import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
+import dayjs from 'dayjs';
+import mongoose from 'mongoose';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { USER_ROLE } from 'src/databases/sample';
+import { User } from 'src/decorator/customize';
+import { Role, RoleDocument } from 'src/roles/schemas/role.schemas';
+import {
+  ChangePasswordAuthDto,
+  ChangePasswordDto,
+  CodeAuthDto,
+  CreateUserDto,
+  RegisterUserDto,
+} from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserDocument, User as UserM } from './schemas/user.schema';
+import { IUser } from './users.interface';
 
 @Injectable()
 export class UsersService {
-
   constructor(
     @InjectModel(UserM.name)
     private userModel: SoftDeleteModel<UserDocument>,
@@ -24,15 +29,14 @@ export class UsersService {
     @InjectModel(Role.name)
     private roleModel: SoftDeleteModel<RoleDocument>,
 
-    private readonly mailerService: MailerService
-
-  ) { }
+    private readonly mailerService: MailerService,
+  ) {}
 
   getHashPassword = (password: string) => {
     const salt = genSaltSync(10);
     const hash = hashSync(password, salt);
     return hash;
-  }
+  };
 
   generateRandomCode(): number {
     return Math.floor(100000 + Math.random() * 900000);
@@ -42,12 +46,23 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto, @User() user: IUser) {
     const {
-      name, email, password, avatar, age, gender, phone, address, role, isActive,
+      name,
+      email,
+      password,
+      avatar,
+      age,
+      gender,
+      phone,
+      address,
+      role,
+      isActive,
     } = createUserDto;
 
     const isExist = await this.userModel.findOne({ email });
     if (isExist) {
-      throw new BadRequestException(`Email: ${email} already exists. Please use a different email. `)
+      throw new BadRequestException(
+        `Email: ${email} already exists. Please use a different email. `,
+      );
     }
 
     const hashPassword = this.getHashPassword(password);
@@ -66,19 +81,20 @@ export class UsersService {
 
       createdBy: {
         _id: user._id,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
     return newUser;
   }
-
 
   async register(user: RegisterUserDto) {
     const { name, email, password, phone, age, gender, address } = user;
     //add logic check email
     const isExist = await this.userModel.findOne({ email });
     if (isExist) {
-      throw new BadRequestException(`Email: ${email} already exists. Please use a different email. `)
+      throw new BadRequestException(
+        `Email: ${email} already exists. Please use a different email. `,
+      );
     }
 
     const userRole = await this.roleModel.findOne({ name: USER_ROLE });
@@ -96,8 +112,8 @@ export class UsersService {
       role: userRole?._id,
       isActive: false,
       codeId: codeId,
-      codeExpired: dayjs().add(5, 'minutes')
-    })
+      codeExpired: dayjs().add(5, 'minutes'),
+    });
 
     this.mailerService.sendMail({
       to: newRegister.email, // list of receivers
@@ -169,17 +185,17 @@ export class UsersService {
     </body>
     </html>
   `,
-    })
+    });
     return newRegister;
   }
 
   async handleActive(data: CodeAuthDto) {
     const user = await this.userModel.findOne({
       _id: data._id,
-      codeId: data.code
-    })
+      codeId: data.code,
+    });
     if (!user) {
-      throw new BadRequestException("Mã code không hợp lệ hoặc đã hết hạn")
+      throw new BadRequestException('Mã code không hợp lệ hoặc đã hết hạn');
     }
 
     //check expire code
@@ -187,12 +203,15 @@ export class UsersService {
 
     if (isBeforeCheck) {
       //valid => update user
-      await this.userModel.updateOne({ _id: data._id }, {
-        isActive: true
-      })
+      await this.userModel.updateOne(
+        { _id: data._id },
+        {
+          isActive: true,
+        },
+      );
       return { isBeforeCheck };
     } else {
-      throw new BadRequestException("Mã code không hợp lệ hoặc đã hết hạn")
+      throw new BadRequestException('Mã code không hợp lệ hoặc đã hết hạn');
     }
   }
 
@@ -201,10 +220,10 @@ export class UsersService {
     const user = await this.userModel.findOne({ email });
 
     if (!user) {
-      throw new BadRequestException("Tài khoản không tồn tại")
+      throw new BadRequestException('Tài khoản không tồn tại');
     }
     if (user.isActive) {
-      throw new BadRequestException("Tài khoản đã được kích hoạt")
+      throw new BadRequestException('Tài khoản đã được kích hoạt');
     }
 
     //send Email
@@ -213,8 +232,8 @@ export class UsersService {
     //update user
     await user.updateOne({
       codeId: codeId,
-      codeExpired: dayjs().add(5, 'minutes')
-    })
+      codeExpired: dayjs().add(5, 'minutes'),
+    });
 
     //send email
     this.mailerService.sendMail({
@@ -287,17 +306,16 @@ export class UsersService {
       </body>
       </html>
     `,
-    })
-    return { _id: user._id }
+    });
+    return { _id: user._id };
   }
-
 
   async retryPassword(email: string) {
     //check email
     const user = await this.userModel.findOne({ email });
 
     if (!user) {
-      throw new BadRequestException("Tài khoản không tồn tại")
+      throw new BadRequestException('Tài khoản không tồn tại');
     }
 
     //send Email
@@ -306,8 +324,8 @@ export class UsersService {
     //update user
     await user.updateOne({
       codeId: codeId,
-      codeExpired: dayjs().add(5, 'minutes')
-    })
+      codeExpired: dayjs().add(5, 'minutes'),
+    });
 
     //send email
     this.mailerService.sendMail({
@@ -380,20 +398,22 @@ export class UsersService {
       </body>
       </html>
     `,
-    })
-    return { _id: user._id, email: user.email }
+    });
+    return { _id: user._id, email: user.email };
   }
 
   async forgotPassword(data: ChangePasswordAuthDto) {
     if (data.confirmPassword !== data.password) {
-      throw new BadRequestException("Mật khẩu/xác nhận mật khẩu không chính xác.")
+      throw new BadRequestException(
+        'Mật khẩu/xác nhận mật khẩu không chính xác.',
+      );
     }
 
     //check email
     const user = await this.userModel.findOne({ email: data.email });
 
     if (!user) {
-      throw new BadRequestException("Tài khoản không tồn tại")
+      throw new BadRequestException('Tài khoản không tồn tại');
     }
 
     //check expire code
@@ -402,29 +422,28 @@ export class UsersService {
     if (isBeforeCheck) {
       //valid => update password
       const newPassword = this.getHashPassword(data.password);
-      await user.updateOne({ password: newPassword })
+      await user.updateOne({ password: newPassword });
       return { isBeforeCheck };
     } else {
-      throw new BadRequestException("Mã code không hợp lệ hoặc đã hết hạn")
+      throw new BadRequestException('Mã code không hợp lệ hoặc đã hết hạn');
     }
-
   }
-
 
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, projection, population } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-    let offset = (+currentPage - 1) * (+limit);
+    let offset = (+currentPage - 1) * +limit;
     let defaultLimit = +limit ? +limit : 10;
 
     const totalItems = (await this.userModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
-    const result = await this.userModel.find(filter)
+    const result = await this.userModel
+      .find(filter)
       .skip(offset)
       .limit(defaultLimit)
-      .sort(sort as any)
+      .sort({ createdAt: -1 })
       .select('-password')
       .populate(population)
       .exec();
@@ -434,32 +453,33 @@ export class UsersService {
         current: currentPage, //trang hiện tại
         pageSize: limit, //số lượng bản ghi đã lấy
         pages: totalPages, //tổng số trang với điều kiện query
-        total: totalItems // tổng số phần tử (số bản ghi)
+        total: totalItems, // tổng số phần tử (số bản ghi)
       },
-      result //kết quả query
-    }
+      result, //kết quả query
+    };
   }
 
   async findOne(id: string) {
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return `not found user`;
-    return await this.userModel.findOne({
-      _id: id
-    }).select("-password")
-      .populate({ path: 'role', select: { name: 1 } })
+    if (!mongoose.Types.ObjectId.isValid(id)) return `not found user`;
+    return await this.userModel
+      .findOne({
+        _id: id,
+      })
+      .select('-password')
+      .populate({ path: 'role', select: { name: 1 } });
   }
 
   findOneByUsername(username: string) {
-
-    return this.userModel.findOne({
-      email: username
-    }).populate({ path: 'role', select: { name: 1 } })
+    return this.userModel
+      .findOne({
+        email: username,
+      })
+      .populate({ path: 'role', select: { name: 1 } });
   }
 
   isValidPassword(password: string, hash: string) {
     return compareSync(password, hash);
   }
-
 
   async update(updateUserDto: UpdateUserDto, user: IUser) {
     const updated = await this.userModel.updateOne(
@@ -468,18 +488,18 @@ export class UsersService {
         ...updateUserDto,
         updatedBy: {
           _id: user._id,
-          email: user.email
-        }
-      });
+          email: user.email,
+        },
+      },
+    );
     return updated;
   }
 
   async remove(id: string, user: IUser) {
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return `not found user`;
+    if (!mongoose.Types.ObjectId.isValid(id)) return `not found user`;
 
     const foundUser = await this.userModel.findById(id);
-    if (foundUser && foundUser.email === "admin@gmail.com") {
+    if (foundUser && foundUser.email === 'admin@gmail.com') {
       throw new BadRequestException('Cannot delete admin user');
     }
     await this.userModel.updateOne(
@@ -487,27 +507,25 @@ export class UsersService {
       {
         deletedBy: {
           _id: user._id,
-          email: user.email
-        }
-      });
+          email: user.email,
+        },
+      },
+    );
 
     return this.userModel.softDelete({
-      _id: id
+      _id: id,
     });
   }
 
   updateUserToken = async (refreshToken: string, _id: string) => {
-    return await this.userModel.updateOne(
-      { _id },
-      { refreshToken }
-    );
-  }
+    return await this.userModel.updateOne({ _id }, { refreshToken });
+  };
 
   findUserByToken = async (refreshToken: string) => {
-    return await this.userModel.findOne(
-      { refreshToken }
-    ).populate({ path: 'role', select: { name: 1 } })
-  }
+    return await this.userModel
+      .findOne({ refreshToken })
+      .populate({ path: 'role', select: { name: 1 } });
+  };
 
   async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {
     const { currentPassword, newPassword } = changePasswordDto;
@@ -517,7 +535,10 @@ export class UsersService {
       throw new BadRequestException('User not found.');
     }
 
-    const isPasswordValid = this.isValidPassword(currentPassword, user.password);
+    const isPasswordValid = this.isValidPassword(
+      currentPassword,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new BadRequestException('Current password is incorrect.');
     }
@@ -528,4 +549,19 @@ export class UsersService {
     return { message: 'Password updated successfully' };
   }
 
+  async findUsersByRole(role: string, options?: Record<string, any>) {
+    const roleDoc = await this.roleModel.findOne(
+      { name: new RegExp(role, 'i') },
+      {},
+    );
+
+    if (!roleDoc) {
+      throw new BadRequestException('Role not found.');
+    }
+
+    return this.userModel
+      .find({ role: roleDoc._id, ...(options ?? {}) })
+      .select('-password')
+      .populate({ path: 'role', select: { name: 1 } });
+  }
 }

@@ -1,4 +1,4 @@
-import { IsMongoId, IsNotEmpty, IsOptional } from "class-validator";
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import mongoose from "mongoose";
 
 
@@ -8,9 +8,13 @@ export class CreateResumeDto {
     email: string;
 
     @IsNotEmpty()
-    userId: mongoose.Schema.Types.ObjectId;
+    name: string;
 
     @IsNotEmpty()
+    userId: mongoose.Schema.Types.ObjectId;
+
+    @IsOptional()
+    @IsString()
     urlCV: string;
 
     @IsNotEmpty()
@@ -23,7 +27,8 @@ export class CreateResumeDto {
 
 export class CreateUserCvDto {
 
-    @IsNotEmpty()
+    @IsOptional()
+    @IsString()
     urlCV: string;
 
 

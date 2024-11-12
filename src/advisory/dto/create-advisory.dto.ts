@@ -24,13 +24,16 @@ export class CreateAdvisoryDto {
     address: string;
 
     @IsNotEmpty()
+    continent: string; //tu dien
+
+    @IsNotEmpty()
     time: string;
 
     @IsNotEmpty()
-    level: string;
+    value: string;
 
     @IsNotEmpty()
-    pay: string;
+    level: string;  //tu dien
 
     @IsNotEmpty()
     status: string;
@@ -52,14 +55,16 @@ export class CreateUserAdvisoryDto {
     @IsNotEmpty()
     address: string;
 
-    @Transform(({ value }) => new Date(value))
-    @IsDate()
-    time: Date;
+    @IsNotEmpty()
+    continent: string;
 
     @IsNotEmpty()
-    level: string;
+    time: string;
 
     @IsNotEmpty()
-    pay: string;
+    value: string;
+
+    @IsNotEmpty()
+    level: string;  //tu dien
 
 }
