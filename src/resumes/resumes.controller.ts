@@ -104,7 +104,7 @@ export class ResumesController {
     }
 
     const { orderCode } = webhookData;
-    return this.resumesService.updateStatusByOrderCode(orderCode, 'PAID');
+    return this.resumesService.updateStatusByOrderCode(orderCode, "Đã thanh toán");
   }
 
   // @Get('search-by-provider')

@@ -3,10 +3,7 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import { Scholarship } from 'src/scholarship/schemas/scholarship.schemas';
 
 export type ResumeDocument = HydratedDocument<Resume>;
-export enum ResumeStatus {
-  PENDING = 'Đang chờ thanh toán', // Waiting for payment
-  PAID = 'Đã thanh toán', // Payment received, waiting for approval
-}
+
 @Schema({ timestamps: true })
 export class Resume {
   @Prop()
@@ -21,10 +18,7 @@ export class Resume {
   @Prop()
   urlCV: string;
 
-  @Prop({
-    type: String,
-    enum: ResumeStatus,
-  })
+  @Prop()
   status: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Scholarship.name })
@@ -32,7 +26,7 @@ export class Resume {
 
   @Prop({ type: mongoose.Schema.Types.Array })
   history: {
-    status: keyof typeof ResumeStatus;
+    status: string;
     updatedAt: Date;
     updatedBy: {
       _id: mongoose.Schema.Types.ObjectId;

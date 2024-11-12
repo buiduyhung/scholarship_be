@@ -8,7 +8,7 @@ import { Provider } from 'src/provider/schemas/providers.schemas';
 import { User } from 'src/users/schemas/user.schema'; // Add this import
 import { IUser } from 'src/users/users.interface';
 import { CreateUserCvDto } from './dto/create-resume.dto';
-import { Resume, ResumeDocument, ResumeStatus } from './schemas/resume.schemas';
+import { Resume, ResumeDocument } from './schemas/resume.schemas';
 
 @Injectable()
 export class ResumesService {
@@ -32,12 +32,12 @@ export class ResumesService {
       name,
       scholarship,
       userId: _id,
-      status: ResumeStatus.PENDING,
+      status: "Đang chờ thanh toán",
       orderCode: this.generateOrderCode(),
       createdBy: { _id, email },
       history: [
         {
-          status: ResumeStatus.PENDING,
+          status: "Đang chờ thanh toán",
           updatedAt: new Date(),
           updatedBy: {
             _id: user._id,
@@ -232,7 +232,7 @@ export class ResumesService {
 
   async updateStatusByOrderCode(
     orderCode: number,
-    status: keyof typeof ResumeStatus,
+    status: string,
     user?: IUser,
   ) {
     const currentResume = await this.resumeModel.findOne({ orderCode }).exec();
