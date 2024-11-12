@@ -4,11 +4,8 @@ import { Scholarship } from 'src/scholarship/schemas/scholarship.schemas';
 
 export type ResumeDocument = HydratedDocument<Resume>;
 export enum ResumeStatus {
-  PENDING = 'PENDING', // Waiting for payment
-  PAID = 'PAID', // Payment received, waiting for approval
-  REJECTED = 'REJECTED', // Rejected
-  REVIEWING = 'REVIEWING', // In reviewing
-  DONE = 'DONE', // Approved
+  PENDING = 'Đang chờ thanh toán', // Waiting for payment
+  PAID = 'Đã thanh toán', // Payment received, waiting for approval
 }
 @Schema({ timestamps: true })
 export class Resume {
