@@ -91,6 +91,7 @@ export class ResumesService {
         $project: {
           urlCV: 1,
           status: 1,
+          name: 1,
           orderCode: 1,
           createdAt: 1,
           createdBy: 1,
