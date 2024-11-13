@@ -20,12 +20,12 @@ export class SubscribersController {
   }
 
   // Endpoint to retrieve a subscriber's subject without checking permissions
-  // @Post("subject")
-  // @ResponseMessage("Get subscriber's subject")
-  // @SkipCheckPermission()
-  // getUserSubject(@Query("id") id: string) {
-  //   return this.subscribersService.getSubject(id);
-  // }
+  @Post("subject")
+  @ResponseMessage("Get subscriber's subject")
+  @SkipCheckPermission()
+  getUserSubject(@User() user: IUser) {
+    return this.subscribersService.getSubject(user);
+  }
 
   // Endpoint to fetch a paginated list of subscribers
   @Get()
