@@ -46,7 +46,7 @@ export class AdvisoryController {
 
   @Delete(':id')
   @SkipCheckPermission()
-  @ResponseMessage("Delete a resume")
+  @ResponseMessage("Delete a Advisory")
   remove(
     @Param('id') id: string,
     @User() user: IUser

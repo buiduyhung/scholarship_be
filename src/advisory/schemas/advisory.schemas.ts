@@ -12,7 +12,7 @@ export class Advisory {
     email: string;
 
     @Prop()
-    userId: mongoose.Schema.Types.ObjectId;;
+    userId: mongoose.Schema.Types.ObjectId;
 
     @Prop()
     fullName: string;

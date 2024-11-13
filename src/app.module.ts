@@ -26,6 +26,7 @@ import { SubscribersModule } from './subscribers/subscribers.module';
 import { UsersModule } from './users/users.module';
 import { QuestionModule } from './question/question.module';
 import { QuizModule } from './quiz/quiz.module';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { QuizModule } from './quiz/quiz.module';
     ChatModule,
     QuestionModule,
     QuizModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
