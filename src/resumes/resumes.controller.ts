@@ -127,13 +127,32 @@ export class ResumesController {
 
   @Patch(':id')
   @ResponseMessage('Update status resume')
-  updateStatus(
+  @UseInterceptors(
+    FileInterceptor('urlCV', {
+      limits: {
+        fileSize: 1024 * 1024 * 5, // Limit file size to 5MB
+      },
+    }),
+  )
+  async updateStatus(
     @Param('id') id: string,
     @Body('status') status: string,
-    @Body('urlCV') urlCV: string,
+    @UploadedFile() file: Express.Multer.File,
     @User() user: IUser,
   ) {
-    return this.resumesService.update(id, status, urlCV, user);
+    try {
+      let uploadedFileUrl: string | undefined;
+
+      if (file) {
+        const uploadedFileResponse = await this.cloudinaryService.uploadFile(file);
+        uploadedFileUrl = uploadedFileResponse.url;
+      }
+
+      return this.resumesService.update(id, status, uploadedFileUrl, user);
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Delete(':id')
