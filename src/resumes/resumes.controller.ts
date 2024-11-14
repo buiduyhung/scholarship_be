@@ -15,7 +15,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { PayOSService } from 'src/payos/payos.service';
 import { IUser } from 'src/users/users.interface';
 import { CreateUserCvDto } from './dto/create-resume.dto';
@@ -31,6 +31,7 @@ export class ResumesController {
   ) { }
 
   @Post()
+  @SkipCheckPermission()
   @ResponseMessage('Create a new resume')
   @UseInterceptors(
     FileInterceptor('urlCV', {
@@ -80,6 +81,7 @@ export class ResumesController {
   }
 
   @Get()
+  @SkipCheckPermission()
   @ResponseMessage('Fetch all resumes with pagination')
   findAll(
     @Query('current') currentPage: string,
@@ -90,6 +92,7 @@ export class ResumesController {
   }
 
   @Post('webhook')
+  @SkipCheckPermission()
   @ApiOperation({
     summary: 'Webhook from PayOS',
     description: 'This endpoint is used to receive payment status from PayOS',
@@ -114,18 +117,21 @@ export class ResumesController {
   // }
 
   @Post('by-user')
+  @SkipCheckPermission()
   @ResponseMessage('Get Resumes by User')
   getResumesByUser(@User() user: IUser) {
     return this.resumesService.findByUsers(user);
   }
 
   @Get(':id')
+  @SkipCheckPermission()
   @ResponseMessage('Fetch a resume by id')
   findOne(@Param('id') id: string) {
     return this.resumesService.findOne(id);
   }
 
   @Patch(':id')
+  @SkipCheckPermission()
   @ResponseMessage('Update status resume')
   @UseInterceptors(
     FileInterceptor('urlCV', {
@@ -156,6 +162,7 @@ export class ResumesController {
   }
 
   @Delete(':id')
+  @SkipCheckPermission()
   @ResponseMessage('Delete a resume')
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.resumesService.remove(id, user);
