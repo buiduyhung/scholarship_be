@@ -6,6 +6,7 @@ import { Blog, BlogSchema } from './schemas/blog.schemas';
 
 @Module({
   imports: [
+    // Registers the Blog schema with Mongoose for database interactions
     MongooseModule.forFeature([
       { name: Blog.name, schema: BlogSchema },
     ])
@@ -14,3 +15,4 @@ import { Blog, BlogSchema } from './schemas/blog.schemas';
   providers: [BlogService],
 })
 export class BlogModule { }
+

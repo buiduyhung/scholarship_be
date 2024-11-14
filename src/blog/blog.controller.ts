@@ -9,6 +9,7 @@ import { IUser } from 'src/users/users.interface';
 export class BlogController {
   constructor(private readonly blogService: BlogService) { }
 
+  // Creates a new blog entry and associates it with the user who created it
   @Post()
   @SkipCheckPermission()
   @ResponseMessage("create a new blog")
@@ -16,10 +17,10 @@ export class BlogController {
     @Body() createBlogDto: CreateBlogDto,
     @User() user: IUser,
   ) {
-
     return this.blogService.create(createBlogDto, user);
   }
 
+  // Retrieves a list of all blog entries
   @Get()
   findAll() {
     return this.blogService.findAll();

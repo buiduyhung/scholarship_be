@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 
 
 export class CreateBlogDto {
+    // Data Transfer Object for creating a new blog post, with validation rules
     @IsNotEmpty()
     name: string;
 
@@ -13,5 +14,4 @@ export class CreateBlogDto {
     @IsNotEmpty()
     description: string;
 }
-
 
