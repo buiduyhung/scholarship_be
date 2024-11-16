@@ -10,19 +10,23 @@ import {
 } from '@payos/node/lib/type';
 import { IPayOSService } from 'src/payos/interfaces/payos.service.interface';
 
-@Injectable()
+@Injectable() // Đánh dấu PayOSService là một provider có thể được inject
 export class PayOSService implements IPayOSService {
-  private payOSClient: PayOS;
-  private logger = new Logger('PayOSService');
+  private payOSClient: PayOS; // Client để giao tiếp với PayOS
+  private logger = new Logger('PayOSService'); // Logger để ghi log
 
   constructor(private configService: ConfigService) {
+    // Lấy cấu hình từ ConfigService
     const clientId = this.configService.get<string>('PAYOS_CLIENT_ID');
     const apiKey = this.configService.get<string>('PAYOS_API_KEY');
     const checksumKey = this.configService.get<string>('PAYOS_CHECKSUM_KEY');
 
+    // Khởi tạo PayOS client
     this.payOSClient = new PayOS(clientId, apiKey, checksumKey);
     this.logger.log('Initializing PayOS client with client ID: ' + clientId);
   }
+
+  // Xác minh dữ liệu webhook thanh toán
   verifyPaymentWebhookData(payload: WebhookType): WebhookDataType {
     this.logger.log('Verifying payment webhook data', payload);
     const isVerified = this.payOSClient.verifyPaymentWebhookData(payload);
@@ -30,14 +34,18 @@ export class PayOSService implements IPayOSService {
     return isVerified;
   }
 
+  // Lấy thông tin liên kết thanh toán
   getPaymentLinkInformation(orderCode: string): Promise<PaymentLinkDataType> {
     this.logger.log('Getting payment link information for', orderCode);
     return this.payOSClient.getPaymentLinkInformation(orderCode);
   }
+
+  // Hủy liên kết thanh toán
   cancelPaymentLink(orderCode: string): Promise<Record<string, any>> {
     return this.payOSClient.cancelPaymentLink(orderCode);
   }
 
+  // Tạo liên kết thanh toán
   async createPaymentLink(
     paymentDetails: CheckoutRequestType,
   ): Promise<CheckoutResponseDataType> {

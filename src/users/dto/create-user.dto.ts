@@ -1,124 +1,137 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsEmail, IsMongoId, IsNotEmpty, IsNotEmptyObject, IsNumber, IsObject, IsOptional, IsPhoneNumber, IsString, Max, Min, ValidateNested } from 'class-validator';
+import {
+    IsEmail,
+    IsMongoId,
+    IsNotEmpty,
+    IsNotEmptyObject,
+    IsNumber,
+    IsObject,
+    IsOptional,
+    IsPhoneNumber,
+    IsString,
+    Max,
+    Min,
+    ValidateNested
+} from 'class-validator';
 import mongoose from 'mongoose';
 
-// class Provider { //validate obj provider
-//     @IsNotEmpty()
-//     _id: mongoose.Schema.Types.ObjectId;
+// Đây là một class không sử dụng, được comment lại.
+// class Provider { // Định nghĩa cấu trúc object Provider và xác thực dữ liệu
+//     @IsNotEmpty() // Kiểm tra không được để trống
+//     _id: mongoose.Schema.Types.ObjectId; // Loại dữ liệu là ObjectId của MongoDB
 
-//     @IsNotEmpty()
-//     name: string;
+//     @IsNotEmpty() // Kiểm tra không được để trống
+//     name: string; // Tên của provider
 // }
 
-export class CreateUserDto { //admin
-    @IsNotEmpty()
-    name: string;
+// DTO để tạo người dùng (admin)
+export class CreateUserDto {
+    @IsNotEmpty() // Trường này không được để trống
+    name: string; // Tên người dùng
 
-    @IsEmail()
-    @IsNotEmpty()
-    email: string;
+    @IsEmail() // Xác minh email hợp lệ
+    @IsNotEmpty() // Trường này không được để trống
+    email: string; // Email người dùng
 
-    @IsNotEmpty()
-    password: string;
+    @IsNotEmpty() // Trường này không được để trống
+    password: string; // Mật khẩu
 
-    @IsNotEmpty()
-    avatar: string;
+    @IsNotEmpty() // Trường này không được để trống
+    avatar: string; // Đường dẫn avatar
 
-    @IsNotEmpty()
-    age: number;
+    @IsNotEmpty() // Trường này không được để trống
+    age: number; // Tuổi của người dùng
 
-    @IsNotEmpty()
-    address: string;
+    @IsNotEmpty() // Trường này không được để trống
+    address: string; // Địa chỉ
 
-    @IsNotEmpty()
-    @IsPhoneNumber('VN')
-    phone: string;
+    @IsPhoneNumber('VN') // Số điện thoại phải thuộc mã vùng Việt Nam
+    @IsNotEmpty() // Trường này không được để trống
+    phone: string; // Số điện thoại của người dùng
 
-    @IsNotEmpty()
-    gender: string;
+    @IsNotEmpty() // Trường này không được để trống
+    gender: string; // Giới tính của người dùng
 
-    @IsNotEmpty()
-    isActive: boolean;
+    @IsNotEmpty() // Trường này không được để trống
+    isActive: boolean; // Trạng thái hoạt động (true/false)
 
-    @IsNotEmpty()
-    @IsMongoId()
-    role: mongoose.Schema.Types.ObjectId;
-
+    @IsMongoId() // Xác minh đây là ObjectId hợp lệ của MongoDB
+    @IsNotEmpty() // Trường này không được để trống
+    role: mongoose.Schema.Types.ObjectId; // Vai trò của người dùng
 }
 
+// DTO để đăng ký người dùng
 export class RegisterUserDto {
-    @IsNotEmpty()
-    name: string;
+    @IsNotEmpty() // Trường này không được để trống
+    name: string; // Tên người dùng
 
-    @IsEmail()
-    @IsNotEmpty()
-    email: string;
+    @IsEmail() // Xác minh email hợp lệ
+    @IsNotEmpty() // Trường này không được để trống
+    email: string; // Email người dùng
 
-    @IsNotEmpty()
-    password: string;
+    @IsNotEmpty() // Trường này không được để trống
+    password: string; // Mật khẩu
 
-    @IsNotEmpty()
-    age: number;
+    @IsNotEmpty() // Trường này không được để trống
+    age: number; // Tuổi của người dùng
 
-    @IsNotEmpty()
-    @IsPhoneNumber('VN')
-    phone: number;
+    @IsPhoneNumber('VN') // Số điện thoại phải thuộc mã vùng Việt Nam
+    @IsNotEmpty() // Trường này không được để trống
+    phone: number; // Số điện thoại
 
-    @IsNotEmpty()
-    address: string;
+    @IsNotEmpty() // Trường này không được để trống
+    address: string; // Địa chỉ
 
-    @IsNotEmpty()
-    gender: string;
-
+    @IsNotEmpty() // Trường này không được để trống
+    gender: string; // Giới tính của người dùng
 }
 
+// DTO để đăng nhập người dùng
 export class UserLoginDto {
-    @IsString()
-    @IsNotEmpty()
-    @ApiProperty({ example: 'admin@gmail', description: 'username' })
-    readonly username: string;
+    @IsString() // Trường này phải là kiểu chuỗi
+    @IsNotEmpty() // Trường này không được để trống
+    @ApiProperty({ example: 'admin@gmail', description: 'username' }) // Mô tả trường này trong tài liệu Swagger
+    readonly username: string; // Tên đăng nhập
 
-    @IsString()
-    @IsNotEmpty()
+    @IsString() // Trường này phải là kiểu chuỗi
+    @IsNotEmpty() // Trường này không được để trống
     @ApiProperty({
         example: '123456',
         description: 'password',
-    })
-    readonly password: string;
+    }) // Mô tả trường này trong tài liệu Swagger
+    readonly password: string; // Mật khẩu
 }
 
+// DTO để xác thực bằng mã code
 export class CodeAuthDto {
+    @IsNotEmpty() // Trường này không được để trống
+    _id: string; // ID người dùng
 
-    @IsNotEmpty()
-    _id: string;
-
-    @IsNotEmpty()
-    code: string;
-
+    @IsNotEmpty() // Trường này không được để trống
+    code: string; // Mã xác thực
 }
 
-
+// DTO để thay đổi mật khẩu
 export class ChangePasswordDto {
-    @IsNotEmpty()
-    currentPassword: string;
+    @IsNotEmpty() // Trường này không được để trống
+    currentPassword: string; // Mật khẩu hiện tại
 
-    @IsNotEmpty()
-    newPassword: string;
+    @IsNotEmpty() // Trường này không được để trống
+    newPassword: string; // Mật khẩu mới
 }
 
-
+// DTO để thay đổi mật khẩu qua mã xác thực
 export class ChangePasswordAuthDto {
-    @IsNotEmpty({ message: "code không được để trống" })
-    code: string;
+    @IsNotEmpty({ message: "code không được để trống" }) // Trường này không được để trống, thông báo lỗi tùy chỉnh
+    code: string; // Mã xác thực
 
-    @IsNotEmpty({ message: "password không được để trống" })
-    password: string;
+    @IsNotEmpty({ message: "password không được để trống" }) // Trường này không được để trống, thông báo lỗi tùy chỉnh
+    password: string; // Mật khẩu mới
 
-    @IsNotEmpty({ message: "confirmPassword không được để trống" })
-    confirmPassword: string;
+    @IsNotEmpty({ message: "confirmPassword không được để trống" }) // Trường này không được để trống, thông báo lỗi tùy chỉnh
+    confirmPassword: string; // Xác nhận mật khẩu mới
 
-    @IsNotEmpty({ message: "email không được để trống" })
-    email: string;
-
+    @IsNotEmpty({ message: "email không được để trống" }) // Trường này không được để trống, thông báo lỗi tùy chỉnh
+    email: string; // Email xác thực
 }
