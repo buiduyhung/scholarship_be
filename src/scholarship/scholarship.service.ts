@@ -22,12 +22,12 @@ export class ScholarshipService {
   ) { }
   async create(createScholarshipDto: CreateScholarshipDto, user: IUser) {
     const {
-      name, continent, level, quantity, major, location, image,
+      name, continent, level, quantity, major, location, image, ielts, GPA, pay, value,
       description, isActive
     } = createScholarshipDto;
 
     let newScholarship = await this.scholarshipModel.create({
-      name, continent, level, quantity, major, location, image,
+      name, continent, level, quantity, major, location, image, ielts, GPA, pay, value,
       description, isActive,
       createdBy: {
         _id: user._id,
@@ -51,16 +51,22 @@ export class ScholarshipService {
   // }
 
   async findAll(currentPage: number, limit: number, qs: string) {
-    const { filter, sort, population, projection } = aqp(qs);
+    const { filter, population, projection } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-    let offset = (+currentPage - 1) * (+limit);
-    let defaultLimit = +limit ? +limit : 10;
 
-    const totalItems = (await this.scholarshipModel.find(filter)).length;
+    const offset = (+currentPage - 1) * (+limit);
+    const defaultLimit = +limit ? +limit : 10;
+
+    // Query tổng số bản ghi
+    const totalItems = await this.scholarshipModel.countDocuments(filter);
+
+    // Tính tổng số trang
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
-    const result = await this.scholarshipModel.find(filter)
+    // Thực hiện query học bổng
+    const result = await this.scholarshipModel
+      .find(filter)
       .skip(offset)
       .limit(defaultLimit)
       .sort({ createdAt: -1 })
@@ -70,13 +76,13 @@ export class ScholarshipService {
 
     return {
       meta: {
-        current: currentPage, //trang hiện tại
-        pageSize: limit, //số lượng bản ghi đã lấy
-        pages: totalPages, //tổng số trang với điều kiện query
-        total: totalItems // tổng số phần tử (số bản ghi)
+        current: currentPage, // Trang hiện tại
+        pageSize: limit, // Số bản ghi mỗi trang
+        pages: totalPages, // Tổng số trang
+        total: totalItems, // Tổng số bản ghi
       },
-      result //kết quả query
-    }
+      result, // Kết quả trả về
+    };
   }
 
   async findOne(id: string) {
