@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import locateChrome from 'locate-chrome';
+import aqp from 'api-query-params';
+import mongoose from 'mongoose';
 import puppeteer from 'puppeteer';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import {
@@ -12,6 +13,7 @@ import {
   CrawSchedule,
   CrawScheduleDocument,
 } from 'src/crawler/schema/craw-schedule.schema';
+import { IUser } from 'src/users/users.interface';
 
 @Injectable()
 export class CrawlerService {
@@ -33,13 +35,11 @@ export class CrawlerService {
       })
       .exec();
     this.logger.debug('Start crawling scholarship listings from IDP');
-    const executablePath = await new Promise<string>((resolve) =>
-      locateChrome((arg) => resolve(arg)),
-    );
     const browser = await puppeteer
       .launch({
-        executablePath,
-        headless: false,
+        env: { DBUS_SESSION_BUS_ADDRESS: process.env.DBUS_SESSION_BUS_ADDRESS },
+        executablePath: '/usr/bin/google-chrome',
+        headless: true,
         defaultViewport: null,
         args: [
           '--start-maximized',
@@ -171,7 +171,8 @@ export class CrawlerService {
 
           scholarshipSummary['meta'] = meta.filter((m) => m);
           scholarshipSummary['description'] = descriptions.join('\n');
-
+          scholarshipSummary['schedule'] = schedule;
+          scholarshipSummary['href'] = `${baseURL}${scholarshipSummary.href}`;
           detailsPage.close();
           return scholarshipSummary;
         },
@@ -204,5 +205,63 @@ export class CrawlerService {
     } finally {
       await browser.close();
     }
+  }
+
+  async findAll(currentPage: number, limit: number, qs: string) {
+    const { filter, population, projection } = aqp(qs);
+    delete filter.current;
+    delete filter.pageSize;
+
+    const offset = (+currentPage - 1) * +limit;
+    const defaultLimit = +limit ? +limit : 10;
+
+    // Query tổng số bản ghi
+    const totalItems = await this.crawDataModel.countDocuments(filter);
+
+    // Tính tổng số trang
+    const totalPages = Math.ceil(totalItems / defaultLimit);
+
+    // Thực hiện query học bổng
+    const result = await this.crawDataModel
+      .find(filter)
+      .skip(offset)
+      .limit(defaultLimit)
+      .sort({ createdAt: -1 })
+      .populate(population)
+      .select(projection as any)
+      .exec();
+
+    return {
+      meta: {
+        current: currentPage, // Trang hiện tại
+        pageSize: limit, // Số bản ghi mỗi trang
+        pages: totalPages, // Tổng số trang
+        total: totalItems, // Tổng số bản ghi
+      },
+      result, // Kết quả trả về
+    };
+  }
+
+  async findOne(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return `not found scholarship`;
+    }
+    return await this.crawDataModel.findById(id);
+  }
+
+  async remove(id: string, user: IUser) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return `not found crawler data`;
+    await this.crawDataModel.updateOne(
+      { _id: id },
+      {
+        deletedBy: {
+          _id: user._id,
+          email: user.email,
+        },
+      },
+    );
+    return this.crawDataModel.softDelete({
+      _id: id,
+    });
   }
 }

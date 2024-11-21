@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+import { CrawSchedule } from 'src/crawler/schema/craw-schedule.schema';
 export type CrawDataDocument = HydratedDocument<CrawData>;
 
 @Schema({ timestamps: true })
@@ -12,6 +13,17 @@ export class CrawData {
 
   @Prop()
   description: string;
+
+  @Prop({
+    default: false,
+  })
+  isAdded: boolean;
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: CrawSchedule.name,
+  })
+  schedule: CrawSchedule;
 
   @Prop()
   createdAt: Date;
