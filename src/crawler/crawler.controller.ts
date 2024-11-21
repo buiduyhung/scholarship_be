@@ -18,6 +18,6 @@ export class CrawlerController {
     description: 'Crawl job listings from Indeed',
   })
   async crawl() {
-    return this.crawlerService.crawl();
+    return this.crawlerService.crawlIPD();
   }
 }

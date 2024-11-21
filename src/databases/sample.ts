@@ -1,3 +1,5 @@
+import { ScheduleStatus } from 'src/crawler/schema/craw-schedule.schema';
+
 export const ADMIN_ROLE = 'SUPER_ADMIN';
 export const USER_ROLE = 'NORMAL_USER';
 
@@ -649,5 +651,19 @@ export const CHAT_PERMISSIONS = [
     createdAt: '2024-06-15T09:13:52.798Z',
     updatedAt: '2024-06-15T09:13:52.798Z',
     __v: 0,
+  },
+];
+
+export const CRAW_DATA = [
+  {
+    createdAt: '2024-06-15T09:13:52.798Z',
+    lastPage: 1,
+    lastPageUrl:
+      'https://www.idp.com/find-a-scholarship/?subject=all-subject&page=1',
+    name: 'IDP',
+    status: ScheduleStatus.PENDING,
+    takePerCraw: 2, // 2 page per craw
+    lastTotal: 0,
+    id: '507f1f77bcf86cd799439011',
   },
 ];

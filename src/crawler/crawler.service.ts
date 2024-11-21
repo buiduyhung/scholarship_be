@@ -1,17 +1,40 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import puppeteer from 'puppeteer';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import {
+  CrawData,
+  CrawDataDocument,
+} from 'src/crawler/schema/craw-data.schema';
+import {
+  CrawSchedule,
+  CrawScheduleDocument,
+} from 'src/crawler/schema/craw-schedule.schema';
 
 @Injectable()
 export class CrawlerService {
   private readonly logger: Logger;
-  constructor() {
+  constructor(
+    @InjectModel(CrawData.name)
+    private crawDataModel: SoftDeleteModel<CrawDataDocument>,
+    @InjectModel(CrawSchedule.name)
+    private crawScheduleModel: SoftDeleteModel<CrawScheduleDocument>,
+  ) {
     this.logger = new Logger(CrawlerService.name);
   }
-  async crawl() {
+
+  @Cron(CronExpression.EVERY_WEEKEND)
+  async crawlIPD() {
+    const schedule = await this.crawScheduleModel
+      .findOne({
+        name: 'IDP',
+      })
+      .exec();
     this.logger.debug('Start crawling scholarship listings from IDP');
     const browser = await puppeteer
       .launch({
-        headless: true,
+        headless: false,
         defaultViewport: null,
         args: [
           '--start-maximized',
@@ -43,19 +66,33 @@ export class CrawlerService {
           )
         ).split(' ')[1],
       );
+      // Get the titles of the first 10 job listings
+      const scholarshipCardSelector =
+        '#root > div:nth-child(4) > div > div:nth-child(3) > section > div > div.mt-\\[28px\\].c-lg\\:mt-\\[40px\\].grid.grid-cols-1.c-md\\:grid-cols-2.c-xl\\:grid-cols-3.gap-\\[12px\\].c-lg\\:gap-x-\\[24px\\].c-lg\\:gap-y-\\[28px\\] > div';
+
+      // STEP 2: Get the total number of scholarships, and calculate the number of pages
+      // For each craw, we only crawl schedule.takePerCraw pages
+      // For IDP, each page has 12 scholarships
       const pages = Math.ceil(total / 12);
       this.logger.debug(`Total scholarships: ${total}`);
       this.logger.debug(`Total pages: ${pages}`);
-      // Get the titles of the first 10 job listings
-      const scholarshipGridSelector =
-        '#root > div:nth-child(5) > div > div:nth-child(3) > section > div > div[class="mt-[28px] c-lg:mt-[40px] grid grid-cols-1 c-md:grid-cols-2 c-xl:grid-cols-3 gap-[12px] c-lg:gap-x-[24px] c-lg:gap-y-[28px]"] > div';
-      // TODO: THIS HAS BEEN LIMITED TO 1 PAGE FOR TESTING
+      const { lastPage, takePerCraw, lastTotal } = schedule;
+
+      if (lastTotal === total) {
+        this.logger.debug('No new scholarships');
+        return;
+      }
+
+      // STEP 3: Get the links to the scholarship details page, start from page lastPage to page lastPage + takePerCraw
       const scholarshipSummariesLinks = Array.from({
-        // length: pages,
-        length: 1,
+        length: takePerCraw,
       }).map((_, page) => {
-        return `${baseURL}/find-a-scholarship/?subject=all-subject&page=${page + 1}`;
+        return `${baseURL}/find-a-scholarship/?subject=all-subject&page=${
+          lastPage + page + 1
+        }`;
       });
+
+      // STEP 4: Go to each scholarship details page and scrape the details
       this.logger.debug('Gethering scholarship links by pagination');
       const scholarshipSummariesPromise = scholarshipSummariesLinks.map(
         async (link) => {
@@ -63,34 +100,24 @@ export class CrawlerService {
           this.logger.debug(`Navigating to: ${link}`);
           await page.goto(link);
           const scholarshipSummaries = await page.$$eval(
-            scholarshipGridSelector,
+            scholarshipCardSelector,
             (nodes) =>
               nodes.map((node) => {
                 const title = node.querySelector('a').textContent;
-                const link = node.querySelector('a').getAttribute('href');
+                const href = node.querySelector('a').getAttribute('href');
                 const university = node.querySelector('p').textContent;
-
-                const location = node.querySelector(
-                  'ul > li:nth-child(1)',
-                ).textContent;
-                const level = node.querySelector(
-                  'ul > li:nth-child(2)',
-                ).textContent;
-                const payment = node.querySelector(
-                  'ul > li:nth-child(3)',
-                ).textContent;
 
                 return {
                   title,
-                  link,
+                  href,
                   description: university,
-                  location,
-                  level,
-                  payment,
                 };
               }),
           );
           page.close();
+          this.logger.debug(
+            `Found ${scholarshipSummaries.length} scholarships`,
+          );
           return scholarshipSummaries;
         },
       );
@@ -105,7 +132,7 @@ export class CrawlerService {
           // go to the job listing page
           this.logger.log(`\n\nScrapping: ${scholarshipSummary.title}`);
           const detailsPage = await browser.newPage();
-          await detailsPage.goto(`${baseURL}${scholarshipSummary.link}`);
+          await detailsPage.goto(`${baseURL}${scholarshipSummary.href}`);
           const meta = await detailsPage.$$eval(
             `#scholarship-detail-accordion div.c-md\\:w-\\[48\\%\\].w-full`,
             (nodes) => {
@@ -146,6 +173,19 @@ export class CrawlerService {
       );
 
       const data = await Promise.all(scrapePromises);
+
+      // STEP 5: Save the data to the database
+      this.logger.debug('Saving scholarships to the database');
+      await this.crawDataModel.insertMany(data);
+
+      // STEP 6: Update the lastPage in the schedule
+      await this.crawScheduleModel.updateOne(
+        { name: 'IDP' },
+        {
+          lastPage: lastPage + takePerCraw,
+          lastTotal: lastTotal + data.length,
+        },
+      );
 
       return {
         meta: {
