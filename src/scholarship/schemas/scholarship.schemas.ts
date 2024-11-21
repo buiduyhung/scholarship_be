@@ -30,6 +30,18 @@ export class Scholarship {
     quantity: number;
 
     @Prop()
+    ielts: number;
+
+    @Prop()
+    GPA: number;
+
+    @Prop()
+    pay: number;
+
+    @Prop()
+    value: string;
+
+    @Prop()
     description: string;
 
     @Prop({ default: true })
