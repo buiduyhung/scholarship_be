@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import locateChrome from 'locate-chrome';
 import puppeteer from 'puppeteer';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import {
@@ -32,8 +33,12 @@ export class CrawlerService {
       })
       .exec();
     this.logger.debug('Start crawling scholarship listings from IDP');
+    const executablePath = await new Promise<string>((resolve) =>
+      locateChrome((arg) => resolve(arg)),
+    );
     const browser = await puppeteer
       .launch({
+        executablePath,
         headless: false,
         defaultViewport: null,
         args: [
