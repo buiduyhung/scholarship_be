@@ -147,31 +147,66 @@ export class ScholarshipService {
     return continentLocations;
   }
 
-  // async searchByProvider(id: string) {
-  //   // Ensure the id is a valid ObjectId
-  //   if (!mongoose.Types.ObjectId.isValid(id)) {
-  //     throw new BadRequestException("Invalid provider ID");
-  //   }
+  async getListLevel() {
+    const scholarships = await this.scholarshipModel.find().select('level -_id').exec();
 
-  //   // Find the provider by its _id field
-  //   const provider = await this.providerModel.findById(id);
 
-  //   // Check if provider exists
-  //   if (!provider) {
-  //     throw new BadRequestException("Provider not found");
-  //   }
+    const uniqueLevel = new Set<string>();
 
-  //   // Find all scholarships associated with the provider
-  //   const scholarships = await this.scholarshipModel.find({
-  //     provider: provider._id
-  //   })
-  //     .select('name location level') // Select only the name, location, and level fields
-  //     .populate({
-  //       path: 'provider',
-  //       select: '_id logo' // Populate provider with only _id and logo
-  //     })
-  //     .exec();
+    scholarships.forEach(scholarship => {
+      scholarship.level.forEach((level: string) => {
+        uniqueLevel.add(level.toLowerCase());
+      });
+    });
 
-  //   return scholarships;
-  // }
+
+    const formattedLevel = Array.from(uniqueLevel).map(level =>
+      level.charAt(0).toUpperCase() + level.slice(1)
+    );
+
+    return {
+      level: formattedLevel
+    };
+  }
+
+
+  async getListMajor() {
+    const scholarships = await this.scholarshipModel.find().select('major -_id').exec();
+
+    // Use a Set to collect unique majors, ignoring case
+    const uniqueMajors = new Set<string>();
+
+    scholarships.forEach(scholarship => {
+      scholarship.major.forEach((major: string) => {
+        uniqueMajors.add(major.toLowerCase());
+      });
+    });
+
+    // Convert the Set back to an array and capitalize the first letter of each major
+    const formattedMajors = Array.from(uniqueMajors).map(major =>
+      major.charAt(0).toUpperCase() + major.slice(1)
+    );
+
+    return {
+      major: formattedMajors
+    };
+  }
+
+  async getListCountry() {
+    const scholarships = await this.scholarshipModel.find().select('location -_id').exec();
+
+    // Use a Set to collect unique locations
+    const uniqueLocations = new Set<string>();
+
+    scholarships.forEach(scholarship => {
+      uniqueLocations.add(scholarship.location);
+    });
+
+    // Convert the Set back to an array
+    const formattedLocations = Array.from(uniqueLocations);
+
+    return {
+      location: formattedLocations
+    };
+  }
 }
