@@ -1,3 +1,5 @@
+import { ScheduleStatus } from 'src/crawler/schema/craw-schedule.schema';
+
 export const ADMIN_ROLE = 'SUPER_ADMIN';
 export const USER_ROLE = 'NORMAL_USER';
 
@@ -615,6 +617,54 @@ export const INIT_PERMISSIONS = [
     updatedAt: '2024-06-15T09:13:52.798Z',
     __v: 0,
   },
+  {
+    id: '507f1f77bcf86cd799439011',
+    name: 'Get craw data with paginate',
+    apiPath: '/api/v1/craw/scholarship',
+    method: 'GET',
+    module: 'CRAW',
+    createdBy: {
+      _id: '647b5108a8a243e8191855b5',
+      email: 'conganh@gmail.com',
+    },
+    isDeleted: false,
+    deletedAt: null,
+    createdAt: '2024-06-15T09:13:52.798Z',
+    updatedAt: '2024-06-15T09:13:52.798Z',
+    __v: 0,
+  },
+  {
+    id: '507f1f77bcf86cd799439011',
+    name: 'Get craw data with paginate',
+    apiPath: '/api/v1/craw/scholarship',
+    method: 'GET',
+    module: 'CRAW',
+    createdBy: {
+      _id: '647b5108a8a243e8191855b5',
+      email: 'conganh@gmail.com',
+    },
+    isDeleted: false,
+    deletedAt: null,
+    createdAt: '2024-06-15T09:13:52.798Z',
+    updatedAt: '2024-06-15T09:13:52.798Z',
+    __v: 0,
+  },
+  {
+    id: '6592008029c8c3e4dc76256c',
+    name: 'Delete craw data by id',
+    apiPath: '/api/v1/craw/scholarship/:id',
+    method: 'DELETE',
+    module: 'CRAW',
+    createdBy: {
+      _id: '647b5108a8a243e8191855b5',
+      email: 'conganh@gmail.com',
+    },
+    isDeleted: false,
+    deletedAt: null,
+    createdAt: '2024-06-15T09:13:52.798Z',
+    updatedAt: '2024-06-15T09:13:52.798Z',
+    __v: 0,
+  },
 ];
 
 export const CHAT_PERMISSIONS = [
@@ -649,5 +699,19 @@ export const CHAT_PERMISSIONS = [
     createdAt: '2024-06-15T09:13:52.798Z',
     updatedAt: '2024-06-15T09:13:52.798Z',
     __v: 0,
+  },
+];
+
+export const CRAW_DATA = [
+  {
+    createdAt: '2024-06-15T09:13:52.798Z',
+    lastPage: 1,
+    lastPageUrl:
+      'https://www.idp.com/find-a-scholarship/?subject=all-subject&page=1',
+    name: 'IDP',
+    status: ScheduleStatus.PENDING,
+    takePerCraw: 2, // 2 page per craw
+    lastTotal: 0,
+    id: '507f1f77bcf86cd799439011',
   },
 ];

@@ -37,6 +37,25 @@ export class CreateScholarshipDto {
     major: string[];
 
     @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Max(9)
+    ielts: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Max(4)
+    GPA: number;
+
+    @IsOptional()
+    @IsNumber()
+    pay: number;
+
+    @IsOptional()
+    value: string
+
+    @IsOptional()
     isActive: boolean;
 }
 

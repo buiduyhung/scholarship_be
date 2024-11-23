@@ -22,12 +22,12 @@ export class ScholarshipService {
   ) { }
   async create(createScholarshipDto: CreateScholarshipDto, user: IUser) {
     const {
-      name, continent, level, quantity, major, location, image,
+      name, continent, level, quantity, major, location, image, ielts, GPA, pay, value,
       description, isActive
     } = createScholarshipDto;
 
     let newScholarship = await this.scholarshipModel.create({
-      name, continent, level, quantity, major, location, image,
+      name, continent, level, quantity, major, location, image, ielts, GPA, pay, value,
       description, isActive,
       createdBy: {
         _id: user._id,
@@ -51,16 +51,22 @@ export class ScholarshipService {
   // }
 
   async findAll(currentPage: number, limit: number, qs: string) {
-    const { filter, sort, population, projection } = aqp(qs);
+    const { filter, population, projection } = aqp(qs);
     delete filter.current;
     delete filter.pageSize;
-    let offset = (+currentPage - 1) * (+limit);
-    let defaultLimit = +limit ? +limit : 10;
 
-    const totalItems = (await this.scholarshipModel.find(filter)).length;
+    const offset = (+currentPage - 1) * (+limit);
+    const defaultLimit = +limit ? +limit : 10;
+
+    // Query tổng số bản ghi
+    const totalItems = await this.scholarshipModel.countDocuments(filter);
+
+    // Tính tổng số trang
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
-    const result = await this.scholarshipModel.find(filter)
+    // Thực hiện query học bổng
+    const result = await this.scholarshipModel
+      .find(filter)
       .skip(offset)
       .limit(defaultLimit)
       .sort({ createdAt: -1 })
@@ -70,13 +76,13 @@ export class ScholarshipService {
 
     return {
       meta: {
-        current: currentPage, //trang hiện tại
-        pageSize: limit, //số lượng bản ghi đã lấy
-        pages: totalPages, //tổng số trang với điều kiện query
-        total: totalItems // tổng số phần tử (số bản ghi)
+        current: currentPage, // Trang hiện tại
+        pageSize: limit, // Số bản ghi mỗi trang
+        pages: totalPages, // Tổng số trang
+        total: totalItems, // Tổng số bản ghi
       },
-      result //kết quả query
-    }
+      result, // Kết quả trả về
+    };
   }
 
   async findOne(id: string) {
@@ -141,31 +147,66 @@ export class ScholarshipService {
     return continentLocations;
   }
 
-  // async searchByProvider(id: string) {
-  //   // Ensure the id is a valid ObjectId
-  //   if (!mongoose.Types.ObjectId.isValid(id)) {
-  //     throw new BadRequestException("Invalid provider ID");
-  //   }
+  async getListLevel() {
+    const scholarships = await this.scholarshipModel.find().select('level -_id').exec();
 
-  //   // Find the provider by its _id field
-  //   const provider = await this.providerModel.findById(id);
 
-  //   // Check if provider exists
-  //   if (!provider) {
-  //     throw new BadRequestException("Provider not found");
-  //   }
+    const uniqueLevel = new Set<string>();
 
-  //   // Find all scholarships associated with the provider
-  //   const scholarships = await this.scholarshipModel.find({
-  //     provider: provider._id
-  //   })
-  //     .select('name location level') // Select only the name, location, and level fields
-  //     .populate({
-  //       path: 'provider',
-  //       select: '_id logo' // Populate provider with only _id and logo
-  //     })
-  //     .exec();
+    scholarships.forEach(scholarship => {
+      scholarship.level.forEach((level: string) => {
+        uniqueLevel.add(level.toLowerCase());
+      });
+    });
 
-  //   return scholarships;
-  // }
+
+    const formattedLevel = Array.from(uniqueLevel).map(level =>
+      level.charAt(0).toUpperCase() + level.slice(1)
+    );
+
+    return {
+      level: formattedLevel
+    };
+  }
+
+
+  async getListMajor() {
+    const scholarships = await this.scholarshipModel.find().select('major -_id').exec();
+
+    // Use a Set to collect unique majors, ignoring case
+    const uniqueMajors = new Set<string>();
+
+    scholarships.forEach(scholarship => {
+      scholarship.major.forEach((major: string) => {
+        uniqueMajors.add(major.toLowerCase());
+      });
+    });
+
+    // Convert the Set back to an array and capitalize the first letter of each major
+    const formattedMajors = Array.from(uniqueMajors).map(major =>
+      major.charAt(0).toUpperCase() + major.slice(1)
+    );
+
+    return {
+      major: formattedMajors
+    };
+  }
+
+  async getListCountry() {
+    const scholarships = await this.scholarshipModel.find().select('location -_id').exec();
+
+    // Use a Set to collect unique locations
+    const uniqueLocations = new Set<string>();
+
+    scholarships.forEach(scholarship => {
+      uniqueLocations.add(scholarship.location);
+    });
+
+    // Convert the Set back to an array
+    const formattedLocations = Array.from(uniqueLocations);
+
+    return {
+      location: formattedLocations
+    };
+  }
 }

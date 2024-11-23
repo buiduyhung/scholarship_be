@@ -1,18 +1,6 @@
 # version: '3.8'
 #MongoDB 5.0+ requires a CPU with AVX support, => sử dụng image: mongo:4.4
 services:
-  db-mongo:
-    image: mongo:6.0.6
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 123456
-    ports:
-      - 27017:27017
-    volumes:
-      - mongodb:/data/db
-    expose:
-      - 27017
-
   be-nest:
     build:
       context: .
@@ -22,13 +10,35 @@ services:
       - PORT=8080
       - NODE_ENV=production
       - MONGO_URL=mongodb+srv://root:anhteo2002@cluster0.r3vvrwe.mongodb.net/Scholarship
+      #SETUP ACCESS TOKEN
+      - JWT_ACCESS_TOKEN_SECRET=JUSTASECRET
+      - JWT_ACCESS_EXPIRE=30d
+
+      - JWT_REFRESH_TOKEN_SECRET=JUSTASECRET
+      - JWT_REFRESH_EXPIRE=30d
+
+      # #init sample data
+      - SHOULD_INIT=false
+      - INIT_PASSWORD=123456
+
+      # #config mail
+      - EMAIL_HOST=smtp.gmail.com
+      - EMAIL_AUTH_USER=democompany952@gmail.com
+      - EMAIL_AUTH_PASS=edtligikynddwyyn
+      - EMAIL_PREVIEW=true
+
+      # #config payos
+      - PAYOS_CLIENT_ID=084e129d-53d8-4680-ac18-fae9da5c96ef
+      - PAYOS_API_KEY=e15ec299-79a6-49aa-a512-17fb995c06b5
+      - PAYOS_CHECKSUM_KEY=05ccbd6fafc5bb22bea6e0ebab5b30e313c6f01ffdfa818dbf0cca1379dc47ee
+      - PAYOS_RETURN_URL=http://localhost:8080/api/v1/payment/payos/return
+
+      # #config cloudinary
+      - CLOUDINARY_NAME='dzvbuoecg'
+      - CLOUDINARY_API_KEY='975643817743396'
+      - CLOUDINARY_API_SECRET='UGPv7zlEcDGr2fPnE--4xsCE3AA'
       # - DB_HOST=host.docker.internal
     expose:
       - 8080
     ports:
       - 8080:8080
-
-volumes:
-  mongodb:
-
-    # docker compose -p scholarship-nest up -d
