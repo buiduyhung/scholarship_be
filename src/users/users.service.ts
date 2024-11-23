@@ -529,25 +529,26 @@ export class UsersService {
 
   async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {
     const { currentPassword, newPassword } = changePasswordDto;
-
+  
+    // Tìm user theo ID
     const user = await this.userModel.findById(userId);
     if (!user) {
-      throw new BadRequestException('User not found.');
+      throw new BadRequestException('User không tồn tại.');
     }
-
-    const isPasswordValid = this.isValidPassword(
-      currentPassword,
-      user.password,
-    );
+  
+    // Kiểm tra mật khẩu hiện tại
+    const isPasswordValid = this.isValidPassword(currentPassword, user.password);
     if (!isPasswordValid) {
-      throw new BadRequestException('Current password is incorrect.');
+      throw new BadRequestException('Mật khẩu hiện tại không chính xác.');
     }
-
+  
+    // Hash và cập nhật mật khẩu mới
     user.password = this.getHashPassword(newPassword);
     await user.save();
-
-    return { message: 'Password updated successfully' };
+  
+    return { message: 'Cập nhật mật khẩu thành công.' };
   }
+  
 
   async findUsersByRole(role: string, options?: Record<string, any>) {
     const roleDoc = await this.roleModel.findOne(

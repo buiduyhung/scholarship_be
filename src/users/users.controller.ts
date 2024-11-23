@@ -6,7 +6,7 @@ import { IUser } from './users.interface';
 import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { ApiTags } from '@nestjs/swagger';
 
-
+import { SkipCheckPermission } from 'src/decorator/customize';
 
 @ApiTags('users')
 @Controller('users')
@@ -57,10 +57,12 @@ export class UsersController {
 
   @Patch('change-password')
   @ResponseMessage('Change user password')
+  @SkipCheckPermission() // Bỏ qua kiểm tra quyền cho endpoint này
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
-    @User() user: IUser
+    @User() user: IUser // Lấy thông tin user từ token
   ) {
-    return this.usersService.changePassword(user._id, changePasswordDto);
+    return this.usersService.changePassword(user._id, changePasswordDto); // Thực hiện đổi mật khẩu
   }
+
 }
