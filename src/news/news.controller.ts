@@ -1,8 +1,7 @@
-import { Controller, Delete, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage } from 'src/decorator/customize';
 import { NewsService } from 'src/news/news.service';
-import { IUser } from 'src/users/users.interface';
 
 @Controller('news')
 @ApiTags('news')
@@ -21,9 +20,9 @@ export class NewsController {
   }
 
   @Public()
-  @Delete('/:id')
-  @ResponseMessage('Delete a news with id')
-  delete(@Query('id') id: string, @User() user: IUser) {
-    return this.newsService.remove(id, user);
+  @Get('/:id')
+  @ResponseMessage('Fetch a news with id')
+  findOne(@Query('id') id: string) {
+    return this.newsService.findOne(id);
   }
 }
