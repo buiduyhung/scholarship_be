@@ -28,6 +28,27 @@ export class ScholarshipController {
   // searchByProviderName(@Query('continent') continentName: string) {
   //   return this.scholarshipService.getlocation(continentName);
   // }
+  @Public()
+  @Get('list-major')
+  @ResponseMessage("Fetch all major search")
+  getListMajor() {
+    return this.scholarshipService.getListMajor();
+  }
+
+  @Public()
+  @Get('list-level')
+  @ResponseMessage("Fetch all level search")
+  getListLevel() {
+    return this.scholarshipService.getListLevel();
+  }
+
+  @Public()
+  @Get('list-country')
+  @ResponseMessage("Fetch all Country search")
+  getListCountry() {
+    return this.scholarshipService.getListCountry();
+  }
+
 
   @Public()
   @Get('list-location')

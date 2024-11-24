@@ -17,6 +17,20 @@ export class Subscriber {
     @Prop()
     level: string[];
 
+    @Prop()
+    location: string;
+
+    @Prop()
+    ielts: number;
+
+    @Prop()
+    GPA: number;
+
+    @Prop()
+    pay: number;
+
+    @Prop()
+    value: string;
 
     @Prop({ type: Object })
     createdBy: {
