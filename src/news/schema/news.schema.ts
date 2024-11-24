@@ -16,6 +16,9 @@ export class News {
   @Prop({ type: String })
   label: string;
 
+  @Prop({ type: String })
+  heroImage?: string;
+
   @Prop()
   createdAt: Date;
 
