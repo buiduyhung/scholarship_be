@@ -37,8 +37,8 @@ export class CrawlerService {
     this.logger.debug('Start crawling scholarship listings from IDP');
     const browser = await puppeteer
       .launch({
-        env: { DBUS_SESSION_BUS_ADDRESS: process.env.DBUS_SESSION_BUS_ADDRESS },
-        executablePath: '/usr/bin/google-chrome',
+        // env: { DBUS_SESSION_BUS_ADDRESS: process.env.DBUS_SESSION_BUS_ADDRESS },
+        // executablePath: '/usr/bin/google-chrome',
         headless: true,
         defaultViewport: null,
         args: [
@@ -92,9 +92,8 @@ export class CrawlerService {
       const scholarshipSummariesLinks = Array.from({
         length: takePerCraw,
       }).map((_, page) => {
-        return `${baseURL}/find-a-scholarship/?subject=all-subject&page=${
-          lastPage + page + 1
-        }`;
+        return `${baseURL}/find-a-scholarship/?subject=all-subject&page=${lastPage + page + 1
+          }`;
       });
 
       // STEP 4: Go to each scholarship details page and scrape the details
