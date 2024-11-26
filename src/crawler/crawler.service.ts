@@ -136,7 +136,14 @@ export class CrawlerService {
           // go to the job listing page
           this.logger.log(`\n\nScrapping: ${scholarshipSummary.title}`);
           const detailsPage = await browser.newPage();
-          await detailsPage.goto(`${baseURL}${scholarshipSummary.href}`);
+          await detailsPage
+            .goto(`${baseURL}${scholarshipSummary.href}`)
+            .catch((e) => {
+              this.logger.error(
+                `Error while navigating to ${baseURL}${scholarshipSummary.href}`,
+                e,
+              );
+            });
           const meta = await detailsPage.$$eval(
             `#scholarship-detail-accordion div.c-md\\:w-\\[48\\%\\].w-full`,
             (nodes) => {
