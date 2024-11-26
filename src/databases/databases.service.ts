@@ -3,10 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import {
-  CrawSchedule,
-  CrawScheduleDocument,
-} from 'src/crawler/schema/craw-schedule.schema';
-import {
   Permission,
   PermissionDocument,
 } from 'src/permissions/schemas/permission.schemas';
@@ -16,7 +12,6 @@ import { UsersService } from 'src/users/users.service';
 import {
   ADMIN_ROLE,
   CHAT_PERMISSIONS,
-  CRAW_DATA,
   INIT_PERMISSIONS,
   USER_ROLE,
 } from './sample';
@@ -35,12 +30,9 @@ export class DatabasesService implements OnModuleInit {
     @InjectModel(Role.name)
     private roleModel: SoftDeleteModel<RoleDocument>,
 
-    @InjectModel(CrawSchedule.name)
-    private crawScheduleModel: SoftDeleteModel<CrawScheduleDocument>,
-
     private configService: ConfigService,
     private userService: UsersService,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     const isInit = this.configService.get<string>('SHOULD_INIT');
@@ -49,7 +41,7 @@ export class DatabasesService implements OnModuleInit {
       const countUser = await this.userModel.count({});
       const countPermission = await this.permissionModel.count({});
       const countRole = await this.roleModel.count({});
-      const countCrawSchedule = await this.crawScheduleModel.count({});
+
 
       // create permission
       if (countPermission === 0) {
@@ -126,10 +118,6 @@ export class DatabasesService implements OnModuleInit {
         ]);
       }
 
-      if (countCrawSchedule === 0) {
-        this.logger.log('>>> INIT CRAW SCHEDULE...');
-        await this.crawScheduleModel.insertMany(CRAW_DATA);
-      }
 
       if (countUser > 0 && countRole > 0 && countPermission > 0) {
         this.logger.log('>>> ALREADY INIT SAMPLE DATA...');

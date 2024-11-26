@@ -16,7 +16,7 @@ export class SubscribersService {
   ) { }
 
   async create(createSubscriberDto: CreateSubscriberDto, user: IUser) {
-    const { major, level } = createSubscriberDto;
+    const { major, level, ielts, GPA, pay, value, location } = createSubscriberDto;
     const { email, name } = user
 
     const isExist = await this.subscriberModel.findOne({ email });
@@ -25,7 +25,7 @@ export class SubscribersService {
     }
 
     let newSubs = await this.subscriberModel.create({
-      name, email, major, level,
+      name, email, major, level, ielts, GPA, pay, value, location,
       createdBy: {
         _id: user._id,
         email: user.email
@@ -108,6 +108,9 @@ export class SubscribersService {
 
   async getSubject(user: IUser) {
     const { email } = user;
-    return await this.subscriberModel.findOne({ email }, { name: 1, major: 1, level: 1 });
+    return await this.subscriberModel.findOne(
+      { email },
+      { name: 1, major: 1, level: 1, location: 1, ielts: 1, GPA: 1, pay: 1, value: 1 }
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsEmail, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsBoolean, IsEmail, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
 
 
 export class CreateSubscriberDto {
@@ -13,4 +13,25 @@ export class CreateSubscriberDto {
     @IsArray()
     level: string[];
 
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Max(9)
+    ielts: number;
+
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Max(4)
+    GPA: number;
+
+    @IsOptional()
+    @IsNumber()
+    pay: number;
+
+    @IsOptional()
+    value: string
+
+    @IsOptional()
+    location: string
 }

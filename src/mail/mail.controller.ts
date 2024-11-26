@@ -29,13 +29,15 @@ export class MailController {
   async handleTestEmail() {
     try {
       const subscribers = await this.subscriberModel.find({});
-      console.log('Subscribers:', subscribers);
 
       for (const subs of subscribers) {
-        console.log(`Processing subscriber: ${subs.email}`);
-
         const subsMajor = subs.major;
         const subsLevel = subs.level;
+        const subsIelts = subs.ielts;
+        const subsGPA = subs.GPA;
+        const subsPay = subs.pay;
+        const subsValue = subs.value;
+        const subsLocation = subs.location;
 
         const query: any = {};
         if (subsMajor?.length) {
@@ -44,19 +46,36 @@ export class MailController {
         if (subsLevel?.length) {
           query.level = { $in: subsLevel.map(level => new RegExp(`^${level}$`, 'i')) };
         }
+        if (subsLocation) {
+          query.location = new RegExp(`^${subsLocation}$`, 'i');
+        }
+        if (subsIelts !== undefined) {
+          query.ielts = { $lte: subsIelts };
+        }
+        if (subsGPA !== undefined) {
+          query.GPA = { $lte: subsGPA };
+        }
+        if (subsPay !== undefined) {
+          query.pay = { $lte: subsPay };
+        }
+        if (subsValue !== undefined) {
+          query.value = { $lte: subsValue };
+        }
 
         const Matching = await this.scholarshipModel.find(query);
-        console.log(`Matching scholarships for ${subs.email}:`, Matching);
 
         if (Matching?.length) {
           const scholarship = Matching.map(item => ({
+            id: item._id,
             name: item.name,
             level: item.level,
             major: item.major,
+            ielts: item.ielts,
+            GPA: item.GPA,
+            pay: item.pay,
+            value: item.value,
             location: item.location
           }));
-
-          console.log(`Sending email to ${subs.email} with scholarships:`, scholarship);
 
           await this.mailerService.sendMail({
             to: subs.email,
@@ -68,9 +87,6 @@ export class MailController {
               scholarship: scholarship
             }
           });
-          console.log(`Email sent successfully to ${subs.email}`);
-        } else {
-          console.log(`No matching scholarships found for ${subs.email}`);
         }
       }
     } catch (error) {

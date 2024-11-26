@@ -5,14 +5,12 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { ChatModule } from 'src/chat/chat.module';
-import { NewsModule } from 'src/news/news.module';
 import { AdvisoryModule } from './advisory/advisory.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { BlogModule } from './blog/blog.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
-import { CrawlerModule } from './crawler/crawler.module';
 import { DatabasesModule } from './databases/databases.module';
 import { FilesModule } from './files/files.module';
 import { HealthModule } from './health/health.module';
@@ -76,10 +74,8 @@ import { UsersModule } from './users/users.module';
     QuestionModule,
     QuizModule,
     BlogModule,
-    CrawlerModule,
-    NewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

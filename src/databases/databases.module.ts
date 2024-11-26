@@ -1,9 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  CrawSchedule,
-  CrawScheduleSchema,
-} from 'src/crawler/schema/craw-schedule.schema';
 import { PayOSModule } from 'src/payos/payos.module';
 import {
   Permission,
@@ -23,9 +19,8 @@ import { DatabasesService } from './databases.service';
       { name: User.name, schema: UserSchema },
       { name: Permission.name, schema: PermissionSchema },
       { name: Role.name, schema: RoleSchema },
-      { name: CrawSchedule.name, schema: CrawScheduleSchema },
     ]),
     PayOSModule,
   ],
 })
-export class DatabasesModule {}
+export class DatabasesModule { }

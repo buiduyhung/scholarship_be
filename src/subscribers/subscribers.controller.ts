@@ -14,6 +14,7 @@ export class SubscribersController {
 
   // Endpoint to create a new subscriber
   @Post()
+  @SkipCheckPermission()
   @ResponseMessage("create a subscriber")
   create(@Body() createSubscriberDto: CreateSubscriberDto, @User() user: IUser) {
     return this.subscribersService.create(createSubscriberDto, user);
