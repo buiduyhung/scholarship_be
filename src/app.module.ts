@@ -27,6 +27,8 @@ import { ScholarshipModule } from './scholarship/scholarship.module';
 import { StudyModule } from './study/study.module';
 import { SubscribersModule } from './subscribers/subscribers.module';
 import { UsersModule } from './users/users.module';
+import { CrawlerModule } from './crawler/crawler.module';
+import { NewsModule } from './news/news.module';
 
 @Module({
   imports: [
@@ -74,6 +76,8 @@ import { UsersModule } from './users/users.module';
     QuestionModule,
     QuizModule,
     BlogModule,
+    CrawlerModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
