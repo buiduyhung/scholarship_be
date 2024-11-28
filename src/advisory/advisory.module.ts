@@ -8,7 +8,7 @@ import { User, UserSchema } from 'src/users/schemas/user.schema';
   imports: [
     MongooseModule.forFeature([
       { name: Advisory.name, schema: AdvisorySchema },
-      { name: User.name, schema: UserSchema } // Register Provider schema
+      { name: User.name, schema: UserSchema } // Register Provider 
     ])
   ],
   controllers: [AdvisoryController],
