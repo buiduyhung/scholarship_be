@@ -16,8 +16,8 @@ export class StudyService {
   constructor(
     @InjectModel(Study.name)
     private studyModel: SoftDeleteModel<StudyDocument>,
-    @InjectModel(User.name) // Add this line
-    private userModel: mongoose.Model<User> // Add this line
+    @InjectModel(User.name)   // Injecting the User model
+    private userModel: mongoose.Model<User> // Injecting the User model for operations involving user data
   ) { }
 
   async create(createStudyDto: CreateStudyDto, user: IUser) {

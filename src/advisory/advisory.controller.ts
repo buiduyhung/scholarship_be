@@ -6,8 +6,8 @@ import { CreateUserAdvisoryDto } from './dto/create-advisory.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 
-@ApiTags('advisory')
-@Controller('advisory')
+@ApiTags('advisory')// Decorator to group endpoints under the "advisory" tag in Swagger
+@Controller('advisory') // Specifies the route prefix for the AdvisoryController
 export class AdvisoryController {
   constructor(private readonly advisoryService: AdvisoryService) { }
 

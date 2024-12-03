@@ -73,4 +73,4 @@ export class Advisory {
     updateAt: Date;
 }
 
-export const AdvisorySchema = SchemaFactory.createForClass(Advisory);
+export const AdvisorySchema = SchemaFactory.createForClass(Advisory);// Generate schema for the Advisory class
