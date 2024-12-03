@@ -1,0 +1,182 @@
+[
+    {
+        "_id": {
+            "$oid": "648ab738fa14b294212e4048"
+        },
+        "name": "Change User Password"
+    },
+    {
+        "_id": {
+            "$oid": "648ab750fa16b294212e404c"
+        },
+        "name": "Upload Single File"
+    },
+    {
+        "_id": {
+            "$oid": "648ab750fa16b234212e406e"
+        },
+        "name": "Upload Multiple File"
+    },
+    {
+        "_id": {
+            "$oid": "648ad488dafdb9754f40b846"
+        },
+        "name": "Create a Scholarship"
+    },
+    {
+        "_id": {
+            "$oid": "648ad499dafdb9754f40b84b"
+        },
+        "name": "Get a scholarship by id"
+    },
+    {
+        "_id": {
+            "$oid": "648ad4a6dafdb9754f40b850"
+        },
+        "name": "Update a Scholarship"
+    },
+    {
+        "_id": {
+            "$oid": "648ad4ccdafdb9754f40b859"
+        },
+        "name": "Get Scholarship with paginate"
+    },
+    {
+        "_id": {
+            "$oid": "648ad4ccdafdb9724f40b855"
+        },
+        "name": "Get List scholarship of a provider"
+    },
+    {
+        "_id": {
+            "$oid": "648ad4d9dafdb9754f40b85e"
+        },
+        "name": "Delete a Scholarship"
+    },
+    {
+        "_id": {
+            "$oid": "648ad4fedafdb9754f40b863"
+        },
+        "name": "Create a Resume"
+    },
+    {
+        "_id": {
+            "$oid": "648ad511dafdb9754f40b868"
+        },
+        "name": "Fetch resume with paginate"
+    },
+    {
+        "_id": {
+            "$oid": "648ad522dafdb9754f40b86d"
+        },
+        "name": "Get resume by id"
+    },
+    {
+        "_id": {
+            "$oid": "648ad512dafdb9754f40b47a"
+        },
+        "name": "search resumes by provider name"
+    },
+    {
+        "_id": {
+            "$oid": "648ad53bdafdb9754f40b872"
+        },
+        "name": "Delete a resume"
+    },
+    {
+        "_id": {
+            "$oid": "648ad555dafdb9754f40b877"
+        },
+        "name": "Update resume status"
+    },
+    {
+        "_id": {
+            "$oid": "648ad56ddafdb9754f40b87c"
+        },
+        "name": "Fetch resumes by user"
+    },
+    {
+        "_id": {
+            "$oid": "648ad59adafdb9754f40b881"
+        },
+        "name": "Create a permission"
+    },
+    {
+        "_id": {
+            "$oid": "648ad5aedafdb9754f40b886"
+        },
+        "name": "Fetch Permission with paginate"
+    },
+    {
+        "_id": {
+            "$oid": "648ad5c5dafdb9754f40b88b"
+        },
+        "name": "Fetch permission by id"
+    },
+    {
+        "_id": {
+            "$oid": "648ad5d4dafdb9754f40b890"
+        },
+        "name": "Update a permission"
+    },
+    {
+        "_id": {
+            "$oid": "648ad5ebdafdb9754f40b895"
+        },
+        "name": "Delete a permission"
+    },
+    {
+        "_id": {
+            "$oid": "648ad613dafdb9754f40b89a"
+        },
+        "name": "Create Role"
+    },
+    {
+        "_id": {
+            "$oid": "648ad622dafdb9754f40b89f"
+        },
+        "name": "Fetch roles with paginate"
+    },
+    {
+        "_id": {
+            "$oid": "648ad630dafdb9754f40b8a6"
+        },
+        "name": "Fetch role by id"
+    },
+    {
+        "_id": {
+            "$oid": "648ad640dafdb9754f40b8ab"
+        },
+        "name": "Update Role"
+    },
+    {
+        "_id": {
+            "$oid": "648ad650dafdb9754f40b8b0"
+        },
+        "name": "Delete a Role"
+    },
+    {
+        "_id": {
+            "$oid": "648ad6a8dafdb9754f40b8b5"
+        },
+        "name": "Get Chat with paginate"
+    },
+    {
+        "_id": {
+            "$oid": "648ad6b2dafdb9754f40b8ba"
+        },
+        "name": "Get Chat by id"
+    },
+    {
+        "_id": {
+            "$oid": "671655660ab9f0be2b7762cb"
+        },
+        "name": "Update chat by id"
+    },
+    {
+        "_id": {
+            "$oid": "671657010ab9f0be2b7762cf"
+        },
+        "name": "Get messages of a chat"
+    }
+]

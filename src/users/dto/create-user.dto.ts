@@ -53,10 +53,10 @@ export class CreateUserDto {
     @IsNotEmpty() // Trường này không được để trống
     gender: string; // Giới tính của người dùng
 
-    @IsNotEmpty() // Trường này không được để trống
+    @IsOptional() // Trường này không được để trống
     isActive: boolean; // Trạng thái hoạt động (true/false)
 
-    @IsMongoId() // Xác minh đây là ObjectId hợp lệ của MongoDB
+    @IsOptional() // Xác minh đây là ObjectId hợp lệ của MongoDB
     @IsNotEmpty() // Trường này không được để trống
     role: mongoose.Schema.Types.ObjectId; // Vai trò của người dùng
 }
