@@ -43,6 +43,7 @@ export class UsersController {
   }
 
   @ResponseMessage("Update a User")
+  @SkipCheckPermission()
   @Patch()
   async update(@Body() updateUserDto: UpdateUserDto, @User() user: IUser) {
     let updatedUser = await this.usersService.update(updateUserDto, user);

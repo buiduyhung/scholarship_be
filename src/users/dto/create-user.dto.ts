@@ -37,7 +37,7 @@ export class CreateUserDto {
     @IsNotEmpty() // Trường này không được để trống
     password: string; // Mật khẩu
 
-    @IsNotEmpty() // Trường này không được để trống
+    @IsOptional()// Trường này không được để trống
     avatar: string; // Đường dẫn avatar
 
     @IsNotEmpty() // Trường này không được để trống

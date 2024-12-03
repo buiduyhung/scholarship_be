@@ -9,7 +9,7 @@ import { IUser } from 'src/users/users.interface';
 @ApiTags('study')
 @Controller('study')
 export class StudyController {
-  constructor(private readonly studyService: StudyService) {}
+  constructor(private readonly studyService: StudyService) { }
 
   @Post()
   @SkipCheckPermission()
