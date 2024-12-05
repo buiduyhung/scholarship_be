@@ -24,6 +24,14 @@ export class UsersController {
     };
   }
 
+  @Get('staff')
+  @Public()
+  @ResponseMessage("Fetch user names by hardcoded role ID")
+  async findUserNamesByHardcodedRoleId() {
+    const userNames = await this.usersService.findUserNamesByHardcodedRoleId();
+    return userNames;
+  }
+
   @Get()
   @ResponseMessage("Fetch List Users with paginate")
   findAll(

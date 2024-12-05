@@ -30,7 +30,7 @@ export class UsersService {
     private roleModel: SoftDeleteModel<RoleDocument>,
 
     private readonly mailerService: MailerService,
-  ) {}
+  ) { }
 
   getHashPassword = (password: string) => {
     const salt = genSaltSync(10);
@@ -529,26 +529,26 @@ export class UsersService {
 
   async changePassword(userId: string, changePasswordDto: ChangePasswordDto) {
     const { currentPassword, newPassword } = changePasswordDto;
-  
+
     // Tìm user theo ID
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new BadRequestException('User không tồn tại.');
     }
-  
+
     // Kiểm tra mật khẩu hiện tại
     const isPasswordValid = this.isValidPassword(currentPassword, user.password);
     if (!isPasswordValid) {
       throw new BadRequestException('Mật khẩu hiện tại không chính xác.');
     }
-  
+
     // Hash và cập nhật mật khẩu mới
     user.password = this.getHashPassword(newPassword);
     await user.save();
-  
+
     return { message: 'Cập nhật mật khẩu thành công.' };
   }
-  
+
 
   async findUsersByRole(role: string, options?: Record<string, any>) {
     const roleDoc = await this.roleModel.findOne(
@@ -564,5 +564,13 @@ export class UsersService {
       .find({ role: roleDoc._id, ...(options ?? {}) })
       .select('-password')
       .populate({ path: 'role', select: { name: 1 } });
+  }
+
+  async findUserNamesByHardcodedRoleId() {
+    const hardcodedRoleId = '6725e8b236f234ce3ea95e47';
+    return this.userModel
+      .find({ role: hardcodedRoleId })
+      .select('name')
+      .exec();
   }
 }

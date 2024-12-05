@@ -21,6 +21,9 @@ class History {
     @IsOptional()
     urlCV: string;
 
+    @IsOptional()
+    note: string;
+
     @IsNotEmpty()
     updatedAt: Date;
 

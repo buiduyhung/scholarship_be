@@ -20,7 +20,7 @@ export class ResumesService {
     @InjectModel(User.name) // Add this line
     private userModel: mongoose.Model<User>, // Add this line
     private readonly mailerService: MailerService,
-  ) {}
+  ) { }
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
     const { urlCV, scholarship } = createUserCvDto;
@@ -30,6 +30,8 @@ export class ResumesService {
       urlCV,
       email,
       name,
+      staff: 'đang chờ staff xử lý',
+      note: '',
       scholarship,
       userId: _id,
       status: 'Đang chờ thanh toán',
@@ -38,6 +40,7 @@ export class ResumesService {
       history: [
         {
           status: 'Đang chờ thanh toán',
+          note: '',
           updatedAt: new Date(),
           updatedBy: {
             _id: user._id,
@@ -167,7 +170,7 @@ export class ResumesService {
     ]);
   }
 
-  async update(_id: string, status: string, urlCV: string, user: IUser) {
+  async update(_id: string, status: string, urlCV: string, note: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       throw new BadRequestException('not found resume');
     }
@@ -177,6 +180,7 @@ export class ResumesService {
       {
         status,
         urlCV,
+        note,
         updatedBy: {
           _id: user._id,
           email: user.email,
@@ -185,6 +189,7 @@ export class ResumesService {
           history: {
             status: status,
             urlCV: urlCV,
+            note: note,
             updatedAt: new Date(),
             updatedBy: {
               _id: user._id,
@@ -228,6 +233,15 @@ export class ResumesService {
     return this.resumeModel.softDelete({
       _id,
     });
+  }
+
+  async updateStaff(id: string, staff: string, user: IUser) {
+    const updated = await this.resumeModel.updateOne(
+      { _id: id },
+      {
+        staff
+      })
+    return updated;
   }
 
   async updateStatusByOrderCode(

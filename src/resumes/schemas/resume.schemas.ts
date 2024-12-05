@@ -13,6 +13,12 @@ export class Resume {
   @Prop()
   name: string;
 
+  @Prop()
+  staff: string;
+
+  @Prop()
+  note: string;
+
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: User.name,

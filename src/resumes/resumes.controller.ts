@@ -144,6 +144,7 @@ export class ResumesController {
     @Param('id') id: string,
     @Body('status') status: string,
     @UploadedFile() file: Express.Multer.File,
+    @Body('note') note: string,
     @User() user: IUser,
   ) {
     try {
@@ -154,7 +155,22 @@ export class ResumesController {
         uploadedFileUrl = uploadedFileResponse.url;
       }
 
-      return this.resumesService.update(id, status, uploadedFileUrl, user);
+      return this.resumesService.update(id, status, uploadedFileUrl, note, user);
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Patch(':id/staff')
+  @ResponseMessage('Update staff for a resume')
+  async updateStaff(
+    @Param('id') id: string,
+    @Body('staff') staff: string,
+    @User() user: IUser,
+  ) {
+    try {
+      return this.resumesService.updateStaff(id, staff, user);
     } catch (error) {
       console.log(error);
       throw new BadRequestException(error.message);
