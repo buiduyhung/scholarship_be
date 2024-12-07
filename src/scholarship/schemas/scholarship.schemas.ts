@@ -18,9 +18,6 @@ export class Scholarship {
     location: string;
 
     @Prop()
-    continent: string;
-
-    @Prop()
     level: string[];
 
     @Prop()

@@ -9,9 +9,6 @@ export class CreateScholarshipDto {
     name: string;
 
     @IsNotEmpty()
-    continent: string;
-
-    @IsNotEmpty()
     location: string;
 
     @IsNotEmpty()

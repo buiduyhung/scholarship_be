@@ -52,7 +52,7 @@ export class ScholarshipController {
 
   @Public()
   @Get('list-location')
-  @ResponseMessage("Fetch all scholarship search")
+  @ResponseMessage("Fetch all location")
   getListLocation() {
     return this.scholarshipService.getListLocation();
   }

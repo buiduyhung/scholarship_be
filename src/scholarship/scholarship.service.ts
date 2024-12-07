@@ -22,12 +22,12 @@ export class ScholarshipService {
   ) { }
   async create(createScholarshipDto: CreateScholarshipDto, user: IUser) {
     const {
-      name, continent, level, quantity, major, location, image, ielts, GPA, pay, value,
+      name, level, quantity, major, location, image, ielts, GPA, pay, value,
       description, isActive
     } = createScholarshipDto;
 
     let newScholarship = await this.scholarshipModel.create({
-      name, continent, level, quantity, major, location, image, ielts, GPA, pay, value,
+      name, level, quantity, major, location, image, ielts, GPA, pay, value,
       description, isActive,
       createdBy: {
         _id: user._id,
@@ -122,29 +122,22 @@ export class ScholarshipService {
     })
   }
 
-  async getListLocation(): Promise<Record<string, string[]>> {
-    // Truy vấn tất cả các học bổng và chỉ lấy các trường continent và location
-    const scholarships = await this.scholarshipModel.find().select('continent location -_id').exec();
+  async getListLocation() {
+    const scholarships = await this.scholarshipModel.find().select('location -_id').exec();
 
-    // Sử dụng reduce để nhóm location theo continent và loại bỏ các location trùng lặp
-    const continentLocations = scholarships.reduce((acc, scholarship) => {
-      const continent = scholarship.continent;
-      const location = scholarship.location;
+    // Use a Set to collect unique locations
+    const uniqueLocations = new Set<string>();
 
-      // Nếu continent chưa tồn tại trong acc, khởi tạo mảng rỗng
-      if (!acc[continent]) {
-        acc[continent] = [];
-      }
+    scholarships.forEach(scholarship => {
+      uniqueLocations.add(scholarship.location);
+    });
 
-      // Thêm location vào mảng nếu chưa tồn tại
-      if (!acc[continent].includes(location)) {
-        acc[continent].push(location);
-      }
+    // Convert the Set back to an array
+    const formattedLocations = Array.from(uniqueLocations);
 
-      return acc;
-    }, {} as Record<string, string[]>);
-
-    return continentLocations;
+    return {
+      location: formattedLocations
+    };
   }
 
   async getListLevel() {
