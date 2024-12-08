@@ -30,7 +30,7 @@ export class UsersService {
     private roleModel: SoftDeleteModel<RoleDocument>,
 
     private readonly mailerService: MailerService,
-  ) { }
+  ) {}
 
   getHashPassword = (password: string) => {
     const salt = genSaltSync(10);
@@ -85,6 +85,33 @@ export class UsersService {
       },
     });
     return newUser;
+  }
+
+  async registerGoogle(user: RegisterUserDto) {
+    const { name, email, password, phone, age, gender, address } = user;
+    //add logic check email
+    const isExist = await this.userModel.findOne({ email });
+    if (isExist) {
+      throw new BadRequestException(
+        `Email: ${email} already exists. Please use a different email. `,
+      );
+    }
+
+    const userRole = await this.roleModel.findOne({ name: USER_ROLE });
+    const hashPassword = this.getHashPassword(password);
+    const newRegister = await this.userModel.create({
+      name,
+      email,
+      password: hashPassword,
+      phone,
+      age,
+      gender,
+      address,
+      role: userRole?._id,
+      isActive: true,
+    });
+
+    return newRegister;
   }
 
   async register(user: RegisterUserDto) {
@@ -537,7 +564,10 @@ export class UsersService {
     }
 
     // Kiểm tra mật khẩu hiện tại
-    const isPasswordValid = this.isValidPassword(currentPassword, user.password);
+    const isPasswordValid = this.isValidPassword(
+      currentPassword,
+      user.password,
+    );
     if (!isPasswordValid) {
       throw new BadRequestException('Mật khẩu hiện tại không chính xác.');
     }
@@ -548,7 +578,6 @@ export class UsersService {
 
     return { message: 'Cập nhật mật khẩu thành công.' };
   }
-
 
   async findUsersByRole(role: string, options?: Record<string, any>) {
     const roleDoc = await this.roleModel.findOne(
@@ -568,9 +597,6 @@ export class UsersService {
 
   async findUserNamesByHardcodedRoleId() {
     const hardcodedRoleId = '6725e8b236f234ce3ea95e47';
-    return this.userModel
-      .find({ role: hardcodedRoleId })
-      .select('name')
-      .exec();
+    return this.userModel.find({ role: hardcodedRoleId }).select('name').exec();
   }
 }
