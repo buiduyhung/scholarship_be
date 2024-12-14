@@ -35,13 +35,13 @@ export class PayOSService implements IPayOSService {
   }
 
   // Lấy thông tin liên kết thanh toán
-  getPaymentLinkInformation(orderCode: string): Promise<PaymentLinkDataType> {
+  getPaymentLinkInformation(orderCode: number): Promise<PaymentLinkDataType> {
     this.logger.log('Getting payment link information for', orderCode);
     return this.payOSClient.getPaymentLinkInformation(orderCode);
   }
 
   // Hủy liên kết thanh toán
-  cancelPaymentLink(orderCode: string): Promise<Record<string, any>> {
+  cancelPaymentLink(orderCode: number): Promise<Record<string, any>> {
     return this.payOSClient.cancelPaymentLink(orderCode);
   }
 
@@ -50,9 +50,12 @@ export class PayOSService implements IPayOSService {
     paymentDetails: CheckoutRequestType,
   ): Promise<CheckoutResponseDataType> {
     this.logger.log('Creating payment link for', paymentDetails.orderCode);
-    const paymentLink =
-      await this.payOSClient.createPaymentLink(paymentDetails);
-    this.logger.debug('Payment link created', paymentLink);
+    const paymentLink = await this.payOSClient.createPaymentLink({
+      ...paymentDetails,
+    });
+    this.logger.debug('Payment link created', {
+      ...paymentLink,
+    });
 
     return paymentLink;
   }
