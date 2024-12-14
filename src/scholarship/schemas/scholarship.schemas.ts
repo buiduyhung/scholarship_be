@@ -18,7 +18,7 @@ export class Scholarship {
     location: string;
 
     @Prop()
-    level: string[];
+    level: string[]; ///commit 
 
     @Prop()
     major: string[];
