@@ -1,7 +1,7 @@
 import {
   CheckoutRequestType, // Loại yêu cầu thanh toán
-  WebhookDataType,     // Dữ liệu webhook
-  WebhookType,         // Loại webhook
+  WebhookDataType, // Dữ liệu webhook
+  WebhookType, // Loại webhook
 } from '@payos/node/lib/type';
 
 // Interface cho các chức năng thanh toán của PayOS
@@ -10,9 +10,9 @@ export interface IPayOSService {
     paymentDetails: CheckoutRequestType, // Thông tin thanh toán
   ): Promise<Record<string, any>>;
 
-  getPaymentLinkInformation(orderCode: string): Promise<Record<string, any>>; // Lấy thông tin liên kết
+  getPaymentLinkInformation(orderCode: number): Promise<Record<string, any>>; // Lấy thông tin liên kết
 
-  cancelPaymentLink(orderCode: string): Promise<Record<string, any>>; // Hủy liên kết thanh toán
+  cancelPaymentLink(orderCode: number): Promise<Record<string, any>>; // Hủy liên kết thanh toán
 
   verifyPaymentWebhookData(payload: WebhookType): WebhookDataType; // Xác minh webhook
 }

@@ -20,7 +20,7 @@ export class ResumesService {
     @InjectModel(User.name) // Add this line
     private userModel: mongoose.Model<User>, // Add this line
     private readonly mailerService: MailerService,
-  ) { }
+  ) {}
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
     const { urlCV, scholarship } = createUserCvDto;
@@ -170,7 +170,23 @@ export class ResumesService {
     ]);
   }
 
-  async update(_id: string, status: string, urlCV: string, note: string, user: IUser) {
+  async findOneByOrderCode(orderCode: number) {
+    return this.resumeModel.findOne({ orderCode }).populate([
+      {
+        path: 'scholarship',
+        select: { name: 1 },
+      },
+    ]);
+  }
+
+  async update(
+    _id: string,
+    status: string,
+    urlCV: string,
+    note: string,
+    user: IUser,
+    orderCode?: number,
+  ) {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       throw new BadRequestException('not found resume');
     }
@@ -181,6 +197,7 @@ export class ResumesService {
         status,
         urlCV,
         note,
+        orderCode,
         updatedBy: {
           _id: user._id,
           email: user.email,
@@ -239,8 +256,9 @@ export class ResumesService {
     const updated = await this.resumeModel.updateOne(
       { _id: id },
       {
-        staff
-      })
+        staff,
+      },
+    );
     return updated;
   }
 
@@ -270,5 +288,9 @@ export class ResumesService {
         },
       },
     );
+  }
+
+  async updateOrderCode(_id: string, orderCode: number) {
+    return await this.resumeModel.updateOne({ _id }, { orderCode });
   }
 }
