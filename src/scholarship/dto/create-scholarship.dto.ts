@@ -12,6 +12,9 @@ export class CreateScholarshipDto {
     location: string;
 
     @IsNotEmpty()
+    continent: string;
+
+    @IsNotEmpty()
     @IsArray()
     @IsString({ each: true })
     image: string[];

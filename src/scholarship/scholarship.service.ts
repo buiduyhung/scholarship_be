@@ -22,12 +22,12 @@ export class ScholarshipService {
   ) { }
   async create(createScholarshipDto: CreateScholarshipDto, user: IUser) {
     const {
-      name, level, quantity, major, location, image, ielts, GPA, pay, value,
+      name, level, continent, quantity, major, location, image, ielts, GPA, pay, value,
       description, isActive
     } = createScholarshipDto;
 
     let newScholarship = await this.scholarshipModel.create({
-      name, level, quantity, major, location, image, ielts, GPA, pay, value,
+      name, level, continent, quantity, major, location, image, ielts, GPA, pay, value,
       description, isActive,
       createdBy: {
         _id: user._id,
@@ -41,14 +41,29 @@ export class ScholarshipService {
     }
   }
 
-  // async getlocation(continentName: string): Promise<string[]> {
-  //   // Truy vấn tất cả các location duy nhất theo continentName
-  //   const uniqueLocations = await this.scholarshipModel
-  //     .find({ continent: continentName }) // Lọc theo continentName
-  //     .distinct('location'); // Lấy các location duy nhất
+  async getListLocation(): Promise<Record<string, string[]>> {
+    // Truy vấn tất cả các học bổng và chỉ lấy các trường continent và location
+    const scholarships = await this.scholarshipModel.find().select('continent location -_id').exec();
+    // Sử dụng reduce để nhóm location theo continent và loại bỏ các location trùng lặp
+    const continentLocations = scholarships.reduce((acc, scholarship) => {
+      const continent = scholarship.continent;
+      const location = scholarship.location;
 
-  //   return uniqueLocations;
-  // }
+      // Nếu continent chưa tồn tại trong acc, khởi tạo mảng rỗng
+      if (!acc[continent]) {
+        acc[continent] = [];
+      }
+
+      // Thêm location vào mảng nếu chưa tồn tại
+      if (!acc[continent].includes(location)) {
+        acc[continent].push(location);
+      }
+
+      return acc;
+    }, {} as Record<string, string[]>);
+
+    return continentLocations;
+  }
 
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, population, projection } = aqp(qs);
@@ -122,23 +137,23 @@ export class ScholarshipService {
     })
   }
 
-  async getListLocation() {
-    const scholarships = await this.scholarshipModel.find().select('location -_id').exec();
+  // async getListLocation() {
+  //   const scholarships = await this.scholarshipModel.find().select('location -_id').exec();
 
-    // Use a Set to collect unique locations
-    const uniqueLocations = new Set<string>();
+  //   // Use a Set to collect unique locations
+  //   const uniqueLocations = new Set<string>();
 
-    scholarships.forEach(scholarship => {
-      uniqueLocations.add(scholarship.location);
-    });
+  //   scholarships.forEach(scholarship => {
+  //     uniqueLocations.add(scholarship.location);
+  //   });
 
-    // Convert the Set back to an array
-    const formattedLocations = Array.from(uniqueLocations);
+  //   // Convert the Set back to an array
+  //   const formattedLocations = Array.from(uniqueLocations);
 
-    return {
-      location: formattedLocations
-    };
-  }
+  //   return {
+  //     location: formattedLocations
+  //   };
+  // }
 
   async getListLevel() {
     const scholarships = await this.scholarshipModel.find().select('level -_id').exec();

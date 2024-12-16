@@ -22,12 +22,13 @@ export class ScholarshipController {
     return this.scholarshipService.create(createScholarshipDto, user);
   }
 
-  // @Public()
-  // @Get('list-location')
-  // @ResponseMessage("List location by continent")
-  // searchByProviderName(@Query('continent') continentName: string) {
-  //   return this.scholarshipService.getlocation(continentName);
-  // }
+  @Public()
+  @Get('list-location')
+  @ResponseMessage("Fetch all location")
+  getListLocation() {
+    return this.scholarshipService.getListLocation();
+  }
+
   @Public()
   @Get('list-major')
   @ResponseMessage("Fetch all major search")
@@ -50,12 +51,12 @@ export class ScholarshipController {
   }
 
 
-  @Public()
-  @Get('list-location')
-  @ResponseMessage("Fetch all location")
-  getListLocation() {
-    return this.scholarshipService.getListLocation();
-  }
+  // @Public()
+  // @Get('list-location')
+  // @ResponseMessage("Fetch all location")
+  // getListLocation() {
+  //   return this.scholarshipService.getListLocation();
+  // }
 
   @Public()
   @Get()

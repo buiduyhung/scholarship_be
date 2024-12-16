@@ -15,10 +15,13 @@ export class Scholarship {
     image: string[];
 
     @Prop()
+    continent: string;
+
+    @Prop()
     location: string;
 
     @Prop()
-    level: string[]; ///commit 
+    level: string[];
 
     @Prop()
     major: string[];
