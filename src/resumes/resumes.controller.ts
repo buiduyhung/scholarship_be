@@ -26,6 +26,7 @@ import { PayOSService } from 'src/payos/payos.service';
 import { IUser } from 'src/users/users.interface';
 import { CreateUserCvDto } from './dto/create-resume.dto';
 import { ResumesService } from './resumes.service';
+import mongoose, { Types } from 'mongoose';
 
 @ApiTags('resumes')
 @Controller('resumes')
@@ -34,7 +35,7 @@ export class ResumesController {
     private readonly resumesService: ResumesService,
     private readonly paymentService: PayOSService,
     private readonly cloudinaryService: CloudinaryService,
-  ) {}
+  ) { }
 
   @Post()
   @SkipCheckPermission()
@@ -256,7 +257,6 @@ export class ResumesController {
       throw new BadRequestException(error.message);
     }
   }
-
   @Patch(':id/staff')
   @ResponseMessage('Update staff for a resume')
   async updateStaff(
@@ -265,17 +265,11 @@ export class ResumesController {
     @User() user: IUser,
   ) {
     try {
-      return this.resumesService.updateStaff(id, staff, user);
+      const staffId = new Types.ObjectId(staff); // Correctly convert staff to ObjectId
+      return this.resumesService.updateStaff(id, staffId, user);
     } catch (error) {
       console.log(error);
       throw new BadRequestException(error.message);
     }
-  }
-
-  @Delete(':id')
-  @SkipCheckPermission()
-  @ResponseMessage('Delete a resume')
-  remove(@Param('id') id: string, @User() user: IUser) {
-    return this.resumesService.remove(id, user);
   }
 }

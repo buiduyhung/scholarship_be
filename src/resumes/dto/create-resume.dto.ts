@@ -20,8 +20,8 @@ export class CreateResumeDto {
     @IsNotEmpty()
     status: string;
 
-    @IsNotEmpty()
-    staff: string;
+    @IsOptional()
+    staff: mongoose.Schema.Types.ObjectId;
 
     @IsNotEmpty()
     note: string;
@@ -42,7 +42,7 @@ export class CreateUserCvDto {
     scholarship: mongoose.Schema.Types.ObjectId;
 
     @IsOptional()
-    staff: string;
+    staff: mongoose.Schema.Types.ObjectId;
 
     @IsOptional()
     note: string;

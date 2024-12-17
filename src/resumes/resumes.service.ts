@@ -2,7 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import aqp from 'api-query-params';
-import mongoose, { PipelineStage } from 'mongoose';
+import mongoose, { PipelineStage, Types } from 'mongoose';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { Provider } from 'src/provider/schemas/providers.schemas';
 import { User } from 'src/users/schemas/user.schema'; // Add this import
@@ -23,14 +23,14 @@ export class ResumesService {
   ) { }
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
-    const { urlCV, scholarship } = createUserCvDto;
+    const { urlCV, scholarship, staff } = createUserCvDto;
     const { name, email, _id } = user;
 
     const newCV = await this.resumeModel.create({
       urlCV,
       email,
       name,
-      staff: 'đang chờ staff xử lý',
+      staff,
       note: '',
       scholarship,
       userId: _id,
@@ -91,6 +91,20 @@ export class ResumesService {
         },
       },
       {
+        $lookup: { // Add this lookup stage
+          from: 'users',
+          localField: 'staff',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      {
+        $unwind: { // Unwind the user array
+          path: '$user',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $project: {
           urlCV: 1,
           status: 1,
@@ -104,10 +118,10 @@ export class ResumesService {
           history: 1,
           userID: 1,
           email: 1,
-          staff: 1,
-
           'scholarship.name': 1,
           'scholarship._id': 1,
+          'user.name': 1, // Project user name
+          'user._id': 1,  // Project user ID
           ...projection,
         },
       },
@@ -253,7 +267,7 @@ export class ResumesService {
     });
   }
 
-  async updateStaff(id: string, staff: string, user: IUser) {
+  async updateStaff(id: string, staff: mongoose.Types.ObjectId, user: IUser) { // Use Types.ObjectId
     const updated = await this.resumeModel.updateOne(
       { _id: id },
       {

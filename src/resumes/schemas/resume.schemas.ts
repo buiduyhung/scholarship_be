@@ -14,9 +14,6 @@ export class Resume {
   name: string;
 
   @Prop()
-  staff: string;
-
-  @Prop()
   note: string;
 
   @Prop({
@@ -24,6 +21,12 @@ export class Resume {
     ref: User.name,
   })
   userId: mongoose.Schema.Types.ObjectId;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: User.name,
+  })
+  staff: mongoose.Schema.Types.ObjectId;
 
   @Prop()
   urlCV: string;
