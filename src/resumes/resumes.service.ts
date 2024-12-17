@@ -20,7 +20,7 @@ export class ResumesService {
     @InjectModel(User.name) // Add this line
     private userModel: mongoose.Model<User>, // Add this line
     private readonly mailerService: MailerService,
-  ) {}
+  ) { }
 
   async create(createUserCvDto: CreateUserCvDto, user: IUser) {
     const { urlCV, scholarship } = createUserCvDto;
@@ -104,6 +104,7 @@ export class ResumesService {
           history: 1,
           userID: 1,
           email: 1,
+          staff: 1,
 
           'scholarship.name': 1,
           'scholarship._id': 1,
