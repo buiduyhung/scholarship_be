@@ -22,7 +22,7 @@ export class ChatService implements IChatService {
     @InjectModel(Conversation.name)
     private conversationModel: SoftDeleteModel<ConversationDocument>,
     private userService: UsersService,
-  ) {}
+  ) { }
   closeConversation(conversationId: string): Promise<ConversationDocument> {
     return this.conversationModel.findByIdAndUpdate(
       conversationId,
@@ -33,7 +33,7 @@ export class ChatService implements IChatService {
     );
   }
   async getStaff(): Promise<UserDocument> {
-    const users = await this.userService.findUsersByRole('ADMIN');
+    const users = await this.userService.findUsersByRole('Staff');
 
     const random = Math.floor(Math.random() * users.length);
 
