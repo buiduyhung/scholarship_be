@@ -24,6 +24,15 @@ export class UsersController {
     };
   }
 
+  @ResponseMessage('Get user information update')
+  @SkipCheckPermission()
+  @Get('/update')
+  async handleGetAccount(@User() user: IUser) {
+    if (!user) return null;
+    const temp = (await this.usersService.findOne(user._id)) as any;
+    return temp;
+  }
+
   @Get('staff')
   @Public()
   @ResponseMessage("Fetch user names by hardcoded role ID")

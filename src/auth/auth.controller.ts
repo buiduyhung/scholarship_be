@@ -13,7 +13,7 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { GoogleOauthGuard } from 'src/auth/google-auth.guard';
-import { Public, ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, SkipCheckPermission, User } from 'src/decorator/customize';
 import { RolesService } from 'src/roles/roles.service';
 import {
   ChangePasswordAuthDto,
@@ -35,7 +35,7 @@ export class AuthController {
     private rolesService: RolesService,
     private usersService: UsersService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   @Public()
   @ResponseMessage('Login user')
@@ -51,7 +51,7 @@ export class AuthController {
   @Public()
   @UseGuards(GoogleOauthGuard)
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async auth() {}
+  async auth() { }
 
   @Public()
   @Get('google/callback')
@@ -122,8 +122,8 @@ export class AuthController {
   }
 
   @ResponseMessage('Get user information')
+  @SkipCheckPermission()
   @UseGuards(ThrottlerGuard)
-  @Throttle(6, 60)
   @Get('/account')
   async handleGetAccount(@User() user: IUser) {
     if (!user) return null;
