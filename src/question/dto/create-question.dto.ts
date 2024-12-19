@@ -14,5 +14,5 @@ export class CreateQuestionDto {
 
     @IsNotEmpty()
     @IsNumber()
-    quiz: number;
+    quiz: number;// aa
 }
