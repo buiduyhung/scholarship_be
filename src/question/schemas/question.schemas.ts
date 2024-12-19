@@ -14,6 +14,9 @@ export class Question {
     @Prop()
     answer: string;
 
+    @Prop()
+    quiz: number;
+
     @Prop({ type: Object })
     createdBy: {
         _id: mongoose.Schema.Types.ObjectId;

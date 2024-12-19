@@ -17,11 +17,11 @@ export class QuestionService {
 
   async create(createQuestionDto: CreateQuestionDto, user: IUser) {
     const {
-      question, option, answer
+      question, option, answer, quiz,
     } = createQuestionDto;
 
     let newQuestion = await this.questionModel.create({
-      question, option, answer,
+      question, option, answer, quiz,
       createdBy: {
         _id: user._id,
         email: user.email
