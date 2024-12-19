@@ -66,7 +66,7 @@ export class ResumesController {
       );
 
       const payment = await this.paymentService.createPaymentLink({
-        amount: 2000,
+        amount: 3000,
         cancelUrl: 'https://sfms.pages.dev/payment/cancel',
         description: `SMFS`,
         orderCode,
@@ -164,7 +164,7 @@ export class ResumesController {
     }
 
     payment = await this.paymentService.createPaymentLink({
-      amount: 2000,
+      amount: 7000,
       cancelUrl: 'https://sfms.pages.dev/payment/cancel',
       description:
         status === 'Thanh toán lần 2' ? `SMFS - Thanh toán lần 2` : 'SMFS',
@@ -231,7 +231,7 @@ export class ResumesController {
       if (status === 'Thanh toán lần 2') {
         newOrderCode = this.resumesService.generateOrderCode();
         payment = await this.paymentService.createPaymentLink({
-          amount: 2000,
+          amount: 7000,
           cancelUrl: 'https://sfms.pages.dev/payment/cancel',
           description: `SMFS - Thanh toán lần 2`,
           orderCode: newOrderCode,
