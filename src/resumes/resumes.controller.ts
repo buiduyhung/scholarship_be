@@ -272,4 +272,11 @@ export class ResumesController {
       throw new BadRequestException(error.message);
     }
   }
+
+  @ResponseMessage("Delete a resume")
+  @SkipCheckPermission()
+  @Delete(':id')
+  remove(@Param('id') id: string, @User() user: IUser) {
+    return this.resumesService.remove(id, user);
+  }
 }
