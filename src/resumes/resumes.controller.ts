@@ -74,7 +74,7 @@ export class ResumesController {
         items: [
           {
             name: _id.toString(),
-            price: 1000,
+            price: 0,
             quantity: 1,
           },
         ],
@@ -173,7 +173,7 @@ export class ResumesController {
       items: [
         {
           name: _id.toString(),
-          price: 1000,
+          price: 0,
           quantity: 1,
         },
       ],
@@ -239,7 +239,7 @@ export class ResumesController {
           items: [
             {
               name: _id.toString(),
-              price: 1000,
+              price: 0,
               quantity: 1,
             },
           ],
