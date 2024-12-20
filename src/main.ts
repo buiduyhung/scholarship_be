@@ -23,7 +23,7 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true
-  }));
+  })); //test
 
   //config payOS
   const payOS = new PayOS(
